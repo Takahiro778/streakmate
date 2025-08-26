@@ -33,6 +33,13 @@ Rails.application.configure do
     config.cache_store = :null_store
   end
 
+  # BASIC_AUTH_ENABLED=true のときだけ dev でも有効化
+  if ENV["BASIC_AUTH_ENABLED"] == "true"
+    require Rails.root.join("lib/middleware/conditional_basic_auth").to_s
+    config.middleware.insert_before 0, Middleware::ConditionalBasicAuth
+  end
+
+
   # Store uploaded files on the local file system (see config/storage.yml for options).
   config.active_storage.service = :local
 
