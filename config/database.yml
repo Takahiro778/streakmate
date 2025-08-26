@@ -1,0 +1,14 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: 10
+
+development:
+  <<: *default
+  database: streakmate_development
+  # username: akahiro   # 省略可（現在のOSユーザーを使う）
+  # host:               # 省略でUNIXソケット接続（peer）
+
+test:
+  <<: *default
+  database: streakmate_test
