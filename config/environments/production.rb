@@ -1,5 +1,5 @@
 # 本番で lib/middleware のミドルウェアを確実に読み込む
-require Rails.root.join("lib/middleware/conditional_basic_auth")
+require Rails.root.join("lib/middleware/conditional_basic_auth").to_s
 require "active_support/core_ext/integer/time"
 
 Rails.application.configure do

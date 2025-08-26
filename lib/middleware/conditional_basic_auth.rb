@@ -2,17 +2,11 @@
 require "digest"
 
 class ConditionalBasicAuth
-  def initialize(app)
-    @app = app
-  end
+  def initialize(app); @app = app; end
 
   def call(env)
-    # OFFなら何もしない
     return @app.call(env) unless ENV["BASIC_AUTH_ENABLED"] == "true"
-
     req = Rack::Request.new(env)
-
-    # 認証をスキップするパス（HealthCheck/アセット等）
     return @app.call(env) if skip_path?(req.path)
 
     auth = Rack::Auth::Basic::Request.new(env)
@@ -21,9 +15,7 @@ class ConditionalBasicAuth
        secure_compare(auth.credentials[1], ENV.fetch("BASIC_AUTH_PASS", ""))
       @app.call(env)
     else
-      headers = { "Content-Type" => "text/plain",
-                  "WWW-Authenticate" => 'Basic realm="Staging"' }
-      [401, headers, ["Unauthorized"]]
+      [401, {"Content-Type"=>"text/plain","WWW-Authenticate"=>'Basic realm="Staging"'}, ["Unauthorized"]]
     end
   end
 

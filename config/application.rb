@@ -11,16 +11,15 @@ module Streakmate
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 7.1
 
-    # Please, add to the `ignore` list any other `lib` subdirectories that do
-    # not contain `.rb` files, or that should not be reloaded or eager loaded.
-    # Common ones are `templates`, `generators`, or `middleware`, for example.
-    config.autoload_lib(ignore: %w(assets tasks))
+    # lib 配下の自動読み込み設定（Rails 7.1 の推奨記法）
+    # assets / tasks は除外しつつ、middleware 等は対象にする
+    config.autoload_lib(ignore: %w[assets tasks])
+
+    # 本番ビルドでも確実に読み込ませるため、念のため明示追加
+    config.autoload_paths << Rails.root.join("lib")
+    config.eager_load_paths << Rails.root.join("lib")
 
     # Configuration for the application, engines, and railties goes here.
-    #
-    # These settings can be overridden in specific environments using the files
-    # in config/environments, which are processed later.
-    #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
   end
