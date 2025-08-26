@@ -3,7 +3,11 @@ require "active_support/core_ext/integer/time"
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
+  # Renderのホスト許可（既に入っていればOK）
   config.hosts << ENV["RENDER_EXTERNAL_HOSTNAME"] if ENV["RENDER_EXTERNAL_HOSTNAME"].present?
+
+  # Basic認証（本番限定・環境変数でON/OFF）
+  config.middleware.insert_before 0, ConditionalBasicAuth
 
   # Code is not reloaded between requests.
   config.enable_reloading = false
