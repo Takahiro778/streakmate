@@ -7,7 +7,7 @@ Rails.application.configure do
   config.hosts << ENV["RENDER_EXTERNAL_HOSTNAME"] if ENV["RENDER_EXTERNAL_HOSTNAME"].present?
 
   # Basic認証（本番限定・環境変数でON/OFF）
-  config.middleware.insert_before 0, ConditionalBasicAuth
+  config.middleware.insert_before 0, Middleware::ConditionalBasicAuth
 
   # Code is not reloaded between requests.
   config.enable_reloading = false
