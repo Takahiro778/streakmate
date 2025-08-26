@@ -1,14 +1,14 @@
 default: &default
-  adapter: postgresql
-  encoding: unicode
-  pool: 10
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS", 5) %>
 
 development:
-  <<: *default
-  database: streakmate_development
-  # username: akahiro   # 省略可（現在のOSユーザーを使う）
-  # host:               # 省略でUNIXソケット接続（peer）
+  adapter: sqlite3
+  database: db/development.sqlite3
 
 test:
-  <<: *default
-  database: streakmate_test
+  adapter: sqlite3
+  database: db/test.sqlite3
+
+production:
+  url: <%= ENV.fetch("DATABASE_URL") %>
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS", 5) %>
