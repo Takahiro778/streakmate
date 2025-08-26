@@ -3,9 +3,7 @@ require Rails.root.join("lib/middleware/conditional_basic_auth").to_s
 require "active_support/core_ext/integer/time"
 
 Rails.application.configure do
-  # Settings specified here will take precedence over those in config/application.rb.
-
-  # Renderのホスト許可（既に入っていればOK）
+  # Renderのホスト許可
   config.hosts << ENV["RENDER_EXTERNAL_HOSTNAME"] if ENV["RENDER_EXTERNAL_HOSTNAME"].present?
 
   # Basic認証（本番限定・環境変数でON/OFF）
@@ -20,8 +18,6 @@ Rails.application.configure do
   # Full error reports are disabled and caching is turned on.
   config.consider_all_requests_local = false
   config.action_controller.perform_caching = true
-
-  # config.require_master_key = true
 
   # Do not fall back to assets pipeline if a precompiled asset is missed.
   config.assets.compile = false
@@ -52,8 +48,9 @@ Rails.application.configure do
   # Deprecations
   config.active_support.report_deprecations = false
 
-  # Schema dump
+  # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
-  # Host header protection / healthcheck 例（必要なら有効化）
-  # config.host_authorization = { exclude: ->(request) { request.path_
+  # Healthcheck を Host Authorization から除外したい場合は下を有効化
+  # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
+end
