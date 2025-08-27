@@ -8,5 +8,5 @@ Rails.application.routes.draw do
   resource :mypage, only: [:show, :edit, :update], controller: :profiles
 
   # Goal（目標）投稿：タイムライン・新規作成
-  resources :goals, only: [:index, :new, :create]
+  resources :goals, only: [:index, :new, :create, :show, :edit, :update, :destroy]
 end
