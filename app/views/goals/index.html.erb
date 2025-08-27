@@ -1,0 +1,24 @@
+<div class="max-w-3xl mx-auto p-6">
+  <h2 class="text-2xl font-bold mb-4">タイムライン</h2>
+
+  <% if @goals.blank? %>
+    <p class="text-gray-600">表示できる目標はまだありません。</p>
+  <% else %>
+    <div class="space-y-4">
+      <% @goals.each do |g| %>
+        <div class="border rounded p-4">
+          <div class="text-sm text-gray-500 mb-1">
+            <%= g.user.nickname.presence || g.user.email %> • <%= l g.created_at, format: :short %> • <%= g.visibility %>
+          </div>
+          <h3 class="text-lg font-semibold"><%= g.title %></h3>
+          <p class="mt-1 whitespace-pre-wrap"><%= g.description %></p>
+          <p class="mt-2 text-sm text-gray-700">カテゴリ：<%= g.category.name %></p>
+          <details class="mt-2 text-sm">
+            <summary class="cursor-pointer">達成基準</summary>
+            <p class="mt-1 whitespace-pre-wrap"><%= g.success_criteria %></p>
+          </details>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</div>

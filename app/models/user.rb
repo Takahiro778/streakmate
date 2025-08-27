@@ -3,12 +3,17 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable
 
   has_one :profile, dependent: :destroy, inverse_of: :user
-  accepts_nested_attributes_for :profile
+  has_many :goals, dependent: :destroy
 
   validates :nickname, presence: true
 
   # 入力があるときだけ複雑性チェック
   validate :password_complexity, if: -> { password.present? }
+
+  # フォロー機能が未実装なのでダミーを返す
+  def following_ids
+    [] # 後で Follow 実装時に差し替え
+  end
 
   private
 
