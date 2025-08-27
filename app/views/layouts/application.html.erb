@@ -6,13 +6,37 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
-
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
   <body>
-    <main class="container mx-auto mt-28 px-5 flex">
+    <!-- Flash -->
+    <% if notice %>
+      <p class="bg-green-100 text-green-800 p-2 text-center"><%= notice %></p>
+    <% end %>
+    <% if alert %>
+      <p class="bg-red-100 text-red-800 p-2 text-center"><%= alert %></p>
+    <% end %>
+
+    <!-- Auth Nav -->
+    <nav class="max-w-3xl mx-auto mt-6 mb-4 px-5 flex justify-between items-center text-sm">
+      <%= link_to "StreakMate", root_path, class: "font-semibold" %>
+      <div class="flex items-center gap-3">
+        <% if user_signed_in? %>
+          <span class="text-gray-600">Hi, <%= current_user.nickname %></span>
+          <%= link_to "Edit", edit_user_registration_path, class: "underline" %>
+          <%= button_to "Log out", destroy_user_session_path,
+                method: :delete, form: { class: "inline" },
+                class: "underline" %>
+        <% else %>
+          <%= link_to "Sign up", new_user_registration_path, class: "underline" %>
+          <%= link_to "Log in",  new_user_session_path,      class: "underline" %>
+        <% end %>
+      </div>
+    </nav>
+
+    <main class="container mx-auto mt-6 px-5">
       <%= yield %>
     </main>
   </body>
