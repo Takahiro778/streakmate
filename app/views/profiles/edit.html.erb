@@ -1,4 +1,31 @@
-<div>
-  <h1 class="font-bold text-4xl">Profiles#edit</h1>
-  <p>Find me in app/views/profiles/edit.html.erb</p>
+<div class="container mx-auto max-w-xl p-6">
+  <h2 class="text-2xl font-bold mb-4">プロフィール編集</h2>
+
+  <%= form_with model: @profile, url: mypage_path, local: true do |f| %>
+    <div class="mb-4">
+      <%= f.label :display_name, "表示名", class: "block font-medium" %>
+      <%= f.text_field :display_name, class: "w-full border rounded p-2", maxlength: 50, placeholder: "例）やまもと たかひろ" %>
+    </div>
+
+    <div class="mb-4">
+      <%= f.label :introduction, "自己紹介", class: "block font-medium" %>
+      <%= f.text_area :introduction, class: "w-full border rounded p-2", rows: 6, maxlength: 300, placeholder: "300文字まで" %>
+    </div>
+
+    <div class="mb-4">
+      <%= f.label :avatar, "アイコン画像（2MBまで / PNG・JPG・WEBP）", class: "block font-medium" %>
+      <% if @profile.avatar.attached? %>
+        <div class="mb-2">
+          <%= image_tag @profile.avatar.variant(resize_to_fill: [120, 120]), class: "rounded-full" %>
+        </div>
+      <% else %>
+        <div class="mb-2">
+          <%= image_tag "dummy_icon.png", size: "120x120", class: "rounded-full" %>
+        </div>
+      <% end %>
+      <%= f.file_field :avatar, accept: "image/png,image/jpeg,image/jpg,image/webp" %>
+    </div>
+
+    <%= f.submit "更新する", class: "px-4 py-2 bg-green-500 text-white rounded" %>
+  <% end %>
 </div>
