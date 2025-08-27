@@ -1,23 +1,20 @@
-# app/models/goal.rb
 class Goal < ApplicationRecord
   belongs_to :user
 
-  # 公開範囲
-  enum visibility: { public: 0, followers: 1, private: 2 }
+  # 公開範囲（衝突回避のため _prefix を付与）
+  enum visibility: { public: 0, followers: 1, private: 2 }, _prefix: :visibility
+  # 例: visibility_public?, visibility_followers?, visibility_private?
 
-  # ActiveHash カテゴリ
   extend ActiveHash::Associations::ActiveRecordExtensions
   belongs_to :category
 
-  # バリデーション
-  validates :title, presence: true, length: { maximum: 60 }
-  validates :description, presence: true, length: { maximum: 1000 }
+  validates :title,            presence: true, length: { maximum: 60 }
+  validates :description,      presence: true, length: { maximum: 1000 }
   validates :success_criteria, presence: true, length: { maximum: 500 }
-  validates :category_id, presence: true
-  validates :visibility, presence: true
-  validates :share_summary, length: { maximum: 140 }, allow_blank: true
+  validates :category_id,      presence: true
+  validates :visibility,       presence: true
+  validates :share_summary,    length: { maximum: 140 }, allow_blank: true
 
-  # タイムライン可視性（フォロー機能が未実装でも動く設計）
   scope :visible_to, ->(viewer) {
     return none if viewer.nil?
     where(
