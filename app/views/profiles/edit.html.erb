@@ -15,16 +15,17 @@
     <div class="mb-4">
       <%= f.label :avatar, "アイコン画像（2MBまで / PNG・JPG・WEBP）", class: "block font-medium" %>
       <% if @profile.avatar.attached? %>
-        <div class="mb-2">
-          <%= image_tag @profile.avatar.variant(resize_to_fill: [120, 120]), class: "rounded-full" %>
-        </div>
+    <div class="mb-2">
+      <%= image_tag @profile.avatar.variant(resize_to_fill: [200, 200]), class: "rounded-full" %>
+    </div>
       <% else %>
-        <div class="mb-2">
-          <%= image_tag "dummy_icon.png", size: "120x120", class: "rounded-full" %>
-        </div>
+    <div class="mb-2">
+      <%= image_tag "dummy_icon.svg", size: "200x200", class: "rounded-full text-gray-400" %>
+    </div>
       <% end %>
       <%= f.file_field :avatar, accept: "image/png,image/jpeg,image/jpg,image/webp" %>
     </div>
+
 
     <%= f.submit "更新する", class: "px-4 py-2 bg-green-500 text-white rounded" %>
   <% end %>

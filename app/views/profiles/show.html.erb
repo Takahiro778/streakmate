@@ -5,7 +5,7 @@
     <% if @profile.avatar.attached? %>
       <%= image_tag @profile.avatar.variant(resize_to_fill: [200, 200]), class: "rounded-full" %>
     <% else %>
-      <%= image_tag "dummy_icon.png", size: "200x200", class: "rounded-full" %>
+      <%= image_tag "dummy_icon.svg", size: "200x200", class: "rounded-full text-gray-400" %>
     <% end %>
 
     <div>
