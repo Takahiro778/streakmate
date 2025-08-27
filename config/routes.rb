@@ -4,6 +4,6 @@ Rails.application.routes.draw do
   root "pages#top"
   get "pages/top"
 
-  # マイページ（自分専用のプロフィール）
+  # 自分専用マイページ
   resource :mypage, only: [:show, :edit, :update], controller: :profiles
 end
