@@ -1,30 +1,36 @@
 class Profile < ApplicationRecord
   belongs_to :user, inverse_of: :profile
 
-  # アイコンは Profile 側に保持
   has_one_attached :avatar
 
-  # 表示名・自己紹介の上限はお好みで
+  # 表示名・自己紹介
   validates :display_name, length: { maximum: 50 }, allow_blank: true
-  validates :introduction, length: { maximum: 300 }, allow_blank: true
+  validates :introduction,  length: { maximum: 300 }, allow_blank: true
 
-  # 画像バリデーション（容量・拡張子）
-  validate :avatar_type
-  validate :avatar_size
+  # 画像バリデーション
+  validate :validate_avatar_type
+  validate :validate_avatar_size
+
+  ALLOWED_CONTENT_TYPES = %w[image/png image/jpg image/jpeg image/webp].freeze
+  MAX_AVATAR_SIZE       = 2.megabytes
 
   private
 
-  def avatar_type
+  # 拡張子／MIME タイプ
+  def validate_avatar_type
     return unless avatar.attached?
-    unless avatar.content_type.in?(%w[image/png image/jpg image/jpeg image/webp])
-      errors.add(:avatar, 'must be PNG/JPG/JPEG/WEBP')
+
+    unless ALLOWED_CONTENT_TYPES.include?(avatar.content_type)
+      errors.add(:avatar, 'は PNG / JPG / JPEG / WEBP のいずれかにしてください')
     end
   end
 
-  def avatar_size
+  # ファイルサイズ
+  def validate_avatar_size
     return unless avatar.attached?
-    if avatar.blob.byte_size > 2.megabytes
-      errors.add(:avatar, 'must be 2MB or smaller')
+
+    if avatar.blob.byte_size > MAX_AVATAR_SIZE
+      errors.add(:avatar, 'は 2MB 以下にしてください')
     end
   end
 end
