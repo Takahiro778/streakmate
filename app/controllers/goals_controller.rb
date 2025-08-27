@@ -1,7 +1,6 @@
-# app/controllers/goals_controller.rb
 class GoalsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_goal, only: [:show]
+  before_action :set_goal,     only: [:show]
   before_action :set_own_goal, only: [:edit, :update, :destroy]
 
   def index
@@ -11,6 +10,8 @@ class GoalsController < ApplicationController
   end
 
   def show
+    # set_goal で見つからなければ既にリダイレクト済み
+    return unless @goal
     unless allowed_to_view?(@goal, current_user)
       redirect_to goals_path, alert: 'この目標を閲覧する権限がありません'
     end
@@ -49,8 +50,11 @@ class GoalsController < ApplicationController
 
   private
 
+  # ✅ 削除済みや存在しないIDなら一覧へ戻す
   def set_goal
-    @goal = Goal.find(params[:id])
+    @goal = Goal.find_by(id: params[:id])
+    return if @goal.present?
+    redirect_to goals_path, alert: '指定の目標は見つかりませんでした' and return
   end
 
   # 投稿者のみ編集/削除可
@@ -70,7 +74,7 @@ class GoalsController < ApplicationController
     return true  if goal.visibility_public?
     return goal.user_id == viewer.id if goal.visibility_private?
 
-    # followers: フォロー機能未実装の間は自分のみ
+    # followers: フォロー未実装の間は自分のみ
     goal.user_id == viewer.id || viewer.following_ids.include?(goal.user_id)
   end
 end
