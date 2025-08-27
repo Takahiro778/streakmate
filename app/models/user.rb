@@ -3,6 +3,15 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable
 
   validates :nickname, presence: true
-  validates :password, format: { with: /\A(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]+\z/,
-                                 message: 'must include both letters and numbers' }
+
+  # 入力があるときだけ複雑性チェック
+  validate :password_complexity, if: -> { password.present? }
+
+  private
+  def password_complexity
+    return if password.blank?
+    unless password.match?(/\A(?=.*[A-Za-z])(?=.*\d).+\z/)
+      errors.add(:password, 'must include both letters and numbers')
+    end
+  end
 end
