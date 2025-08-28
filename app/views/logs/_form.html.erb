@@ -15,13 +15,13 @@
   <%= f.hidden_field :category, data: { quick_logger_target: "categoryField" } %>
   <%= f.hidden_field :minutes,  data: { quick_logger_target: "minutesField" } %>
 
-  <!-- クイック分数ボタン -->
+  <!-- クイック分数ボタン（minutesをセットするだけ） -->
   <div class="flex gap-2 mb-3">
     <% [15,30,45,60].each do |m| %>
       <button
         type="button"
         class="px-3 py-2 rounded-md border"
-        data-action="click->quick-logger#setMinutesAndSubmit"
+        data-action="click->quick-logger#setMinutes"
         data-minutes="<%= m %>">
         <%= m %>分
       </button>
@@ -35,8 +35,11 @@
           data: { quick_logger_target: "memoField", action: "keydown.enter->quick-logger:submitIfReady" } %>
   </div>
 
-  <!-- クリックで手動送信したい場合のボタン（任意） -->
+  <!-- 送信ボタン -->
   <div class="text-right">
-    <%= f.submit "記録", class: "px-4 py-2 rounded-md bg-black text-white" %>
+    <%= f.submit "記録",
+          class: "px-4 py-2 rounded-md bg-gray-400 text-white disabled:opacity-50",
+          disabled: true,
+          data: { quick_logger_target: "submitButton" } %>
   </div>
 <% end %>
