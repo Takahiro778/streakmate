@@ -6,6 +6,6 @@
       partial: "logs/form",
       locals: { log: Log.new(category: @log.category, memo: "") } %>
 
-<%= turbo_stream.replace "dashboard",
+<%= turbo_stream.update "dashboard",
       partial: "logs/dashboard",
       locals: { streak_days: @streak_days, weekly_minutes: @weekly_minutes } %>
