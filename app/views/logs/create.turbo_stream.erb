@@ -1,2 +1,11 @@
-<%= turbo_stream.prepend "timeline", partial: "logs/log", locals: { log: @log } %>
-<%= turbo_stream.replace "logs_form", partial: "logs/form", locals: { log: Log.new(category: @log.category, memo: "") } %>
+<%= turbo_stream.prepend "timeline",
+      partial: "logs/log",
+      locals: { log: @log } %>
+
+<%= turbo_stream.replace "logs_form",
+      partial: "logs/form",
+      locals: { log: Log.new(category: @log.category, memo: "") } %>
+
+<%= turbo_stream.update "dashboard",
+      partial: "logs/dashboard",
+      locals: { streak_days: @streak_days, weekly_minutes: @weekly_minutes } %>
