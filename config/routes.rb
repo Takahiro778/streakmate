@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   devise_for :users
 
+  # トップページ
   root "pages#top"
   get "pages/top"
 
@@ -9,4 +10,7 @@ Rails.application.routes.draw do
 
   # Goal（目標）投稿：タイムライン・新規作成
   resources :goals, only: [:index, :new, :create, :show, :edit, :update, :destroy]
+
+  # Log（クイックログ）投稿：タイムライン用
+  resources :logs, only: [:index, :create]
 end
