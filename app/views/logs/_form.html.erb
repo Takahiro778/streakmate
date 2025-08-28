@@ -1,0 +1,42 @@
+<%= form_with model: log, url: logs_path, data: { controller: "quick-logger" } do |f| %>
+  <!-- カテゴリ選択（enumに合わせてボタンを並べる） -->
+  <div class="flex flex-wrap gap-2 mb-3" data-quick-logger-target="categoryGroup">
+    <% Log.categories.keys.each do |cat| %>
+      <button
+        type="button"
+        class="px-3 py-1 rounded-full border text-sm"
+        data-action="click->quick-logger#setCategory"
+        data-category="<%= cat %>">
+        <%= cat.titleize %>
+      </button>
+    <% end %>
+  </div>
+
+  <%= f.hidden_field :category, data: { quick_logger_target: "categoryField" } %>
+  <%= f.hidden_field :minutes,  data: { quick_logger_target: "minutesField" } %>
+
+  <!-- クイック分数ボタン -->
+  <div class="flex gap-2 mb-3">
+    <% [15,30,45,60].each do |m| %>
+      <button
+        type="button"
+        class="px-3 py-2 rounded-md border"
+        data-action="click->quick-logger#setMinutesAndSubmit"
+        data-minutes="<%= m %>">
+        <%= m %>分
+      </button>
+    <% end %>
+  </div>
+
+  <!-- メモ（任意） -->
+  <div class="mb-3">
+    <%= f.text_area :memo, rows: 2, placeholder: "メモ（任意・Enterで送信）",
+          class: "w-full p-2 border rounded-md",
+          data: { quick_logger_target: "memoField", action: "keydown.enter->quick-logger:submitIfReady" } %>
+  </div>
+
+  <!-- クリックで手動送信したい場合のボタン（任意） -->
+  <div class="text-right">
+    <%= f.submit "記録", class: "px-4 py-2 rounded-md bg-black text-white" %>
+  </div>
+<% end %>
