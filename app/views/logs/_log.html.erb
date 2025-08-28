@@ -1,0 +1,14 @@
+<div id="<%= dom_id(log) %>" class="p-3 border rounded-lg">
+  <div class="flex items-center justify-between">
+    <div class="flex items-center gap-2">
+      <span class="px-2 py-0.5 text-xs rounded-full border">
+        <%= log.category.titleize %>
+      </span>
+      <span class="font-semibold"><%= log.minutes %>分</span>
+    </div>
+    <span class="text-xs text-gray-500"><%= l(log.created_at, format: :short) %></span>
+  </div>
+  <% if log.memo.present? %>
+    <p class="mt-2 text-sm whitespace-pre-wrap"><%= log.memo %></p>
+  <% end %>
+</div>

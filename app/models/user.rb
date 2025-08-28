@@ -2,8 +2,9 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
-  has_one :profile, dependent: :destroy, inverse_of: :user
-  has_many :goals, dependent: :destroy
+  has_one  :profile, dependent: :destroy, inverse_of: :user
+  has_many :goals,   dependent: :destroy
+  has_many :logs,    dependent: :destroy 
 
   validates :nickname, presence: true
 
