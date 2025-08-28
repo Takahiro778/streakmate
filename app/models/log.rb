@@ -12,7 +12,13 @@ class Log < ApplicationRecord
   # minutes は数値、15/30/45/60のクイックボタン前提（必要なら許容値を拡張）
   VALID_MINUTES = [15, 30, 45, 60].freeze
 
-  validates :minutes, presence: true, numericality: { only_integer: true }, inclusion: { in: VALID_MINUTES }
+  validates :minutes, presence: true,
+                      numericality: { only_integer: true },
+                      inclusion: { in: VALID_MINUTES }
   validates :category, presence: true
   # memo は任意
+
+  # ✅ スコープ追加
+  scope :on_day, ->(date) { where(created_at: date.in_time_zone.all_day) }
+  scope :this_week, -> { where(created_at: Time.zone.now.all_week) }
 end
