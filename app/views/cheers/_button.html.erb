@@ -1,0 +1,21 @@
+<%= turbo_frame_tag dom_id(log, :cheer) do %>
+  <div class="flex items-center gap-2">
+    <% if user_signed_in? && current_user != log.user %>
+      <% if current_user.cheers.exists?(log_id: log.id) %>
+        <%= button_to "応援取り消し", log_cheer_path(log),
+                      method: :delete,
+                      form: { data: { turbo_confirm: "" } },
+                      class: "px-3 py-1 rounded-2xl border text-sm" %>
+      <% else %>
+        <%= button_to "応援する", log_cheer_path(log),
+                      method: :post,
+                      class: "px-3 py-1 rounded-2xl bg-blue-600 text-white text-sm hover:opacity-90" %>
+      <% end %>
+    <% else %>
+      <!-- 自分の投稿 or 未ログイン時はボタンを無効化 -->
+      <button disabled class="px-3 py-1 rounded-2xl border text-sm opacity-50 cursor-not-allowed">応援</button>
+    <% end %>
+
+    <span class="text-sm"><%= log.cheers_count %></span>
+  </div>
+<% end %>
