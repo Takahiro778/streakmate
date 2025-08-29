@@ -8,34 +8,36 @@ class User < ApplicationRecord
 
   validates :nickname, presence: true
 
-  # 入力があるときだけ複雑性チェック
   validate :password_complexity, if: -> { password.present? }
 
   # ===== Streak / Weekly summary =====
-  # 1日1回以上のログがあれば連続日数をカウント
   def streak_days
     streak = 0
     today  = Time.zone.today
-
-    # 今日から遡って、ログがある日を連続カウント
     loop do
       break unless logs.on_day(today - streak).exists?
       streak += 1
     end
-
     streak
   end
 
-  # 今週の合計分（minutes）
-  # all_week はデフォルトで日曜始まり
   def weekly_minutes
     logs.this_week.sum(:minutes)
   end
   # ===================================
 
-  # フォロー機能が未実装なのでダミーを返す
+  # フォロー機能が未実装なので暫定対応
+  # - 開発環境のみ、自分以外のユーザー最大10人を「フォロー中」とみなす
+  # - 環境変数 DEMO_FOLLOWING_IDS（例: "2,3,5"）があればそれを優先
+  # - 本実装時に Follow モデルへ差し替え予定
   def following_ids
-    [] # 後で Follow 実装時に差し替え
+    return [] unless Rails.env.development?
+
+    if ENV["DEMO_FOLLOWING_IDS"].present?
+      ENV["DEMO_FOLLOWING_IDS"].split(",").map(&:strip).map!(&:to_i).uniq - [id]
+    else
+      User.where.not(id: id).order(:id).limit(10).pluck(:id)
+    end
   end
 
   private

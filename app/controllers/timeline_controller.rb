@@ -1,17 +1,17 @@
 class TimelineController < ApplicationController
-  before_action :authenticate_user!, only: [:index], unless: -> { params[:tab] == "all" }
-  # 未ログインでも全体は閲覧できる想定（要件に合わせて調整）
+  before_action :authenticate_user!
 
   def index
-    @tab = params[:tab].presence_in(%w[all following]) || "all"
+    @scope = params[:scope].in?(%w[all following]) ? params[:scope] : "all"
+    base = Log.includes(user: :profile).recent
 
-    base = Log.includes(user: :profile) # N+1対策
     @logs =
-      if @tab == "following"
-        base.timeline_for_following(current_user).recent.page(params[:page]).per(20)
+      if @scope == "following"
+        base.timeline_for_following(current_user)
       else
-        base.visible_to(current_user).where(visibility: Log.visibilities[:public])
-            .recent.page(params[:page]).per(20)
+        base.visible_to(current_user)
       end
+
+    @logs = @logs.page(params[:page]).per(20)
   end
 end
