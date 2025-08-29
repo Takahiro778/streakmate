@@ -1,6 +1,16 @@
 class Log < ApplicationRecord
   belongs_to :user
 
+  # === Cheer（応援）関連 ===
+  has_many :cheers, dependent: :destroy
+  has_many :cheerers, through: :cheers, source: :user
+
+  # ログが user に応援されているか（ビュー側の分岐で使用）
+  def cheered_by?(user)
+    return false if user.blank?
+    cheers.exists?(user_id: user.id)
+  end
+
   # カテゴリ（study? が他と衝突しないよう prefix）
   enum category: {
     study: 0,

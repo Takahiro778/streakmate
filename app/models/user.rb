@@ -5,6 +5,8 @@ class User < ApplicationRecord
   has_one  :profile, dependent: :destroy, inverse_of: :user
   has_many :goals,   dependent: :destroy
   has_many :logs,    dependent: :destroy
+  has_many :cheers, dependent: :destroy
+  has_many :cheered_logs, through: :cheers, source: :log
 
   validates :nickname, presence: true
 

@@ -1,0 +1,3 @@
+<%= turbo_stream.replace dom_id(@log, :cheer) do %>
+  <%= render "cheers/button", log: @log %>
+<% end %>
