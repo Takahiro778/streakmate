@@ -1,0 +1,9 @@
+<div class="mt-3 space-y-2" id="<%= dom_id(log, :comments_section) %>">
+  <!-- コメント一覧 -->
+  <%= render "comments/list", log: log %>
+
+  <!-- フォーム（ログイン時のみ） -->
+  <% if user_signed_in? %>
+    <%= render "comments/form", log: log, comment: Comment.new %>
+  <% end %>
+</div>
