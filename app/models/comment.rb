@@ -22,8 +22,6 @@ class Comment < ApplicationRecord
   end
 
   def enqueue_notification
-    # 通知は後述で本実装。今はフックだけ用意。
-    # CommentNotificationJob.perform_later(log.user_id, id)
-    # あるいは NotificationService.notify_comment(log, self)
+    CommentNotificationJob.perform_later(id)
   end
 end
