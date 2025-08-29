@@ -22,6 +22,6 @@ class Comment < ApplicationRecord
   end
 
   def enqueue_notification
-    CommentNotificationJob.perform_later(id)
+  ::CommentNotificationJob.perform_later(id)
   end
 end
