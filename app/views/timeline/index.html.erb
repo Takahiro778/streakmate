@@ -1,0 +1,20 @@
+<div class="max-w-sm mx-auto px-4 space-y-4">
+  <div class="flex gap-2 pt-4">
+    <%= link_to "全体", timeline_index_path(tab: :all),
+        class: "px-3 py-2 rounded-md border #{'bg-black text-white' if @tab=='all'}" %>
+    <%= link_to "フォロー中", timeline_index_path(tab: :following),
+        class: "px-3 py-2 rounded-md border #{'bg-black text-white' if @tab=='following'}" %>
+  </div>
+
+  <% if @logs.blank? %>
+    <p class="text-center text-sm text-gray-500 py-10">表示できるログがありません。</p>
+  <% end %>
+
+  <div class="space-y-3">
+    <%= render partial: "card", collection: @logs, as: :log %>
+  </div>
+
+  <div class="py-4">
+    <%= paginate @logs %>
+  </div>
+</div>
