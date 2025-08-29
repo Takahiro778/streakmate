@@ -31,7 +31,7 @@ gem 'image_processing'
 # Auth
 gem "devise"
 gem 'active_hash'
-
+gem "kaminari"
 
 # Test-only
 group :test do
