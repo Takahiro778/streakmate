@@ -1,0 +1,24 @@
+<%= turbo_frame_tag dom_id(comment) do %>
+  <div class="text-sm p-2 border rounded-md bg-gray-50 flex justify-between gap-2">
+    <div class="whitespace-pre-wrap">
+      <span class="font-semibold"><%= comment.user.nickname %></span>：
+      <%= h(comment.body) %>
+      <span class="text-xs text-gray-400 ml-2"><%= l(comment.created_at, format: :short) %></span>
+    </div>
+
+    <div class="shrink-0 flex items-center gap-2 text-xs">
+      <% if current_user&.id == comment.user_id %>
+        <%= link_to "編集", edit_log_comment_path(comment.log, comment),
+            data: { turbo_frame: dom_id(comment) },
+            class: "underline text-gray-500" %>
+      <% end %>
+
+      <% if current_user && (current_user.id == comment.user_id || current_user.id == comment.log.user_id) %>
+        <%= button_to "削除", log_comment_path(comment.log, comment),
+            method: :delete,
+            form: { data: { turbo_confirm: "削除しますか？" } },
+            class: "text-red-600" %>
+      <% end %>
+    </div>
+  </div>
+<% end %>

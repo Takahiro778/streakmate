@@ -5,10 +5,22 @@ class Log < ApplicationRecord
   has_many :cheers, dependent: :destroy
   has_many :cheerers, through: :cheers, source: :user
 
+  # === Comment（コメント）関連 ===
+  has_many :comments, dependent: :destroy
+
   # ログが user に応援されているか（ビュー側の分岐で使用）
   def cheered_by?(user)
     return false if user.blank?
     cheers.exists?(user_id: user.id)
+  end
+
+  # （任意）このログに user がコメント可能かの簡易判定
+  def commentable_by?(user)
+    return false if user.blank?
+    # 可視性はコントローラで visible_to を通す想定だが、念のため自分のログ/公開/フォロワー条件を確認
+    return true if user_id == user.id || visibility_public?
+    return user.following_ids.include?(user_id) if visibility_followers?
+    false
   end
 
   # カテゴリ（study? が他と衝突しないよう prefix）

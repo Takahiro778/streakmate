@@ -7,6 +7,7 @@ class User < ApplicationRecord
   has_many :logs,    dependent: :destroy
   has_many :cheers, dependent: :destroy
   has_many :cheered_logs, through: :cheers, source: :log
+  has_many :comments, dependent: :destroy
 
   validates :nickname, presence: true
 

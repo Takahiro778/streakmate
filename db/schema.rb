@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_08_29_062753) do
+ActiveRecord::Schema[7.1].define(version: 2025_08_29_081728) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -47,6 +47,17 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_29_062753) do
     t.index ["log_id"], name: "index_cheers_on_log_id"
     t.index ["user_id", "log_id"], name: "index_cheers_on_user_id_and_log_id", unique: true
     t.index ["user_id"], name: "index_cheers_on_user_id"
+  end
+
+  create_table "comments", force: :cascade do |t|
+    t.text "body", null: false
+    t.integer "user_id", null: false
+    t.integer "log_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["log_id", "created_at"], name: "index_comments_on_log_id_and_created_at"
+    t.index ["log_id"], name: "index_comments_on_log_id"
+    t.index ["user_id"], name: "index_comments_on_user_id"
   end
 
   create_table "goals", force: :cascade do |t|
@@ -101,6 +112,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_29_062753) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "cheers", "logs"
   add_foreign_key "cheers", "users"
+  add_foreign_key "comments", "logs"
+  add_foreign_key "comments", "users"
   add_foreign_key "goals", "users"
   add_foreign_key "logs", "users"
   add_foreign_key "profiles", "users"
