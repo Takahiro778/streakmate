@@ -1,6 +1,9 @@
-<%= form_with model: log, url: logs_path, data: { controller: "quick-logger" } do |f| %>
+<%= form_with model: log, url: logs_path,
+              data: { controller: "quick-logger" },
+              html: { class: "space-y-4 p-2" } do |f| %>
+
   <!-- カテゴリ選択（enumに合わせてボタンを並べる） -->
-  <div class="flex flex-wrap gap-2 mb-3" data-quick-logger-target="categoryGroup">
+  <div class="flex flex-wrap gap-2" data-quick-logger-target="categoryGroup">
     <% Log.categories.keys.each do |cat| %>
       <button
         type="button"
@@ -16,7 +19,7 @@
   <%= f.hidden_field :minutes,  data: { quick_logger_target: "minutesField" } %>
 
   <!-- クイック分数ボタン -->
-  <div class="flex gap-2 mb-3">
+  <div class="flex gap-2">
     <% [15,30,45,60].each do |m| %>
       <button
         type="button"
@@ -29,19 +32,23 @@
   </div>
 
   <!-- メモ（任意） -->
-  <div class="mb-3">
-    <%= f.text_area :memo, rows: 2, placeholder: "メモ（任意・Enterで送信）",
+  <div>
+    <%= f.text_area :memo,
+          rows: 2,
+          placeholder: "メモ（任意・Enterで送信）",
           class: "w-full p-2 border rounded-md",
-          data: { quick_logger_target: "memoField", action: "keydown.enter->quick-logger:submitIfReady" } %>
+          data: { quick_logger_target: "memoField",
+                  action: "keydown.enter->quick-logger:submitIfReady" } %>
   </div>
 
   <!-- 公開範囲（ラジオボタン形式） -->
-  <div class="mb-3">
+  <div>
     <span class="block text-sm font-medium text-gray-700 mb-1">公開範囲</span>
     <div class="flex gap-4">
       <% Log.visibilities.keys.each do |v| %>
         <label class="flex items-center gap-1 text-sm">
-          <%= f.radio_button :visibility, v, checked: (log.visibility == v || (log.new_record? && v == "public")) %>
+          <%= f.radio_button :visibility, v,
+                checked: (log.visibility == v || (log.new_record? && v == "public")) %>
           <span><%= v.titleize %></span>
         </label>
       <% end %>
@@ -49,9 +56,9 @@
   </div>
 
   <!-- 送信ボタン -->
-  <div class="text-right">
+  <div class="text-right mt-3">
     <%= f.submit "記録",
-          class: "px-4 py-2 rounded-md bg-gray-400 text-white disabled:opacity-50",
+          class: "px-4 py-2 rounded-md bg-black text-white disabled:opacity-50",
           disabled: true,
           data: { quick_logger_target: "submitButton" } %>
   </div>
