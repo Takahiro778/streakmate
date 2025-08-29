@@ -32,6 +32,8 @@ gem 'image_processing'
 gem "devise"
 gem 'active_hash'
 gem "kaminari"
+gem "rack-attack"
+
 
 # Test-only
 group :test do

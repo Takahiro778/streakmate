@@ -1,4 +1,4 @@
-<%= turbo_frame_tag dom_id([log, :new_comment]) do %>
+<%= turbo_frame_tag dom_id(log, :new_comment) do %>
   <%= form_with model: [log, comment], data: { turbo_submits_with: "投稿中..." } do |f| %>
     <div class="flex gap-2">
       <%= f.text_area :body, rows: 2, maxlength: Comment::MAX_LEN,
