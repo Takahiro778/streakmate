@@ -7,7 +7,7 @@
   <% end %>
 
   <!-- フォーム -->
-  <%= turbo_frame_tag "logs_form" do %>
+  <%= turbo_frame_tag "logs_form", class: "block mb-6" do %>
     <%= render "form", log: @log %>
   <% end %>
 
