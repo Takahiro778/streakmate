@@ -15,7 +15,7 @@
   <%= f.hidden_field :category, data: { quick_logger_target: "categoryField" } %>
   <%= f.hidden_field :minutes,  data: { quick_logger_target: "minutesField" } %>
 
-  <!-- クイック分数ボタン（minutesをセットするだけ） -->
+  <!-- クイック分数ボタン -->
   <div class="flex gap-2 mb-3">
     <% [15,30,45,60].each do |m| %>
       <button
@@ -33,6 +33,19 @@
     <%= f.text_area :memo, rows: 2, placeholder: "メモ（任意・Enterで送信）",
           class: "w-full p-2 border rounded-md",
           data: { quick_logger_target: "memoField", action: "keydown.enter->quick-logger:submitIfReady" } %>
+  </div>
+
+  <!-- 公開範囲（ラジオボタン形式） -->
+  <div class="mb-3">
+    <span class="block text-sm font-medium text-gray-700 mb-1">公開範囲</span>
+    <div class="flex gap-4">
+      <% Log.visibilities.keys.each do |v| %>
+        <label class="flex items-center gap-1 text-sm">
+          <%= f.radio_button :visibility, v, checked: (log.visibility == v || (log.new_record? && v == "public")) %>
+          <span><%= v.titleize %></span>
+        </label>
+      <% end %>
+    </div>
   </div>
 
   <!-- 送信ボタン -->

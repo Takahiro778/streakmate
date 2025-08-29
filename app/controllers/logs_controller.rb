@@ -41,6 +41,6 @@ class LogsController < ApplicationController
   private
 
   def log_params
-    params.require(:log).permit(:minutes, :category, :memo)
+    params.require(:log).permit(:minutes, :category, :memo, :visibility)
   end
 end
