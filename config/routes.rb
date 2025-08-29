@@ -11,10 +11,13 @@ Rails.application.routes.draw do
   # Goal（目標）
   resources :goals, only: [:index, :new, :create, :show, :edit, :update, :destroy]
 
-  # Log（クイックログ）+ Cheer（応援）
+  # Log（クイックログ）+ Cheer（応援）+ Comment（コメント）
   resources :logs, only: [:index, :create] do
     # /logs/:log_id/cheer (POST: create, DELETE: destroy)
-    resource :cheer, only: [:create, :destroy]
+    resource  :cheer,    only: [:create, :destroy]
+
+    # /logs/:log_id/comments/:id
+    resources :comments, only: [:create, :edit, :update, :destroy]
   end
 
   # Timeline（全体/フォロー）
