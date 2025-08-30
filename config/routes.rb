@@ -9,11 +9,16 @@ Rails.application.routes.draw do
   resource :mypage, only: [:show, :edit, :update], controller: :profiles
 
   # Goal（目標）
-  resources :goals, only: [:index, :new, :create, :show, :edit, :update, :destroy]
+  resources :goals, only: [:index, :new, :create, :show, :edit, :update, :destroy] do
+    # Favorite（ブックマーク）: /goals/:goal_id/favorite
+    # POST   -> favorites#create
+    # DELETE -> favorites#destroy
+    resource :favorite, only: [:create, :destroy]
+  end
 
   # Log（クイックログ）+ Cheer（応援）+ Comment（コメント）
   resources :logs, only: [:index, :create] do
-    resource  :cheer,    only: [:create, :destroy]          # /logs/:log_id/cheer
+    resource  :cheer,    only: [:create, :destroy]                 # /logs/:log_id/cheer
     resources :comments, only: [:create, :edit, :update, :destroy] # /logs/:log_id/comments/:id
   end
 
