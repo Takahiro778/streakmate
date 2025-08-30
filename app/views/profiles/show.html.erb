@@ -28,5 +28,24 @@
     </p>
   </div>
 
-  <%= link_to "プロフィールを編集する", edit_mypage_path, class: "px-4 py-2 bg-blue-500 text-white rounded" %>
+  <!-- ▼ お気に入り目標一覧 -->
+  <hr class="my-6">
+  <h3 class="text-lg font-semibold mb-2">お気に入り目標</h3>
+
+  <% if @favorite_goals.present? %>
+    <ul class="space-y-2">
+      <% @favorite_goals.each do |goal| %>
+        <li class="p-3 border rounded-md flex justify-between items-center">
+          <%= link_to goal.title, goal_path(goal), class: "font-medium hover:underline" %>
+          <span class="text-xs text-gray-500"><%= l(goal.updated_at, format: :short) %></span>
+        </li>
+      <% end %>
+    </ul>
+  <% else %>
+    <p class="text-sm text-gray-500">まだお気に入りはありません。</p>
+  <% end %>
+
+  <div class="mt-6">
+    <%= link_to "プロフィールを編集する", edit_mypage_path, class: "px-4 py-2 bg-blue-500 text-white rounded" %>
+  </div>
 </div>
