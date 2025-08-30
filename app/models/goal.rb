@@ -8,6 +8,16 @@ class Goal < ApplicationRecord
   extend ActiveHash::Associations::ActiveRecordExtensions
   belongs_to :category
 
+  # === Favorite（ブックマーク）===  ← 追加
+  has_many :favorites,  dependent: :destroy
+  has_many :favoriters, through: :favorites, source: :user
+
+  # ログインユーザーがこのGoalをお気に入り済みか（ビュー用ヘルパ）
+  def favorited_by?(user)
+    return false if user.blank?
+    favorites.exists?(user_id: user.id)
+  end
+
   validates :title,            presence: true, length: { maximum: 60 }
   validates :description,      presence: true, length: { maximum: 1000 }
   validates :success_criteria, presence: true, length: { maximum: 500 }

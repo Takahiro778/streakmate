@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_08_30_052201) do
+ActiveRecord::Schema[7.1].define(version: 2025_08_30_082803) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -60,6 +60,16 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_30_052201) do
     t.index ["user_id"], name: "index_comments_on_user_id"
   end
 
+  create_table "favorites", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "goal_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["goal_id"], name: "index_favorites_on_goal_id"
+    t.index ["user_id", "goal_id"], name: "index_favorites_on_user_id_and_goal_id", unique: true
+    t.index ["user_id"], name: "index_favorites_on_user_id"
+  end
+
   create_table "follows", force: :cascade do |t|
     t.integer "follower_id", null: false
     t.integer "followed_id", null: false
@@ -81,6 +91,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_30_052201) do
     t.string "share_summary"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "favorites_count", default: 0, null: false
     t.index ["user_id"], name: "index_goals_on_user_id"
   end
 
@@ -127,6 +138,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_30_052201) do
   add_foreign_key "cheers", "users"
   add_foreign_key "comments", "logs"
   add_foreign_key "comments", "users"
+  add_foreign_key "favorites", "goals"
+  add_foreign_key "favorites", "users"
   add_foreign_key "follows", "users", column: "followed_id"
   add_foreign_key "follows", "users", column: "follower_id"
   add_foreign_key "goals", "users"

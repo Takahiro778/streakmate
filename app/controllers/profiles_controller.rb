@@ -3,7 +3,17 @@ class ProfilesController < ApplicationController
   before_action :authenticate_user!
   before_action :set_profile
 
-  def show; end
+  def show
+    @favorite_goals =
+      Goal.joins(:favorites)
+          .where(favorites: { user_id: current_user.id })
+          .merge(Goal.visible_to(current_user))
+          .where.not(user_id: current_user.id)      # 不要なら削除
+          .includes(:user)                          # ← :category は外す（ActiveHash）
+          .order('favorites.created_at DESC')
+          .limit(50)
+  end
+
   def edit; end
 
   def update

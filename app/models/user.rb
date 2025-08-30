@@ -11,6 +11,10 @@ class User < ApplicationRecord
   has_many :cheered_logs, through: :cheers, source: :log
   has_many :comments, dependent: :destroy
 
+  # === Favorite（Goal のブックマーク）===  ← 追加
+  has_many :favorites, dependent: :destroy
+  has_many :favorited_goals, through: :favorites, source: :goal
+
   # === Follow（自己結合）===
   # 自分→他人（フォローしている側）
   has_many :active_follows,  class_name: "Follow",

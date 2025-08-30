@@ -8,6 +8,11 @@
     <%= @goal.user.nickname.presence || @goal.user.email %> • <%= l @goal.created_at, format: :long %> • <%= @goal.visibility %>
   </div>
 
+  <!-- ✅ お気に入りボタン（Turboで即時トグル & カウント） -->
+  <div class="mb-6">
+    <%= render "favorites/button", goal: @goal %>
+  </div>
+
   <p class="mb-4 whitespace-pre-wrap"><%= @goal.description %></p>
 
   <div class="mb-4">
