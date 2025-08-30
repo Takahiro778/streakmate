@@ -1,0 +1,6 @@
+<%= turbo_frame_tag dom_id(user, :follow_counts) do %>
+  <div class="flex gap-4 text-sm text-gray-600">
+    <span>フォロー中 <b><%= user.followings_count %></b></span>
+    <span>フォロワー <b><%= user.followers_count %></b></span>
+  </div>
+<% end %>

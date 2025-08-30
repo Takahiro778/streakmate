@@ -1,0 +1,17 @@
+<%= turbo_frame_tag dom_id(user, :follow) do %>
+  <% if user_signed_in? && current_user != user %>
+    <% if current_user.following?(user) %>
+      <%= button_to "フォロー中（解除）", user_follow_path(user),
+            method: :delete,
+            form: { data: { turbo_submits_with: "処理中..." } },
+            class: "px-3 py-1 rounded-2xl border text-sm" %>
+    <% else %>
+      <%= button_to "フォローする", user_follow_path(user),
+            method: :post,
+            form: { data: { turbo_submits_with: "処理中..." } },
+            class: "px-3 py-1 rounded-2xl bg-blue-600 text-white text-sm hover:opacity-90" %>
+    <% end %>
+  <% else %>
+    <button disabled class="px-3 py-1 rounded-2xl border text-sm opacity-50 cursor-not-allowed">フォロー</button>
+  <% end %>
+<% end %>

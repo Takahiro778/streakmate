@@ -1,0 +1,11 @@
+<%= turbo_stream.replace dom_id(@user, :follow) do %>
+  <%= render "follows/button", user: @user %>
+<% end %>
+
+<%= turbo_stream.replace dom_id(@user, :follow_counts) do %>
+  <%= render "follows/counts", user: @user %>
+<% end %>
+
+<%= turbo_stream.replace dom_id(current_user, :follow_counts) do %>
+  <%= render "follows/counts", user: current_user %>
+<% end %>

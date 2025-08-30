@@ -13,6 +13,11 @@
         <%= @profile.display_name.presence || current_user.nickname.presence || current_user.email %>
       </p>
       <p class="text-gray-600 text-sm">ユーザーID: <%= current_user.id %></p>
+
+      <!-- ▼ フォロー/フォロワー数（Turboで即時置換されるframe含む） -->
+      <div class="mt-2">
+        <%= render "follows/counts", user: current_user %>
+      </div>
     </div>
   </div>
 
