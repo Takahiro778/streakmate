@@ -5,12 +5,12 @@ class ProfilesController < ApplicationController
 
   def show
     @favorite_goals =
-      Goal.joins(:favorites)                                   # 登録順で並べるために結合
-          .where(favorites: { user_id: current_user.id })       # 自分がブクマしたものだけ
-          .merge(Goal.visible_to(current_user))                 # 自分から見える目標のみ（public/ followers/ 自分）
-          .where.not(user_id: current_user.id)                  # 自分の目標は除外（不要なら削除）
-          .includes(:user, :category)                           # 表示用の先読み
-          .order('favorites.created_at DESC')                   # 登録が新しい順
+      Goal.joins(:favorites)
+          .where(favorites: { user_id: current_user.id })
+          .merge(Goal.visible_to(current_user))
+          .where.not(user_id: current_user.id)      # 不要なら削除
+          .includes(:user)                          # ← :category は外す（ActiveHash）
+          .order('favorites.created_at DESC')
           .limit(50)
   end
 
