@@ -13,14 +13,12 @@ Rails.application.routes.draw do
 
   # Log（クイックログ）+ Cheer（応援）+ Comment（コメント）
   resources :logs, only: [:index, :create] do
-    # /logs/:log_id/cheer (POST: create, DELETE: destroy)
-    resource  :cheer,    only: [:create, :destroy]
-    # /logs/:log_id/comments/:id
-    resources :comments, only: [:create, :edit, :update, :destroy]
+    resource  :cheer,    only: [:create, :destroy]          # /logs/:log_id/cheer
+    resources :comments, only: [:create, :edit, :update, :destroy] # /logs/:log_id/comments/:id
   end
 
-  # Follow（ユーザーに対するフォロー/解除）— 単数リソースでトグル
-  resources :users, only: [] do
+  # Follow（ユーザーに対するフォロー/解除）+ プロフィール表示
+  resources :users, only: [:show] do
     # POST   /users/:user_id/follow   -> follows#create
     # DELETE /users/:user_id/follow   -> follows#destroy
     resource :follow, only: [:create, :destroy]
