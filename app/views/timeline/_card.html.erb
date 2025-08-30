@@ -3,6 +3,12 @@
     <div class="flex items-center gap-2">
       <%# ユーザー名 / プロフアイコン（あれば差し替え可） %>
       <span class="text-sm font-semibold"><%= log.user.nickname %></span>
+
+      <%# ← フォローボタンを追加 %>
+      <div class="ml-1">
+        <%= render "follows/button", user: log.user %>
+      </div>
+
       <span class="px-2 py-0.5 text-xs rounded-full border bg-gray-50">
         <%= log.category.titleize %>
       </span>
