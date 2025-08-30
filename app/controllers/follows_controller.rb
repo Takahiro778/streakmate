@@ -6,26 +6,22 @@ class FollowsController < ApplicationController
   def create
     current_user.active_follows.create_or_find_by!(followed: @user)
     @user.reload
-    respond_to do |f|
-      f.turbo_stream
-      f.html { redirect_back fallback_location: root_path, notice: "フォローしました" }
-    end
+    current_user.reload
+    respond_to(&:turbo_stream)
   rescue ActiveRecord::RecordNotUnique
     @user.reload
+    current_user.reload
     respond_to(&:turbo_stream)
   end
 
   def destroy
-    current_user.active_follows.destroy_by(followed: @user)  # counter_cache更新のためdestroy系
+    current_user.active_follows.destroy_by(followed: @user)
     @user.reload
-    respond_to do |f|
-      f.turbo_stream
-      f.html { redirect_back fallback_location: root_path, notice: "フォローを解除しました" }
-    end
+    current_user.reload
+    respond_to(&:turbo_stream)
   end
 
   private
-
   def set_user
     @user = User.find(params[:user_id])
   end
