@@ -1,15 +1,17 @@
+# app/controllers/profiles_controller.rb
 class ProfilesController < ApplicationController
   before_action :authenticate_user!
   before_action :set_profile
 
   def show
     @favorite_goals =
-      current_user.favorited_goals
-                  .where(visibility: Goal.visibilities[:public])   # 非公開は除外
-                  .where.not(user_id: current_user.id)             # 自分の目標を除外（不要なら削除OK）
-                  .includes(:user, :category)                      # N+1回避
-                  .order(updated_at: :desc)                        # 新しい順
-                  .limit(50)                                       # 表示数はお好みで
+      Goal.joins(:favorites)                                   # 登録順で並べるために結合
+          .where(favorites: { user_id: current_user.id })       # 自分がブクマしたものだけ
+          .merge(Goal.visible_to(current_user))                 # 自分から見える目標のみ（public/ followers/ 自分）
+          .where.not(user_id: current_user.id)                  # 自分の目標は除外（不要なら削除）
+          .includes(:user, :category)                           # 表示用の先読み
+          .order('favorites.created_at DESC')                   # 登録が新しい順
+          .limit(50)
   end
 
   def edit; end
