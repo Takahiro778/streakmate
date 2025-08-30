@@ -1,0 +1,19 @@
+<nav class="max-w-3xl mx-auto mt-6 mb-4 px-5 flex justify-between items-center text-sm">
+  <div class="flex items-center gap-4">
+    <%= link_to "StreakMate", root_path, class: "font-semibold" %>
+    <%= link_to "タイムライン", timeline_index_path, class: "text-gray-700 hover:underline" %>
+  </div>
+
+  <div class="flex items-center gap-3">
+    <% if user_signed_in? %>
+      <span class="text-gray-600">Hi,</span>
+      <%= link_to current_user.nickname, mypage_path, class: "underline" %> <!-- マイページ -->
+      <%= link_to "Edit", edit_user_registration_path, class: "underline" %>
+      <%= button_to "Log out", destroy_user_session_path,
+            method: :delete, form: { class: "inline" }, class: "underline" %>
+    <% else %>
+      <%= link_to "Sign up", new_user_registration_path, class: "underline" %>
+      <%= link_to "Log in",  new_user_session_path,      class: "underline" %>
+    <% end %>
+  </div>
+</nav>
