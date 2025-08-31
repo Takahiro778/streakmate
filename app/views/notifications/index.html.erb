@@ -1,0 +1,16 @@
+<h1 class="text-xl font-bold mb-3">通知</h1>
+
+<div class="mb-3">
+  <% if current_user.notifications.unread.exists? %>
+    <%= button_to "すべて既読にする", read_all_notifications_path,
+          method: :patch, class: "px-3 py-1 border rounded text-sm" %>
+  <% end %>
+</div>
+
+<div id="notifications_list" class="space-y-2">
+  <% if @notifications.any? %>
+    <%= render partial: "notifications/notification", collection: @notifications, as: :notification %>
+  <% else %>
+    <p class="text-sm text-gray-500">通知はまだありません。</p>
+  <% end %>
+</div>

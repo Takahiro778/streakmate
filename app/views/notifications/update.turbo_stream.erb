@@ -1,0 +1,6 @@
+<%= turbo_stream.replace dom_id(@notification) do %>
+  <%= render "notifications/notification", notification: @notification %>
+<% end %>
+<%= turbo_stream.replace dom_id(current_user, :notifications_badge) do %>
+  <%= render "notifications/badge" %>
+<% end %>

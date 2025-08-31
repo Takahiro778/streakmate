@@ -11,9 +11,16 @@ class User < ApplicationRecord
   has_many :cheered_logs, through: :cheers, source: :log
   has_many :comments, dependent: :destroy
 
-  # === Favorite（Goal のブックマーク）===  ← 追加
+  # === Favorite（Goal のブックマーク）===
   has_many :favorites, dependent: :destroy
   has_many :favorited_goals, through: :favorites, source: :goal
+
+  # === Notification（通知）===  # ← 追加
+  # 受信した通知
+  has_many :notifications, dependent: :destroy
+  # 自分が起こした（相手に送られた）通知
+  has_many :sent_notifications, class_name: "Notification",
+                                foreign_key: :actor_id, dependent: :nullify
 
   # === Follow（自己結合）===
   # 自分→他人（フォローしている側）

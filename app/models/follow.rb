@@ -1,13 +1,17 @@
 class Follow < ApplicationRecord
-  belongs_to :follower, class_name: "User", counter_cache: :followings_count
-  belongs_to :followed, class_name: "User", counter_cache: :followers_count
+  belongs_to :follower, class_name: "User"
+  belongs_to :followed, class_name: "User"
 
-  validates :follower_id, uniqueness: { scope: :followed_id }
-  validate  :cannot_follow_self
+  # 通知（本人宛ては作らない）
+  after_create_commit :notify_followed
 
   private
 
-  def cannot_follow_self
-    errors.add(:base, "自分をフォローすることはできません") if follower_id == followed_id
+  def notify_followed
+    return if follower_id == followed_id
+    Notification.create!(
+      user_id: followed_id, actor_id: follower_id,
+      notifiable: self, action: :followed
+    )
   end
 end

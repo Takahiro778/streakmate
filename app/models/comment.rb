@@ -8,7 +8,8 @@ class Comment < ApplicationRecord
   validates :body, presence: true, length: { maximum: MAX_LEN }
   validate  :respect_min_interval
 
-  after_create_commit :enqueue_notification # 通知連携（後述フック）
+  # 通知（本人宛ては作らない）
+  after_create_commit :notify_owner
 
   private
 
@@ -21,7 +22,12 @@ class Comment < ApplicationRecord
     errors.add(:base, "短時間に連投はできません") if recent_exists
   end
 
-  def enqueue_notification
-  ::CommentNotificationJob.perform_later(id)
+  def notify_owner
+    owner_id = log.user_id
+    return if owner_id == user_id
+    Notification.create!(
+      user_id: owner_id, actor_id: user_id,
+      notifiable: self, action: :commented
+    )
   end
 end
