@@ -8,6 +8,9 @@ Rails.application.routes.draw do
   # 自分専用マイページ
   resource :mypage, only: [:show, :edit, :update], controller: :profiles
 
+  # ✅ 就寝リマインダー等の設定（単一リソース）
+  resource :setting, only: [:show, :update]
+
   # Goal（目標）
   resources :goals, only: [:index, :new, :create, :show, :edit, :update, :destroy] do
     # Favorite（ブックマーク）: /goals/:goal_id/favorite

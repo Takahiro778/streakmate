@@ -15,27 +15,27 @@ class User < ApplicationRecord
   has_many :favorites, dependent: :destroy
   has_many :favorited_goals, through: :favorites, source: :goal
 
-  # === Notification（通知）===  # ← 追加
-  # 受信した通知
+  # === Notification（通知）===
   has_many :notifications, dependent: :destroy
-  # 自分が起こした（相手に送られた）通知
   has_many :sent_notifications, class_name: "Notification",
                                 foreign_key: :actor_id, dependent: :nullify
 
   # === Follow（自己結合）===
-  # 自分→他人（フォローしている側）
   has_many :active_follows,  class_name: "Follow",
                              foreign_key: :follower_id,
                              dependent: :destroy,
                              inverse_of: :follower
   has_many :following, through: :active_follows, source: :followed
 
-  # 他人→自分（フォロワー）
   has_many :passive_follows, class_name: "Follow",
                              foreign_key: :followed_id,
                              dependent: :destroy,
                              inverse_of: :followed
   has_many :followers, through: :passive_follows, source: :follower
+
+  # === Setting（就寝リマインダーなどの設定）===
+  has_one  :setting, dependent: :destroy, inverse_of: :user
+  after_create :ensure_setting!
 
   validates :nickname, presence: true
   validate :password_complexity, if: -> { password.present? }
@@ -62,13 +62,10 @@ class User < ApplicationRecord
     following.exists?(other_user.id)
   end
 
-  # 既存コード互換：Log.visible_to / timeline 用に同名メソッドを本実装へ差し替え
   def following_ids
-    # 1リクエスト内での参照が多い想定なので軽くメモ化
     @following_ids ||= following.ids
   end
 
-  # 便利メソッド（任意で使用）
   def follow!(other_user)
     return false if other_user.id == id
     active_follows.create_or_find_by!(followed: other_user)
@@ -77,6 +74,16 @@ class User < ApplicationRecord
   def unfollow!(other_user)
     active_follows.destroy_by(followed: other_user)
   end
+
+  # === Setting の初期生成（public）===
+  def ensure_setting!
+    setting || create_setting!(
+      bedtime_time:     Time.zone.parse("23:00"),
+      bedtime_enabled:  false,
+      time_zone:        Time.zone.tzinfo.name # 例: "Asia/Tokyo"
+    )
+  end
+
 
   private
 

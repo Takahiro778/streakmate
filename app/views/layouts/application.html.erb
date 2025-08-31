@@ -10,7 +10,7 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body>
+  <body class="bg-white">
     <!-- Flash -->
     <% if notice %>
       <p class="bg-green-100 text-green-800 p-2 text-center"><%= notice %></p>
@@ -22,8 +22,12 @@
     <!-- 共通ヘッダー -->
     <%= render "layouts/header" %>
 
-    <main class="container mx-auto mt-6 px-5">
+    <!-- フッターが fixed のため下余白を確保 -->
+    <main class="container mx-auto mt-6 px-5 pb-16 md:pb-20">
       <%= yield %>
     </main>
+
+    <!-- 共通フッター（固定表示） -->
+    <%= render "layouts/footer" %>
   </body>
 </html>

@@ -1,0 +1,11 @@
+<% if current_user %>
+  <% s = current_user.setting %>
+  <footer class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-2 text-sm text-gray-700 z-40">
+    <div class="max-w-screen-sm mx-auto flex items-center justify-between">
+      <span id="bedtime_status">
+        <%= s.bedtime_time.strftime("%H:%M") %> 通知 <%= s&.bedtime_enabled ? "ON" : "OFF" %>
+      </span>
+      <span class="text-xs text-gray-400"><%= s&.time_zone %></span>
+    </div>
+  </footer>
+<% end %>
