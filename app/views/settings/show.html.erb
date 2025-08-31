@@ -12,17 +12,15 @@
       <!-- 未チェック時でも 0 を必ず送る -->
       <input type="hidden" name="setting[bedtime_enabled]" value="0" />
 
-      <!-- peer で即時見た目反映 -->
+      <!-- OFF=左（デフォルト） / ON=右（peer-checked:justify-end） -->
       <label for="setting_bedtime_enabled" class="inline-flex items-center cursor-pointer select-none">
         <%= f.check_box :bedtime_enabled,
                         { id: "setting_bedtime_enabled", class: "peer sr-only", include_hidden: false },
                         "1", "0" %>
         <span aria-hidden="true"
-              class="w-12 h-7 rounded-full flex items-center px-1 transition-colors
-                     bg-gray-300 peer-checked:bg-blue-600">
-          <!-- OFF=右 / ON=左 に移動 -->
-          <span class="w-5 h-5 bg-white rounded-full transform transition-transform
-                       translate-x-5 peer-checked:translate-x-0"></span>
+              class="w-12 h-7 rounded-full flex items-center px-1 transition-all
+                     bg-gray-300 peer-checked:bg-blue-600 peer-checked:justify-end">
+          <span class="w-5 h-5 bg-white rounded-full"></span>
         </span>
       </label>
     </div>
