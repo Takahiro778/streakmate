@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_08_31_054421) do
+ActiveRecord::Schema[7.1].define(version: 2025_08_31_065622) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -133,6 +133,16 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_31_054421) do
     t.index ["user_id"], name: "index_profiles_on_user_id"
   end
 
+  create_table "settings", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.time "bedtime_time", default: "2000-01-01 23:00:00", null: false
+    t.boolean "bedtime_enabled", default: false, null: false
+    t.string "time_zone", default: "Asia/Tokyo", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_settings_on_user_id", unique: true
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "nickname", null: false
     t.string "email", default: "", null: false
@@ -163,4 +173,5 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_31_054421) do
   add_foreign_key "notifications", "users"
   add_foreign_key "notifications", "users", column: "actor_id"
   add_foreign_key "profiles", "users"
+  add_foreign_key "settings", "users"
 end
