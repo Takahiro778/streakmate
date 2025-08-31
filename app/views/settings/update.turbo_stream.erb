@@ -1,0 +1,5 @@
+<%= turbo_stream.replace "bedtime_status" do %>
+  <span id="bedtime_status">
+    <%= @setting.bedtime_time.strftime("%H:%M") %> 通知 <%= @setting.bedtime_enabled ? "ON" : "OFF" %>
+  </span>
+<% end %>

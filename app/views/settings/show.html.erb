@@ -1,30 +1,34 @@
 <div class="max-w-sm mx-auto p-4">
   <h1 class="text-xl font-bold mb-4">就寝リマインダー</h1>
 
-<%= form_with model: @setting, url: setting_path, method: :patch,
-              data: { controller: "toggle-submit", action: "change->toggle-submit#submit" } do |f| %>
-  <div class="flex items-center justify-between py-3">
-    <div>
-      <div class="text-base font-medium">23:00 通知</div>
-      <div class="text-xs text-gray-500"><%= @setting.time_zone %></div>
+  <%= form_with model: @setting, url: setting_path, method: :patch,
+                data: { controller: "toggle-submit", action: "change->toggle-submit#submit" } do |f| %>
+    <div class="flex items-center justify-between py-3">
+      <div>
+        <div class="text-base font-medium">23:00 通知</div>
+        <div class="text-xs text-gray-500"><%= @setting.time_zone %></div>
+      </div>
+
+      <!-- 未チェック時でも 0 を必ず送る -->
+      <input type="hidden" name="setting[bedtime_enabled]" value="0" />
+
+      <!-- peer で即時見た目反映 -->
+      <label for="setting_bedtime_enabled" class="inline-flex items-center cursor-pointer select-none">
+        <%= f.check_box :bedtime_enabled,
+                        { id: "setting_bedtime_enabled", class: "peer sr-only", include_hidden: false },
+                        "1", "0" %>
+        <span aria-hidden="true"
+              class="w-12 h-7 rounded-full flex items-center px-1 transition-colors
+                     bg-gray-300 peer-checked:bg-blue-600">
+          <span class="w-5 h-5 bg-white rounded-full transform transition-transform
+                       translate-x-0 peer-checked:translate-x-5"></span>
+        </span>
+      </label>
     </div>
 
-    <!-- 未チェック時でも 0 を必ず送る -->
-    <input type="hidden" name="setting[bedtime_enabled]" value="0" />
-
-    <label for="setting_bedtime_enabled" class="inline-flex items-center cursor-pointer select-none">
-      <%= f.check_box :bedtime_enabled,
-                      { class: "sr-only", id: "setting_bedtime_enabled", include_hidden: false },
-                      "1", "0" %>
-      <span aria-hidden="true"
-            class="w-12 h-7 rounded-full transition-colors flex items-center px-1
-                   <%= @setting.bedtime_enabled ? 'bg-blue-600' : 'bg-gray-300' %>">
-        <span class="w-5 h-5 bg-white rounded-full transform transition-transform
-                     <%= @setting.bedtime_enabled ? 'translate-x-5' : 'translate-x-0' %>"></span>
-      </span>
-    </label>
-  </div>
-
-  <%= f.hidden_field :bedtime_time, value: "23:00" %>
-  <%= f.hidden_field :time_zone, value: Time.zone.tzinfo.name %>
-<% end %>
+    <!-- 画面上は時刻非編集（固定保存） -->
+    <%= f.hidden_field :bedtime_time, value: "23:00" %>
+    <!-- tzinfo 名で保存 -->
+    <%= f.hidden_field :time_zone, value: Time.zone.tzinfo.name %>
+  <% end %>
+</div>
