@@ -6,6 +6,9 @@
 
   <div class="flex items-center gap-3">
     <% if user_signed_in? %>
+      <!-- 🔔 通知ベル（未読数バッジ付き）-->
+      <%= render "notifications/badge" %>
+
       <span class="text-gray-600">Hi,</span>
       <%= link_to current_user.nickname, mypage_path, class: "underline" %> <!-- マイページ -->
       <%= link_to "Edit", edit_user_registration_path, class: "underline" %>

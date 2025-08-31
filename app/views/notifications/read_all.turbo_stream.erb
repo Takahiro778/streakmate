@@ -1,0 +1,6 @@
+<%= turbo_stream.replace "notifications_list" do %>
+  <%= render partial: "notifications/notification", collection: @notifications = current_user.notifications.order(created_at: :desc).limit(100), as: :notification %>
+<% end %>
+<%= turbo_stream.replace dom_id(current_user, :notifications_badge) do %>
+  <%= render "notifications/badge" %>
+<% end %>

@@ -1,0 +1,9 @@
+<%= turbo_frame_tag dom_id(current_user, :notifications_badge) do %>
+  <% unread = current_user.notifications.unread.count %>
+  <%= link_to notifications_path, class: "relative inline-flex items-center gap-1" do %>
+    <span aria-label="Notifications">🔔</span>
+    <% if unread.positive? %>
+      <span class="px-1.5 py-0.5 text-[10px] rounded-full bg-red-600 text-white"><%= unread %></span>
+    <% end %>
+  <% end %>
+<% end %>
