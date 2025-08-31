@@ -1,0 +1,27 @@
+<div class="max-w-sm mx-auto p-4">
+  <h1 class="text-xl font-bold mb-4">就寝リマインダー</h1>
+
+  <%= form_with model: @setting, url: setting_path, method: :patch, data: { controller: "toggle-submit", action: "change->toggle-submit#submit" } do |f| %>
+    <div class="flex items-center justify-between py-3">
+      <div>
+        <div class="text-base font-medium">23:00 通知</div>
+        <div class="text-xs text-gray-500"><%= @setting.time_zone %>（端末のTZを保存）</div>
+      </div>
+
+      <label class="inline-flex items-center cursor-pointer select-none">
+        <%= f.check_box :bedtime_enabled, { class: "sr-only", checked: @setting.bedtime_enabled }, true, false %>
+        <span aria-hidden="true"
+          class="w-12 h-7 rounded-full transition-colors flex items-center px-1
+                 <%= @setting.bedtime_enabled ? 'bg-blue-600' : 'bg-gray-300' %>">
+          <span class="w-5 h-5 bg-white rounded-full transform transition-transform
+                       <%= @setting.bedtime_enabled ? 'translate-x-5' : 'translate-x-0' %>"></span>
+        </span>
+      </label>
+    </div>
+
+    <!-- 画面上は時刻非編集。将来のUI拡張に備えてhiddenで固定保存 -->
+    <%= f.hidden_field :bedtime_time, value: "23:00" %>
+    <!-- TZもcontrollerで上書きするが、念のため保持 -->
+    <%= f.hidden_field :time_zone, value: Time.zone.name %>
+  <% end %>
+</div>
