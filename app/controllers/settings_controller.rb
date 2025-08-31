@@ -2,15 +2,18 @@ class SettingsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_setting
 
-  def show
-  end
+  def show; end
 
   def update
-    # トグルUIのみ → 23:00固定で保存、TZも保存
+    # チェックボックス未チェック時などで param が来ないケースに対応
+    enabled_param = params.dig(:setting, :bedtime_enabled)
+    enabled = enabled_param.nil? ? @setting.bedtime_enabled \
+                                 : ActiveModel::Type::Boolean.new.cast(enabled_param)
+
     @setting.assign_attributes(
-      bedtime_enabled: ActiveModel::Type::Boolean.new.cast(params.dig(:setting, :bedtime_enabled)),
-      bedtime_time: Time.zone.parse("23:00"),
-      time_zone: Time.zone.name
+      bedtime_enabled: enabled,
+      bedtime_time:    Time.zone.parse("23:00"),
+      time_zone:       Time.zone.tzinfo.name
     )
 
     if @setting.save
@@ -19,13 +22,17 @@ class SettingsController < ApplicationController
         format.turbo_stream
       end
     else
-      render :show, status: :unprocessable_entity
+      respond_to do |format|
+        format.html        { render :show, status: :unprocessable_entity }
+        format.turbo_stream { render :show, status: :unprocessable_entity }
+      end
     end
   end
 
   private
 
   def set_setting
-    @setting = current_user.setting || current_user.create_setting!
+    # 既存ユーザーでも確実に設定を持つ
+    @setting = current_user.setting || current_user.ensure_setting!
   end
 end

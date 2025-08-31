@@ -33,7 +33,7 @@ class User < ApplicationRecord
                              inverse_of: :followed
   has_many :followers, through: :passive_follows, source: :follower
 
-  # === Setting（就寝リマインダーなどの設定）===  # ← ★ここを追記
+  # === Setting（就寝リマインダーなどの設定）===
   has_one  :setting, dependent: :destroy, inverse_of: :user
   after_create :ensure_setting!
 
@@ -75,6 +75,16 @@ class User < ApplicationRecord
     active_follows.destroy_by(followed: other_user)
   end
 
+  # === Setting の初期生成（public）===
+  def ensure_setting!
+    setting || create_setting!(
+      bedtime_time:     Time.zone.parse("23:00"),
+      bedtime_enabled:  false,
+      time_zone:        Time.zone.tzinfo.name # 例: "Asia/Tokyo"
+    )
+  end
+
+
   private
 
   def password_complexity
@@ -82,10 +92,5 @@ class User < ApplicationRecord
     unless password.match?(/\A(?=.*[A-Za-z])(?=.*\d).+\z/)
       errors.add(:password, 'must include both letters and numbers')
     end
-  end
-
-  # === Setting の初期生成 ===  # 
-  def ensure_setting!
-    setting || create_setting!
   end
 end
