@@ -1,4 +1,4 @@
-<div id="<%= dom_id(log) %>" class="p-3 border rounded-lg">
+<article id="log-<%= log.id %>" class="p-3 border rounded-lg">
   <div class="flex items-center justify-between">
     <div class="flex items-center gap-2">
       <span class="px-2 py-0.5 text-xs rounded-full border">
@@ -13,8 +13,9 @@
     <p class="mt-2 text-sm whitespace-pre-wrap"><%= log.memo %></p>
   <% end %>
 
-  <!-- Cheer（応援ボタン＋カウント） -->
-  <div class="mt-3">
+  <!-- Cheer（応援）＋ X共有 -->
+  <div class="mt-3 flex items-center gap-3">
     <%= render "cheers/button", log: log %>
+    <%= x_share_link_to(log) %>  <!-- 公開ログのみ表示されます -->
   </div>
-</div>
+</article>

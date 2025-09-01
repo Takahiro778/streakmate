@@ -8,9 +8,10 @@
     <%= @goal.user.nickname.presence || @goal.user.email %> • <%= l @goal.created_at, format: :long %> • <%= @goal.visibility %>
   </div>
 
-  <!-- ✅ お気に入りボタン（Turboで即時トグル & カウント） -->
-  <div class="mb-6">
+  <!-- ✅ お気に入り + X共有（公開時のみ） -->
+  <div class="mb-6 flex items-center gap-3">
     <%= render "favorites/button", goal: @goal %>
+    <%= x_share_link_to(@goal, text: "目標にチャレンジ中", hashtags: %w[StreakMate 目標]) %>
   </div>
 
   <p class="mb-4 whitespace-pre-wrap"><%= @goal.description %></p>
