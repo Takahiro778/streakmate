@@ -1,8 +1,8 @@
 <div class="flex items-center gap-2 mb-3">
   <%= link_to "リラックス", guide_path("relax"),
-              class: "text-sm px-3 py-2 rounded border #{params[:id] == 'relax' ? 'bg-gray-100' : ''}" %>
+              class: "text-sm px-3 py-2 h-11 flex items-center justify-center rounded border #{params[:id] == 'relax' ? 'bg-gray-100' : ''}" %>
   <%= link_to "就寝", guide_path("sleep"),
-              class: "text-sm px-3 py-2 rounded border #{params[:id] == 'sleep' ? 'bg-gray-100' : ''}" %>
+              class: "text-sm px-3 py-2 h-11 flex items-center justify-center rounded border #{params[:id] == 'sleep' ? 'bg-gray-100' : ''}" %>
 </div>
 
 <%= render "shared/suggestions_launcher",
