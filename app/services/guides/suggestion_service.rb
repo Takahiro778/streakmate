@@ -13,27 +13,30 @@ module Guides
 
     # category: "relax" | "sleep"
     def suggest(category:)
+      band = time_band
+
       # まずは LLM が使えれば LLM を試す（失敗しても静的ルールに即フォールバック）
       if @llm&.available?
         begin
-          payload = @llm.suggest(category: category.to_s, time_band: time_band)
+          payload = @llm.suggest(category: category.to_s, time_band: band)
+          size    = (payload.respond_to?(:size) ? payload.size : 0)
+          Rails.logger.info("[Suggest] path=llm category=#{category} band=#{band} size=#{size}")
           return payload.first(3).map { |h| Suggestion.new(**h.symbolize_keys) }
         rescue => e
-          Rails.logger.warn("[LLM fallback] #{e.class}: #{e.message}")
+          Rails.logger.warn("[Suggest] path=llm_fallback category=#{category} band=#{band} err=#{e.class}: #{e.message}")
         end
       end
 
       # ここに来たら静的ルールで返す
-      rules_suggest(category: category)
+      Rails.logger.info("[Suggest] path=rules category=#{category} band=#{band}")
+      rules_suggest(category: category, band: band)
     end
 
     private
 
     # --- ここから静的ルール実装（従来の処理をメソッド化） ---
-
-    def rules_suggest(category:)
+    def rules_suggest(category:, band:)
       rules = RULES.fetch(category.to_s, RULES["relax"])
-      band  = time_band
       picks = rules.fetch(band) { rules[:any] }
 
       # 3件に整形（不足なら any で補完）
