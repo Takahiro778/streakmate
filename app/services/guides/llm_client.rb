@@ -3,16 +3,13 @@ require "json"
 
 module Guides
   class LlmClient
-    # 環境変数未設定でも OPENAI_API_KEY があれば openai を既定に
     def self.build
       provider = ENV["LLM_PROVIDER"].to_s.presence || (ENV["OPENAI_API_KEY"].present? ? "openai" : nil)
       return nil if provider.blank?
       new(provider: provider)
     end
 
-    def initialize(provider:)
-      @provider = provider
-    end
+    def initialize(provider:) = @provider = provider
 
     def available?
       case @provider
@@ -21,8 +18,7 @@ module Guides
       end
     end
 
-    # 戻り: Array<Hash(title:, body:, icon:, tone:)> ちょうど3件
-    # 失敗時は例外を投げて呼び出し元（SuggestionService）のフォールバックを誘発
+    # => Array<Hash(title:, body:, icon:, tone:)>
     def suggest(category:, time_band:)
       case @provider
       when "openai" then suggest_openai(category:, time_band:)
@@ -39,49 +35,44 @@ module Guides
       client = OpenAI::Client.new(access_token: ENV["OPENAI_API_KEY"])
       model  = ENV.fetch("OPENAI_MODEL", "gpt-4o-mini")
 
-      prompt = build_prompt(category:, time_band:)
-
       resp = client.chat(parameters: {
         model: model,
-        temperature: 0.6,                 # ぶれ過ぎ防止
-        max_tokens: 400,
+        temperature: 0.6,
+        max_tokens: 500,
         messages: [
-          { role: "system", content: "あなたは日本語話者向けの短く実行可能なウェルビーイングコーチです。安全・非医療・即実行重視で返答します。" },
-          { role: "user",   content: prompt }
+          { role: "system", content: "あなたは日本語向けのウェルビーイングコーチです。安全・即実行・自然な日本語（助詞を省略しない）で返します。" },
+          { role: "user",   content: build_prompt(category:, time_band:) }
         ]
       })
 
       content = resp.dig("choices", 0, "message", "content").to_s
+      parsed  = JSON.parse(content) rescue nil
+      raise "invalid_json_from_llm" unless parsed.is_a?(Array) && parsed.any?
 
-      # --- 厳格なJSONチェック: 配列3件でない場合は例外にしてフォールバック ---
-      parsed = JSON.parse(content) rescue nil
-      unless parsed.is_a?(Array) && parsed.any?
-        raise "invalid_json_from_llm"
-      end
+      # ---- 正規化（出来るだけ切らない／自然な整形） ----
+      # 目安：title 6-20字, body 40-100字（長すぎる時だけ … で省略）
+      title_max = 20
+      body_max  = 100
 
-      # 正規化 + ガード（不足キーは補完、文量を短めに丸める）
       items = parsed.first(3).map do |h|
+        raw_title = tidy(h["title"])
+        raw_body  = tidy(h["body"])
         {
-          title: clip(safe(h["title"], "提案"), 24),
-          body:  clip(safe(h["body"],  "深呼吸×3で気分を整えましょう。"), 80),
+          title: trunc_jp(presence_or(raw_title,  "リラックス"), title_max),
+          body:  ensure_period(trunc_jp(presence_or(raw_body, "深呼吸をゆっくり3回。今の緊張をほぐしましょう。"), body_max)),
           icon:  emoji_or_default(h["icon"], "💡"),
-          tone:  clip(safe(h["tone"],  tone_for(category)), 12)
+          tone:  tidy(presence_or(h["tone"], category.to_s == "sleep" ? "静か・穏やか" : "やさしい・ライト"))
         }
       end
 
-      # 3件未満なら簡易補完（ここで空なら例外）
-      if items.size < 3
-        raise "insufficient_items_from_llm"
-      end
-
+      raise "insufficient_items_from_llm" if items.size < 3
       items
     end
 
-    # —— プロンプト強化版（カテゴリ/時間帯で制約とトーンを切替） ——
+    # ---- プロンプト：長さ・文体・改行禁止を明示 ----
     def build_prompt(category:, time_band:)
-      tone  = tone_for(category)
-      speed = (category.to_s == "sleep") ? "心を落ち着かせる静かな口調" : "やわらかく前向きな口調"
-      time_hint =
+      tone  = (category.to_s == "sleep") ? "静かで落ち着いた口調" : "やさしく前向きな口調"
+      band_hint =
         case time_band
         when :morning    then "朝のリフレッシュ"
         when :afternoon  then "午後の集中維持"
@@ -90,52 +81,57 @@ module Guides
         else "今の時間帯に合う"
         end
 
-      <<~PROMPT
-      次の条件で、日本語の提案カードを「JSON配列のみ」で3件返してください。余計な文章・説明文・コードフェンスは一切禁止。
+      <<~P
+      次の条件で、日本語の提案カードをちょうど3件返してください。出力は**JSON配列のみ**（余計な文やコードフェンス禁止）。
 
-      コンテキスト:
+      前提:
       - category: #{category}  # relax | sleep
       - time_band: #{time_band}  # morning | afternoon | evening | late_night
-      - ねらい: #{time_hint}
+      - ねらい: #{band_hint}
 
-      制約:
-      - 5分以内/道具不要/その場でできる行動
-      - 医療行為の示唆や断定的表現は禁止（一般的で安全）
-      - 1件あたり { "title": 短い見出し, "body": 1文の説明, "icon": 1つの絵文字, "tone": "#{tone}" }
-      - 全体は必ず JSON 配列（3要素）。例以外の出力禁止。
+      厳守事項:
+      - 5分以内 / 道具不要 / その場でできる行動
+      - title は 6〜20文字程度、body は 40〜100文字程度
+      - 改行は入れない（1行に収める）、助詞を省略しない自然な日本語
+      - 医療行為の示唆や断定は不可（一般的で安全）
+      - 形式は必ず JSON 配列（3要素）。各要素は { "title": "", "body": "", "icon": "🎯", "tone": "#{tone}" }
 
-      スタイル:
-      - #{speed}
-      - 読点は少なめ、指示はやさしく
-      - 数字や手順は簡潔（30〜80字目安）
-
-      例（これは出力するな・形式だけ参照）:
+      例（形式のみ。内容は生成し直すこと）:
       [
-        {"title":"首肩ゆるめる1分","body":"深呼吸×3→首を左右各10秒。画面疲れを和らげる。","icon":"🧘","tone":"#{tone}"},
-        {"title":"白湯を一口","body":"常温の水か白湯をゆっくり飲んでリセット。","icon":"🥛","tone":"#{tone}"},
-        {"title":"20-20-20","body":"20分ごとに20秒だけ遠くを見る。目の緊張をゆるめる。","icon":"👀","tone":"#{tone}"}
+        {"title":"深呼吸でリラックス","body":"鼻から5秒吸い、口から5秒吐くを3回。肩を下ろし、今の緊張をやさしくほどきます。","icon":"🌬️","tone":"#{tone}"},
+        {"title":"首と肩をゆるめる","body":"両肩をゆっくり前後に5回ずつ回す。血流を促し、画面疲れのこわばりを軽くします。","icon":"🧘","tone":"#{tone}"},
+        {"title":"白湯を一口飲む","body":"常温の水か白湯を一杯。身体を内側から潤し、気分の切り替えを助けます。","icon":"🥛","tone":"#{tone}"}
       ]
-      PROMPT
+      P
     end
 
-    # —— ユーティリティ ——
-    def safe(v, fallback)
+    # ---- 整形ユーティリティ ----
+    def tidy(v)
+      v.to_s.gsub(/\s+/, " ").strip
+    end
+
+    # 末尾に句点がなければ「。」を付ける（！や？はそのまま）
+    def ensure_period(s)
+      s = s.to_s.strip
+      return s if s.empty? || s.end_with?("。", "！", "？", "…")
+      "#{s}。"
+    end
+
+    # 日本語をなるべく切らず、超過時のみ「…」を付けて省略（絵文字・結合文字対応）
+    def trunc_jp(s, max)
+      g = s.to_s.scan(/\X/)   # grapheme cluster
+      return s if g.length <= max
+      (g[0, max - 1].join + "…")
+    end
+
+    def presence_or(v, fallback)
       s = v.to_s.strip
       s.empty? ? fallback : s
     end
 
     def emoji_or_default(v, fallback)
       s = v.to_s.strip
-      # ざっくり: 1〜3バイトの単一グリフを想定、長い文字列ならデフォルト
-      (s.length <= 3 && s != "") ? s : fallback
-    end
-
-    def clip(s, max)
-      s.to_s.mb_chars.limit(max).to_s
-    end
-
-    def tone_for(category)
-      category.to_s == "sleep" ? "静か・穏やか" : "やさしい・ライト"
+      (s.length <= 3 && !s.empty?) ? s : fallback
     end
   end
 end
