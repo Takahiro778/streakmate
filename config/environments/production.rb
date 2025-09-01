@@ -6,6 +6,15 @@ Rails.application.configure do
   # Renderのホスト許可
   config.hosts << ENV["RENDER_EXTERNAL_HOSTNAME"] if ENV["RENDER_EXTERNAL_HOSTNAME"].present?
 
+  # ===== ここから追加：URLヘルパの絶対URL化 =====
+  app_host = ENV["APP_HOST"].presence || ENV["RENDER_EXTERNAL_HOSTNAME"].presence || "streakmate.onrender.com"
+  # mailer 用（Devise等のURL生成にも使われる）
+  config.action_mailer.default_url_options = { host: app_host, protocol: "https" }
+  # ルーティングの *_url が絶対URLになる
+  Rails.application.routes.default_url_options[:host]     = app_host
+  Rails.application.routes.default_url_options[:protocol] = "https"
+  # ===== 追加ここまで =====
+
   # Basic認証（本番限定・環境変数でON/OFF）
   config.middleware.insert_before 0, Middleware::ConditionalBasicAuth
 
