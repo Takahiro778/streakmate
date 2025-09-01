@@ -27,6 +27,8 @@ gem "tzinfo-data", platforms: %i[windows jruby]
 gem "bootsnap", require: false
 gem 'image_processing'
 
+# LLM（OpenAI）
+gem "ruby-openai", "~> 6.4"
 
 # Auth
 gem "devise"
