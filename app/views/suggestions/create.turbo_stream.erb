@@ -1,5 +1,5 @@
-<%= turbo_stream.replace "suggestions" do %>
-  <div id="suggestions" class="grid gap-3 sm:grid-cols-3">
+<%= turbo_stream.replace @target_id do %>  <!-- ★固定' suggestions 'から変更 -->
+  <div id="<%= @target_id %>" class="grid gap-3 sm:grid-cols-3">
     <% @suggestions.each do |s| %>
       <div class="p-3 border rounded-2xl bg-white shadow-sm">
         <div class="flex items-center gap-2">

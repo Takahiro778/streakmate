@@ -6,7 +6,10 @@
     </p>
 
     <%= button_to "ワンタップで提案",
-                  suggestions_path(category: (local_assigns[:category] || "relax")),
+                  suggestions_path(
+                    category: (local_assigns[:category] || "relax"),
+                    target_id: (local_assigns[:target_id] || "suggestions")  # ★ 追加
+                  ),
                   method: :post,
                   form: { data: { turbo_stream: true } },
                   class: "shrink-0 px-3 py-2 rounded-xl border bg-white text-sm hover:bg-gray-50" %>

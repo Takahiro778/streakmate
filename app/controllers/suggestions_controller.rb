@@ -1,7 +1,8 @@
 class SuggestionsController < ApplicationController
   def create
-    category = params[:category].presence || "relax"
-    service  = Guides::SuggestionService.new
+    category   = params[:category].presence || "relax"
+    @target_id = params[:target_id].presence || "suggestions"   # ★追加
+    service    = Guides::SuggestionService.new
     @suggestions = service.suggest(category: category)
 
     respond_to do |format|
