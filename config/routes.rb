@@ -39,6 +39,9 @@ Rails.application.routes.draw do
     patch :read_all, on: :collection
   end
 
+  # ✅ Suggestions（ワンタップ提案）
+  resources :suggestions, only: :create
+
   # （任意）ヘルスチェック
   # get "/up", to: proc { [200, {"Content-Type" => "text/plain"}, ["OK"]] }
 end
