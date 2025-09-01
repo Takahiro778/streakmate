@@ -1,0 +1,8 @@
+<nav class="fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur border-t">
+  <div class="max-w-sm mx-auto grid grid-cols-4">
+    <%= nav_tab "ホーム", root_path,    "home" %>
+    <%= nav_tab "タイムライン", timeline_index_path, "timeline" %>
+    <%= nav_tab "ガイド", guides_relax_path, "guide" %> <!-- ルートに合わせて修正 -->
+    <%= nav_tab "マイ", mypage_path,   "me" %>
+  </div>
+</nav>

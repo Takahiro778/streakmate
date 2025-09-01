@@ -1,32 +1,24 @@
-<div class="max-w-sm mx-auto px-4 space-y-4">
+<div class="space-y-4">
   <!-- タブ切替 -->
   <div class="flex gap-2 pt-4">
     <%= link_to "全体", timeline_index_path(tab: :all),
-        class: "flex-1 text-center px-3 py-2 rounded-md border text-sm #{'bg-black text-white font-semibold' if @tab=='all'}" %>
+        class: "flex-1 text-center px-3 py-3 rounded-md border text-sm #{'bg-black text-white font-semibold' if @tab=='all'}" %>
 
     <%= link_to "フォロー中", timeline_index_path(tab: :following),
-        class: "flex-1 text-center px-3 py-2 rounded-md border text-sm #{'bg-black text-white font-semibold' if @tab=='following'}" %>
+        class: "flex-1 text-center px-3 py-3 rounded-md border text-sm #{'bg-black text-white font-semibold' if @tab=='following'}" %>
   </div>
 
-  <!-- ▼ ワンタップ提案（タイムライン） -->
-  <%= render "shared/suggestions_launcher",
-             category: "relax",
-             target_id: "suggestions_timeline" %>
+  <!-- ▼ ワンタップ提案 -->
+  <%= render "shared/suggestions_launcher", category: "relax", target_id: "suggestions_timeline" %>
 
   <!-- ログが無い場合 -->
   <% if @logs.blank? %>
-    <p class="text-center text-sm text-gray-500 py-10">
-      表示できるログがありません。
-    </p>
+    <p class="text-center text-sm text-gray-600 py-10">表示できるログがありません。</p>
   <% else %>
-    <!-- ログ一覧 -->
     <div class="space-y-3">
       <%= render partial: "card", collection: @logs, as: :log %>
     </div>
   <% end %>
 
-  <!-- ページング -->
-  <div class="py-4">
-    <%= paginate @logs %>
-  </div>
+  <div class="py-4"><%= paginate @logs %></div>
 </div>

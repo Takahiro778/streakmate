@@ -1,57 +1,52 @@
-<div class="container mx-auto max-w-xl p-6">
-  <h2 class="text-2xl font-bold mb-4">マイページ</h2>
+<div class="space-y-6">
+  <h2 class="text-2xl font-bold">マイページ</h2>
 
-  <div class="flex items-center space-x-4 mb-6">
+  <div class="flex items-center gap-4">
     <% if @profile.avatar.attached? %>
-      <%= image_tag @profile.avatar.variant(resize_to_fill: [200, 200]), class: "rounded-full" %>
+      <%= image_tag @profile.avatar.variant(resize_to_fill: [120, 120]), class: "rounded-full" %>
     <% else %>
-      <%= image_tag "dummy_icon.svg", size: "200x200", class: "rounded-full text-gray-400" %>
+      <%= image_tag "dummy_icon.svg", size: "120x120", class: "rounded-full text-gray-400" %>
     <% end %>
 
     <div>
-      <p class="text-xl font-semibold">
+      <p class="text-lg font-semibold">
         <%= @profile.display_name.presence || current_user.nickname.presence || current_user.email %>
       </p>
       <p class="text-gray-600 text-sm">ユーザーID: <%= current_user.id %></p>
 
-      <!-- ▼ フォロー/フォロワー数（Turboで即時置換されるframe含む） -->
-      <div class="mt-2">
-        <%= render "follows/counts", user: current_user %>
-      </div>
+      <div class="mt-2"><%= render "follows/counts", user: current_user %></div>
     </div>
   </div>
 
-  <div class="mb-6">
+  <div>
     <h3 class="font-semibold mb-1">自己紹介</h3>
-    <p class="whitespace-pre-wrap">
+    <p class="text-sm whitespace-pre-wrap">
       <%= @profile.introduction.presence || "自己紹介は未設定です。" %>
     </p>
   </div>
 
-  <!-- ▼ ワンタップ提案（マイページ） -->
-  <div class="mb-6">
-    <%= render "shared/suggestions_launcher",
-               category: "relax",
-               target_id: "suggestions_profile" %>
+  <div>
+    <%= render "shared/suggestions_launcher", category: "relax", target_id: "suggestions_profile" %>
   </div>
 
-  <!-- ▼ お気に入り目標一覧 -->
-  <hr class="my-6">
-  <h3 class="text-lg font-semibold mb-2">お気に入り目標</h3>
+  <hr>
+  <h3 class="text-lg font-semibold">お気に入り目標</h3>
   <% if @favorite_goals.present? %>
     <ul class="space-y-2">
       <% @favorite_goals.each do |goal| %>
         <li class="p-3 border rounded-md flex justify-between items-center">
           <%= link_to goal.title, goal_path(goal), class: "font-medium hover:underline" %>
-          <span class="text-xs text-gray-500"><%= l(goal.updated_at, format: :short) %></span>
+          <span class="text-xs text-gray-600"><%= l(goal.updated_at, format: :short) %></span>
         </li>
       <% end %>
     </ul>
   <% else %>
-    <p class="text-sm text-gray-500">まだお気に入りはありません。</p>
+    <p class="text-sm text-gray-600">まだお気に入りはありません。</p>
   <% end %>
 
-  <div class="mt-6">
-    <%= link_to "プロフィールを編集する", edit_mypage_path, class: "px-4 py-2 bg-blue-500 text-white rounded" %>
+  <div>
+    <%= link_to "プロフィールを編集する",
+                edit_mypage_path,
+                class: "w-full block min-h-[44px] px-4 py-2 bg-blue-600 text-white text-center rounded-md" %>
   </div>
 </div>
