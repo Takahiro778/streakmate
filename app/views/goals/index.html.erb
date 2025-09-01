@@ -1,9 +1,9 @@
-<!-- app/views/goals/index.html.erb -->
-<div class="max-w-3xl mx-auto p-6">
-  <h2 class="text-2xl font-bold mb-4">目標一覧</h2>
+<div class="space-y-6">
+  <h2 class="text-2xl font-bold">目標一覧</h2>
 
-  <div class="mb-4">
-    <%= link_to "新規作成", new_goal_path, class: "px-3 py-2 bg-blue-600 text-white rounded" %>
+  <div>
+    <%= link_to "新規作成", new_goal_path,
+                class: "w-full block min-h-[44px] px-4 py-2 bg-blue-600 text-white text-center rounded-md" %>
   </div>
 
   <% if @goals.blank? %>
@@ -11,12 +11,12 @@
   <% else %>
     <div class="space-y-4">
       <% @goals.each do |g| %>
-        <div class="border rounded p-4">
-          <div class="text-sm text-gray-500 mb-1">
+        <div class="border rounded-md p-4">
+          <div class="text-xs text-gray-600 mb-1">
             <%= g.user.nickname.presence || g.user.email %> • <%= l g.created_at, format: :short %> • <%= g.visibility %>
           </div>
           <h3 class="text-lg font-semibold"><%= link_to g.title, goal_path(g) %></h3>
-          <p class="mt-1 line-clamp-3"><%= truncate(g.description, length: 140) %></p>
+          <p class="mt-1 line-clamp-3 text-sm"><%= truncate(g.description, length: 140) %></p>
           <p class="mt-2 text-sm text-gray-700">カテゴリ：<%= g.category.name %></p>
 
           <% if g.user_id == current_user.id %>

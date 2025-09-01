@@ -1,17 +1,14 @@
-<div class="max-w-2xl mx-auto space-y-6">
+<div class="space-y-6">
   <h1 class="text-2xl font-bold">クイックログ</h1>
 
-  <!-- ダッシュボード（パーシャル呼び出し） -->
   <%= turbo_frame_tag "dashboard" do %>
     <%= render "logs/dashboard", streak_days: @streak_days, weekly_minutes: @weekly_minutes %>
   <% end %>
 
-  <!-- フォーム -->
-  <%= turbo_frame_tag "logs_form", class: "block mb-6" do %>
+  <%= turbo_frame_tag "logs_form", class: "block" do %>
     <%= render "form", log: @log %>
   <% end %>
 
-  <!-- タイムライン -->
   <div id="timeline" class="space-y-3">
     <%= render @logs %>
   </div>

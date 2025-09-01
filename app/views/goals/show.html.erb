@@ -1,30 +1,27 @@
-<div class="max-w-3xl mx-auto p-6">
-  <div class="text-sm text-gray-500 mb-2">
-    <%= link_to "一覧に戻る", goals_path, class: "underline" %>
-  </div>
+<div class="space-y-6">
+  <div class="text-sm text-gray-600"><%= link_to "一覧に戻る", goals_path, class: "underline" %></div>
 
-  <h1 class="text-2xl font-bold mb-2"><%= @goal.title %></h1>
-  <div class="text-sm text-gray-500 mb-4">
+  <h1 class="text-2xl font-bold"><%= @goal.title %></h1>
+  <div class="text-xs text-gray-600">
     <%= @goal.user.nickname.presence || @goal.user.email %> • <%= l @goal.created_at, format: :long %> • <%= @goal.visibility %>
   </div>
 
-  <!-- ✅ お気に入り + X共有（公開時のみ） -->
-  <div class="mb-6 flex items-center gap-3">
+  <div class="flex items-center gap-3">
     <%= render "favorites/button", goal: @goal %>
     <%= x_share_link_to(@goal, text: "目標にチャレンジ中", hashtags: %w[StreakMate 目標]) %>
   </div>
 
-  <p class="mb-4 whitespace-pre-wrap"><%= @goal.description %></p>
+  <p class="whitespace-pre-wrap text-sm"><%= @goal.description %></p>
 
-  <div class="mb-4">
+  <div>
     <h3 class="font-semibold">達成基準</h3>
-    <p class="whitespace-pre-wrap"><%= @goal.success_criteria %></p>
+    <p class="whitespace-pre-wrap text-sm"><%= @goal.success_criteria %></p>
   </div>
 
   <p class="text-sm text-gray-700">カテゴリ：<%= @goal.category.name %></p>
 
   <% if @goal.user_id == current_user.id %>
-    <div class="mt-4 space-x-3 text-sm">
+    <div class="space-x-3 text-sm">
       <%= link_to "編集", edit_goal_path(@goal), class: "text-blue-600 underline" %>
       <%= link_to "削除", goal_path(@goal), data: { turbo_method: :delete, turbo_confirm: "本当に削除しますか？" }, class: "text-red-600 underline" %>
     </div>

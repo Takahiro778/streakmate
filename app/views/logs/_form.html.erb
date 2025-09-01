@@ -1,15 +1,13 @@
 <%= form_with model: log, url: logs_path,
               data: { controller: "quick-logger" },
-              html: { class: "space-y-4 p-2" } do |f| %>
+              html: { class: "space-y-4" } do |f| %>
 
-  <!-- カテゴリ選択（enumに合わせてボタンを並べる） -->
   <div class="flex flex-wrap gap-2" data-quick-logger-target="categoryGroup">
     <% Log.categories.keys.each do |cat| %>
-      <button
-        type="button"
-        class="px-3 py-1 rounded-full border text-sm"
-        data-action="click->quick-logger#setCategory"
-        data-category="<%= cat %>">
+      <button type="button"
+              class="px-3 py-2 min-h-[44px] rounded-full border text-sm"
+              data-action="click->quick-logger#setCategory"
+              data-category="<%= cat %>">
         <%= cat.titleize %>
       </button>
     <% end %>
@@ -18,30 +16,25 @@
   <%= f.hidden_field :category, data: { quick_logger_target: "categoryField" } %>
   <%= f.hidden_field :minutes,  data: { quick_logger_target: "minutesField" } %>
 
-  <!-- クイック分数ボタン -->
   <div class="flex gap-2">
     <% [15,30,45,60].each do |m| %>
-      <button
-        type="button"
-        class="px-3 py-2 rounded-md border"
-        data-action="click->quick-logger#setMinutes"
-        data-minutes="<%= m %>">
+      <button type="button"
+              class="px-3 py-3 min-h-[44px] rounded-md border"
+              data-action="click->quick-logger#setMinutes"
+              data-minutes="<%= m %>">
         <%= m %>分
       </button>
     <% end %>
   </div>
 
-  <!-- メモ（任意） -->
   <div>
     <%= f.text_area :memo,
           rows: 2,
           placeholder: "メモ（任意・Enterで送信）",
-          class: "w-full p-2 border rounded-md",
-          data: { quick_logger_target: "memoField",
-                  action: "keydown.enter->quick-logger:submitIfReady" } %>
+          class: "w-full p-2 border rounded-md text-sm",
+          data: { quick_logger_target: "memoField", action: "keydown.enter->quick-logger:submitIfReady" } %>
   </div>
 
-  <!-- 公開範囲（ラジオボタン形式） -->
   <div>
     <span class="block text-sm font-medium text-gray-700 mb-1">公開範囲</span>
     <div class="flex gap-4">
@@ -55,10 +48,9 @@
     </div>
   </div>
 
-  <!-- 送信ボタン -->
-  <div class="text-right mt-3">
+  <div class="text-right">
     <%= f.submit "記録",
-          class: "px-4 py-2 rounded-md bg-black text-white disabled:opacity-50",
+          class: "w-full min-h-[44px] px-4 py-2 rounded-md bg-black text-white font-medium disabled:opacity-50",
           disabled: true,
           data: { quick_logger_target: "submitButton" } %>
   </div>

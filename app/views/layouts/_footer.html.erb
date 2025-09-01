@@ -3,12 +3,17 @@
   <% time_label = s&.bedtime_time ? s.bedtime_time.strftime("%H:%M") : "23:00" %>
   <% tz_label   = s&.time_zone || Time.zone.tzinfo.name %>
 
-  <footer class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-2 text-sm text-gray-700 z-40">
-    <div class="max-w-screen-sm mx-auto flex items-center justify-between">
-      <span id="bedtime_status">
+  <footer class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-40">
+    <div class="max-w-screen-sm mx-auto flex items-center justify-between px-4 h-12">
+      <!-- 就寝通知ステータス -->
+      <span id="bedtime_status" class="text-sm font-medium text-gray-800">
         <%= time_label %> 通知 <%= (s&.bedtime_enabled ? "ON" : "OFF") %>
       </span>
-      <span class="text-xs text-gray-400"><%= tz_label %></span>
+
+      <!-- タイムゾーン -->
+      <span class="text-xs text-gray-500">
+        <%= tz_label %>
+      </span>
     </div>
   </footer>
 <% end %>
