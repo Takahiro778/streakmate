@@ -8,6 +8,11 @@
         class: "flex-1 text-center px-3 py-2 rounded-md border text-sm #{'bg-black text-white font-semibold' if @tab=='following'}" %>
   </div>
 
+  <!-- ▼ ワンタップ提案（タイムライン） -->
+  <%= render "shared/suggestions_launcher",
+             category: "relax",
+             target_id: "suggestions_timeline" %>
+
   <!-- ログが無い場合 -->
   <% if @logs.blank? %>
     <p class="text-center text-sm text-gray-500 py-10">
