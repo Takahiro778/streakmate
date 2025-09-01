@@ -1,26 +1,49 @@
 # frozen_string_literal: true
 module Guides
   class SuggestionService
+    # Public: 表示用のシンプルなDTO
     Suggestion = Struct.new(:title, :body, :icon, :tone, keyword_init: true)
 
-    def initialize(now: Time.zone.now)
+    # now: 時刻依存テスト用に注入可
+    # llm: LLM クライアント（nil / unavailable の場合は静的ルールにフォールバック）
+    def initialize(now: Time.zone.now, llm: Guides::LlmClient.build)
       @now = now
+      @llm = llm
     end
 
     # category: "relax" | "sleep"
     def suggest(category:)
+      # まずは LLM が使えれば LLM を試す（失敗しても静的ルールに即フォールバック）
+      if @llm&.available?
+        begin
+          payload = @llm.suggest(category: category.to_s, time_band: time_band)
+          return payload.first(3).map { |h| Suggestion.new(**h.symbolize_keys) }
+        rescue => e
+          Rails.logger.warn("[LLM fallback] #{e.class}: #{e.message}")
+        end
+      end
+
+      # ここに来たら静的ルールで返す
+      rules_suggest(category: category)
+    end
+
+    private
+
+    # --- ここから静的ルール実装（従来の処理をメソッド化） ---
+
+    def rules_suggest(category:)
       rules = RULES.fetch(category.to_s, RULES["relax"])
       band  = time_band
       picks = rules.fetch(band) { rules[:any] }
-      # 3件に整形（不足ならanyで補完）
+
+      # 3件に整形（不足なら any で補完）
       list = picks.dup
       list += rules[:any] if list.size < 3
       list = list.first(3)
       list.map { |h| Suggestion.new(**h) }
     end
 
-    private
-
+    # 時間帯のバンド分け（従来通り）
     def time_band
       h = @now.hour
       return :late_night if h >= 23 || h < 5
@@ -29,6 +52,7 @@ module Guides
       :evening
     end
 
+    # 既存の静的ルール（そのまま）
     RULES = {
       "relax" => {
         morning: [
