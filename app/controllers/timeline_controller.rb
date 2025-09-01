@@ -1,5 +1,6 @@
 class TimelineController < ApplicationController
   before_action :authenticate_user!
+  helper XShareHelper
 
   def index
     @scope = params[:scope].in?(%w[all following]) ? params[:scope] : "all"

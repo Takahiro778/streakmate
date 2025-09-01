@@ -1,4 +1,4 @@
-<div class="p-3 border rounded-lg bg-white shadow-sm">
+<article id="log-<%= log.id %>" class="p-3 border rounded-lg bg-white shadow-sm">
   <div class="flex items-center justify-between">
     <div class="flex items-center gap-2">
       <%# ユーザー名（本人はマイページ／他人はプロフィールへリンク） %>
@@ -35,13 +35,14 @@
     <% end %>
   </div>
 
-  <!-- 応援ボタン -->
-  <div class="mt-3">
+  <!-- 応援 + X共有（公開でない場合はヘルパが非表示にする） -->
+  <div class="mt-3 flex items-center gap-3">
     <%= render "cheers/button", log: log %>
+    <%= x_share_link_to(log) %>
   </div>
 
   <!-- コメント（一覧＋フォーム） -->
   <div class="mt-4">
     <%= render "comments/section", log: log %>
   </div>
-</div>
+</article>

@@ -16,6 +16,6 @@
   <!-- Cheer（応援）＋ X共有 -->
   <div class="mt-3 flex items-center gap-3">
     <%= render "cheers/button", log: log %>
-    <%= x_share_link_to(log) %> <!-- 公開でない場合は自動で何も出ません -->
+    <%= x_share_link_to(log) %>  <!-- 公開ログのみ表示されます -->
   </div>
 </article>

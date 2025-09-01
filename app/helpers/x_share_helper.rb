@@ -12,6 +12,8 @@ module XShareHelper
     return !!resource.public?   if resource.respond_to?(:public?)
     return false                if resource.respond_to?(:private?) && resource.private?
 
+    return true if resource.is_a?(Log)
+    
     # 公開フラグが無い型はデフォルトで非公開扱い
     false
   end
