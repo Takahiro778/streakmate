@@ -1,15 +1,12 @@
-<div class="flex items-center gap-2">
-  <%= button_to "ワンタップで提案",
-                suggestions_path(category: params[:category] || "relax"),
-                method: :post,
-                form: { data: { turbo_stream: true } },
-                class: "px-3 py-2 rounded-xl border shadow-sm bg-white text-sm hover:bg-gray-50" %>
-
-  <div class="text-xs text-gray-500">
-    ※API鍵不要・ローカルで動作（静的ルール）
-  </div>
+<!-- カテゴリ切替タブ -->
+<div class="flex items-center gap-2 mb-3">
+  <%= link_to "リラックス", guide_path("relax"),
+              class: "text-xs px-2 py-1 rounded border #{params[:id] == 'relax' ? 'bg-gray-100' : ''}" %>
+  <%= link_to "就寝", guide_path("sleep"),
+              class: "text-xs px-2 py-1 rounded border #{params[:id] == 'sleep' ? 'bg-gray-100' : ''}" %>
 </div>
 
-<div class="mt-3" id="suggestions">
-  <!-- 初回空。押下で Turbo Stream により置換される -->
-</div>
+<!-- ランチャー本体（カテゴリはURLのidから） -->
+<%= render "shared/suggestions_launcher",
+           category: (params[:id].in?(%w[relax sleep]) ? params[:id] : "relax"),
+           target_id: "suggestions_guides" %>

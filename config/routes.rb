@@ -14,7 +14,6 @@ Rails.application.routes.draw do
   # Goal（目標）
   resources :goals, only: [:index, :new, :create, :show, :edit, :update, :destroy] do
     # Favorite（ブックマーク）: /goals/:goal_id/favorite
-    # POST -> favorites#create / DELETE -> favorites#destroy
     resource :favorite, only: [:create, :destroy]
   end
 
@@ -26,8 +25,6 @@ Rails.application.routes.draw do
 
   # Follow（ユーザーに対するフォロー/解除）+ プロフィール表示
   resources :users, only: [:show] do
-    # POST /users/:user_id/follow -> follows#create
-    # DELETE /users/:user_id/follow -> follows#destroy
     resource :follow, only: [:create, :destroy]
   end
 
@@ -41,6 +38,9 @@ Rails.application.routes.draw do
 
   # ✅ Suggestions（ワンタップ提案）
   resources :suggestions, only: :create
+
+  # ✅ Guides（ガイド専用ページ：/guides/:id → relax / sleep など）
+  resources :guides, only: :show
 
   # （任意）ヘルスチェック
   # get "/up", to: proc { [200, {"Content-Type" => "text/plain"}, ["OK"]] }
