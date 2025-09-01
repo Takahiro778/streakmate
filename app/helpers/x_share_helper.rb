@@ -1,5 +1,5 @@
 module XShareHelper
-  INTENT_BASE = "https://twitter.com/intent/tweet".freeze
+  INTENT_BASE = "https://x.com/intent/post".freeze
 
   # 明示的に「公開」のものだけ true にする（誤公開防止）
   def public_resource?(resource)
