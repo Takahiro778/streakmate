@@ -14,13 +14,26 @@ class Log < ApplicationRecord
     cheers.exists?(user_id: user.id)
   end
 
+  # --- 共通判定: 可視性チェック（Pundit からもビューからも使う） ---
+  def visible_to?(viewer)
+    case visibility.to_s
+    when "public"     then true
+    when "private"    then viewer.present? && user_id == viewer.id
+    when "followers"  then viewer.present? && (user_id == viewer.id || viewer.follows?(user))
+    else false
+    end
+  end
+
+  # 所有者かどうか（Policy からの利用を想定）
+  def owned_by?(viewer)
+    viewer.present? && user_id == viewer.id
+  end
+
   # （任意）このログに user がコメント可能かの簡易判定
+  # → 可視であればコメント可、に寄せる（必要なら別ポリシーで厳格化）
   def commentable_by?(user)
     return false if user.blank?
-    # 可視性はコントローラで visible_to を通す想定だが、念のため自分のログ/公開/フォロワー条件を確認
-    return true if user_id == user.id || visibility_public?
-    return user.following_ids.include?(user_id) if visibility_followers?
-    false
+    visible_to?(user)
   end
 
   # カテゴリ（study? が他と衝突しないよう prefix）
@@ -32,7 +45,7 @@ class Log < ApplicationRecord
   }, _prefix: true
   # => log.category_study?, log.category_work? ...
 
-  # 公開範囲（public が予約語のため prefix）
+  # 公開範囲
   enum visibility: {
     public: 0,
     followers: 1,
@@ -45,12 +58,11 @@ class Log < ApplicationRecord
   validates :minutes, presence: true,
                       numericality: { only_integer: true },
                       inclusion: { in: VALID_MINUTES }
-  validates :category, presence: true
-  validates :visibility, presence: true
+  validates :category, :visibility, presence: true
   # memo は任意
 
   # 日付・週の範囲で抽出
-  scope :on_day, ->(date) { where(created_at: date.in_time_zone.all_day) }
+  scope :on_day,    ->(date) { where(created_at: date.in_time_zone.all_day) }
   scope :this_week, -> { where(created_at: Time.zone.now.all_week) }
 
   # タイムライン用
@@ -70,6 +82,11 @@ class Log < ApplicationRecord
           )
       )
     end
+  end
+
+  # Pundit::Scope から呼び出しやすい別名（中身は visible_to）
+  def self.policy_scope_for(viewer)
+    visible_to(viewer)
   end
 
   # フォロー中タブ（フォロー相手の public/followers）

@@ -206,6 +206,8 @@ GEM
     public_suffix (6.0.2)
     puma (6.6.1)
       nio4r (~> 2.0)
+    pundit (2.5.0)
+      activesupport (>= 3.0.0)
     racc (1.8.1)
     rack (3.2.0)
     rack-attack (6.7.0)
@@ -341,6 +343,7 @@ DEPENDENCIES
   kaminari
   pg (~> 1.6)
   puma (>= 5.0)
+  pundit (~> 2.5)
   rack-attack
   rails (~> 7.1.5, >= 7.1.5.1)
   rspec-rails (~> 6.1)

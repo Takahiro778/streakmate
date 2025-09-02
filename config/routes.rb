@@ -18,7 +18,7 @@ Rails.application.routes.draw do
   end
 
   # Log（クイックログ）+ Cheer（応援）+ Comment（コメント）
-  resources :logs, only: [:index, :create] do
+  resources :logs, only: [:index, :show, :create] do  # ← :show を追加
     resource  :cheer,    only: [:create, :destroy]                 # /logs/:log_id/cheer
     resources :comments, only: [:create, :edit, :update, :destroy] # /logs/:log_id/comments/:id
   end
@@ -39,7 +39,7 @@ Rails.application.routes.draw do
   # ✅ Suggestions（ワンタップ提案）
   resources :suggestions, only: :create
 
-  # ✅ Guides（ガイド専用ページ：/guides/:id → relax / sleep など）
+  # ✅ Guides（/guides/:id → relax / sleep）
   resources :guides, only: :show
 
   # （任意）ヘルスチェック

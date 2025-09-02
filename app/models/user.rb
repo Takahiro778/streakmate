@@ -56,18 +56,21 @@ class User < ApplicationRecord
   end
   # ===================================
 
-  # === Follow ヘルパ ===
-  def following?(other_user)
+  # === Follow ヘルパ（Pundit から呼ぶ想定）===
+  # アソシエーションを読み込まずに follow 関係テーブルへ直接 exists? を投げる
+  def follows?(other_user)
     return false if other_user.blank? || other_user.id == id
-    following.exists?(other_user.id)
+    active_follows.exists?(followed_id: other_user.id)
   end
+  alias_method :following?, :follows?
 
+  # キャッシュしたい場合のみ使用（件数が多いときは注意）
   def following_ids
-    @following_ids ||= following.ids
+    @following_ids ||= active_follows.pluck(:followed_id)
   end
 
   def follow!(other_user)
-    return false if other_user.id == id
+    return false if other_user.blank? || other_user.id == id
     active_follows.create_or_find_by!(followed: other_user)
   end
 
@@ -83,7 +86,6 @@ class User < ApplicationRecord
       time_zone:        Time.zone.tzinfo.name # 例: "Asia/Tokyo"
     )
   end
-
 
   private
 

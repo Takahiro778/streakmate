@@ -2,10 +2,12 @@
   <!-- タブ切替 -->
   <div class="flex gap-2 pt-4">
     <%= link_to "全体", timeline_index_path(tab: :all),
-        class: "flex-1 text-center px-3 py-3 rounded-md border text-sm #{'bg-black text-white font-semibold' if @tab=='all'}" %>
+        class: "flex-1 text-center px-3 py-3 rounded-md border text-sm #{'bg-black text-white font-semibold' if @tab == 'all'}",
+        aria: { current: ('page' if @tab == 'all') } %>
 
     <%= link_to "フォロー中", timeline_index_path(tab: :following),
-        class: "flex-1 text-center px-3 py-3 rounded-md border text-sm #{'bg-black text-white font-semibold' if @tab=='following'}" %>
+        class: "flex-1 text-center px-3 py-3 rounded-md border text-sm #{'bg-black text-white font-semibold' if @tab == 'following'}",
+        aria: { current: ('page' if @tab == 'following') } %>
   </div>
 
   <!-- ▼ ワンタップ提案 -->
@@ -16,7 +18,9 @@
     <p class="text-center text-sm text-gray-600 py-10">表示できるログがありません。</p>
   <% else %>
     <div class="space-y-3">
-      <%= render partial: "card", collection: @logs, as: :log %>
+      <!-- タイムライン専用カード -->
+      <%= render partial: "log", collection: @logs, as: :log %>
+      <!-- ※ 同ディレクトリの app/views/timeline/_log.html.erb を呼びます -->
     </div>
   <% end %>
 
