@@ -1,5 +1,7 @@
-RSpec.describe Goal, type: :model do
-  subject(:goal) = { build(:goal) }
+require 'rails_helper'
+
+RSpec.describe "Goal", type: :model do   # ← 文字列記法に変更
+  subject(:goal) { build(:goal) }
 
   it { is_expected.to validate_presence_of(:title) }
   it { is_expected.to belong_to(:user) }

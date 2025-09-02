@@ -21,11 +21,9 @@ RSpec.describe "Profiles", type: :request do
 
   describe "PATCH /mypage" do
     it "updates profile and redirects" do
-      patch mypage_path, params: {
-        profile: { bio: "updated" }
-      }
+      patch mypage_path, params: { profile: { introduction: "updated" } }
       expect(response).to have_http_status(:redirect)
-      expect(user.reload.profile.bio).to eq("updated")
+      expect(user.reload.profile.introduction).to eq("updated")  # ← 修正
     end
   end
 end
