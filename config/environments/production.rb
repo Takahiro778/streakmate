@@ -28,6 +28,10 @@ Rails.application.configure do
   config.consider_all_requests_local = false
   config.action_controller.perform_caching = true
 
+  # ✅ ここがポイント：例外時に自前ルート（/404,/500）を使う
+  config.action_dispatch.show_exceptions = :all
+  config.exceptions_app = routes
+
   # Do not fall back to assets pipeline if a precompiled asset is missed.
   config.assets.compile = false
 
