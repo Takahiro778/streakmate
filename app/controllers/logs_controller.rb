@@ -6,14 +6,16 @@ class LogsController < ApplicationController
   after_action :verify_policy_scoped, only:   [:index]
 
   def index
-    @log  = current_user.logs.build
+    @log = current_user.logs.build
 
-    # 自分のダッシュボード用でも、policy_scope を経由して取得
-    @logs = policy_scope(Log)
-              .where(user_id: current_user.id)
+    # ✅ 自分のダッシュボード用でも policy_scope を必ず経由
+    #    先に自分のログに絞った Relation を policy_scope に渡すのがポイント
+    base_scope = Log.where(user_id: current_user.id)
+    @logs = policy_scope(base_scope)
+              .includes(:cheers, :comments) # 表示で参照するならプリロード推奨
               .order(created_at: :desc)
 
-    # ✅ ダッシュボード用
+    # ✅ ダッシュボード用メトリクス
     @streak_days    = current_user.streak_days
     @weekly_minutes = current_user.weekly_minutes
   end
@@ -23,7 +25,7 @@ class LogsController < ApplicationController
     authorize @log  # => LogPolicy#create?
 
     if @log.save
-      # ✅ 作成後の最新値（将来 dashboard を turbo_stream で差し替え）
+      # ✅ 作成後の最新値（将来 turbo_stream 差し替えで使用）
       @streak_days    = current_user.streak_days
       @weekly_minutes = current_user.weekly_minutes
 
