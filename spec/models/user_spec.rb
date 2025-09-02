@@ -1,35 +1,31 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
-  before do
-    @user = User.new(
-      nickname: 'Taro',
-      email: 'taro@example.com',
-      password: 'abc123',
-      password_confirmation: 'abc123'
-    )
+  describe 'バリデーション' do
+    subject { build(:user) }  # FactoryBot を利用（事前に factories/user.rb 用意）
+
+    it { should validate_presence_of(:nickname) }
+    it { should validate_presence_of(:email) }
+    it { should validate_uniqueness_of(:email).case_insensitive }
+    it { should validate_length_of(:password).is_at_least(6) }
   end
 
-  it 'nicknameが必須であること' do
-    @user.nickname = ''
-    expect(@user).not_to be_valid
-  end
+  describe 'パスワードのフォーマット' do
+    let(:user) { build(:user) }
 
-  it 'emailが一意であること' do
-    @user.save
-    user2 = @user.dup
-    expect(user2).not_to be_valid
-  end
+    it '英字のみは無効' do
+      user.password = user.password_confirmation = 'abcdef'
+      expect(user).not_to be_valid
+    end
 
-  it 'passwordが6文字以上であること' do
-    @user.password = 'a1b2'
-    @user.password_confirmation = 'a1b2'
-    expect(@user).not_to be_valid
-  end
+    it '数字のみは無効' do
+      user.password = user.password_confirmation = '123456'
+      expect(user).not_to be_valid
+    end
 
-  it 'passwordが英字と数字を含むこと' do
-    @user.password = 'abcdef'
-    @user.password_confirmation = 'abcdef'
-    expect(@user).not_to be_valid
+    it '英字と数字を含む場合は有効' do
+      user.password = user.password_confirmation = 'abc123'
+      expect(user).to be_valid
+    end
   end
 end

@@ -11,8 +11,18 @@ group :development, :test do
   gem "sqlite3", "~> 1.4"
   gem "dotenv-rails", "~> 3.1"
   gem "debug", platforms: %i[mri windows]
-  gem "rspec-rails", "~> 6.1"   # ✅ RSpec追加
-  gem "faker"
+
+  # RSpec & Testing
+  gem "rspec-rails", "~> 6.1"          # RSpec本体
+  gem "factory_bot_rails"              # FactoryBot
+  gem "shoulda-matchers", "~> 6.0"     # モデルのバリデ/関連テスト
+  gem "faker"                          # ダミーデータ生成
+end
+
+group :test do
+  gem "capybara"                       # システムテスト用
+  gem "selenium-webdriver"             # ブラウザ操作
+  gem "database_cleaner-active_record" # DBクリーンアップ
 end
 
 # Rails & Core
@@ -26,20 +36,14 @@ gem "tailwindcss-rails"
 gem "jbuilder"
 gem "tzinfo-data", platforms: %i[windows jruby]
 gem "bootsnap", require: false
-gem 'image_processing'
+gem "image_processing"
 
 # LLM（OpenAI）
 gem "ruby-openai", "~> 6.4"
 
 # Auth
 gem "devise"
-gem 'active_hash'
+gem "active_hash"
 gem "kaminari"
 gem "rack-attack"
-
-# Test-only
-group :test do
-  gem "capybara"
-  gem "selenium-webdriver"
-end
 gem "pundit", "~> 2.5"
