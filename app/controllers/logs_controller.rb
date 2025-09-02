@@ -1,9 +1,17 @@
 class LogsController < ApplicationController
   before_action :authenticate_user!
 
+  # Pundit の検証フック
+  after_action :verify_authorized,    except: [:index]
+  after_action :verify_policy_scoped, only:   [:index]
+
   def index
     @log  = current_user.logs.build
-    @logs = current_user.logs.order(created_at: :desc)
+
+    # 自分のダッシュボード用でも、policy_scope を経由して取得
+    @logs = policy_scope(Log)
+              .where(user_id: current_user.id)
+              .order(created_at: :desc)
 
     # ✅ ダッシュボード用
     @streak_days    = current_user.streak_days
@@ -12,19 +20,18 @@ class LogsController < ApplicationController
 
   def create
     @log = current_user.logs.build(log_params)
+    authorize @log  # => LogPolicy#create?
 
     if @log.save
-      # ✅ 作成後の最新値（将来 dashboard を turbo_stream で差し替える時に利用）
+      # ✅ 作成後の最新値（将来 dashboard を turbo_stream で差し替え）
       @streak_days    = current_user.streak_days
       @weekly_minutes = current_user.weekly_minutes
 
       respond_to do |format|
-        # タイムライン先頭に反映（prepend）
-        format.turbo_stream
+        format.turbo_stream  # タイムライン先頭に反映（prepend）
         format.html { redirect_to logs_path, notice: "ログを追加しました" }
       end
     else
-      # 失敗時もフォーム枠を Turbo Frame 経由で更新
       respond_to do |format|
         format.turbo_stream do
           render turbo_stream: turbo_stream.replace(
