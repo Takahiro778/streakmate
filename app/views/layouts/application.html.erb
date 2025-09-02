@@ -17,17 +17,8 @@
     <!-- メイン：固定フッター分の下余白を確保（safe-bottom + pb-24） -->
     <main class="pb-24 safe-bottom">
       <div class="max-w-sm mx-auto px-4 pt-3">
-        <!-- Flash（コンテンツ幅に揃える） -->
-        <% if notice.present? %>
-          <p class="mb-3 rounded-md bg-green-100 text-green-800 px-3 py-2 text-sm">
-            <%= notice %>
-          </p>
-        <% end %>
-        <% if alert.present? %>
-          <p class="mb-3 rounded-md bg-red-100 text-red-800 px-3 py-2 text-sm">
-            <%= alert %>
-          </p>
-        <% end %>
+        <!-- Flash（共通パーシャルに統一） -->
+        <%= render "shared/flash" %>
 
         <%= yield %>
       </div>

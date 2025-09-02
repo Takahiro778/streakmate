@@ -1,0 +1,10 @@
+<% flash.each do |type, message| %>
+  <% next if message.blank? %>
+  <% ui = flash_ui_for(type) %>
+  <div class="mb-3 rounded-md border p-3 <%= ui[:bg] %> <%= ui[:border] %>">
+    <div class="flex items-start gap-2">
+      <span class="<%= ui[:icon_color] %>">●</span>
+      <p class="<%= ui[:text] %> text-sm"><%= message %></p>
+    </div>
+  </div>
+<% end %>
