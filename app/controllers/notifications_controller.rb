@@ -10,7 +10,7 @@ class NotificationsController < ApplicationController
 
   def update
     @notification = current_user.notifications.find(params[:id])
-    @notification.read!
+    @notification.update!(read_at: Time.current)
     respond_to(&:turbo_stream)
   end
 

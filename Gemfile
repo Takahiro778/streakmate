@@ -12,6 +12,7 @@ group :development, :test do
   gem "dotenv-rails", "~> 3.1"
   gem "debug", platforms: %i[mri windows]
   gem "rspec-rails", "~> 6.1"   # ✅ RSpec追加
+  gem "faker"
 end
 
 # Rails & Core
@@ -35,7 +36,6 @@ gem "devise"
 gem 'active_hash'
 gem "kaminari"
 gem "rack-attack"
-
 
 # Test-only
 group :test do
