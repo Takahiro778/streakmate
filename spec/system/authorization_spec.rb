@@ -4,7 +4,7 @@ RSpec.describe "Authorization", type: :system do
   let!(:owner)  { create(:user) }
   let!(:viewer) { create(:user) } # フォローしていない
 
-  let!(:followers_only_log) { create(:log, user: owner, visibility: :followers, title: "F限定") }
+  let!(:followers_only_log) { create(:log, user: owner, visibility: :followers, memo: "F限定") }
 
   it "非フォロワーはフォロワー限定の詳細にアクセスできない" do
     # ログインヘルパはアプリの仕組みに合わせて

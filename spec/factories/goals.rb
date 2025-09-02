@@ -4,7 +4,7 @@ FactoryBot.define do
     title { "Read 30min" }
     description { "Daily reading" }
     success_criteria { "7 days streak" }
-    category { Goal.categories.keys.first } # or :study
-    visibility { :public }
+    category_id { 1 }         # ← ActiveHash を使う前提
+    visibility { :public }    # ← Goal に visibility enum があるならそのまま
   end
 end

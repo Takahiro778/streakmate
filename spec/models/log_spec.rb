@@ -10,8 +10,20 @@ RSpec.describe Log, type: :model do
   it { is_expected.to validate_presence_of(:category) }
   it { is_expected.to validate_presence_of(:visibility) }
 
-  it { is_expected.to define_enum_for(:category).with_values(%i[study work exercise rest]).backed_by_column_of_type(:integer) }
-  it { is_expected.to define_enum_for(:visibility).with_values(%i[public followers private]).backed_by_column_of_type(:integer) }
+  # ✅ enum に _prefix: true を使っているため .with_prefix を追加
+  it {
+    expect(log).to define_enum_for(:category)
+      .with_values(%i[study work exercise rest])
+      .backed_by_column_of_type(:integer)
+      .with_prefix
+  }
+
+  it {
+    expect(log).to define_enum_for(:visibility)
+      .with_values(%i[public followers private])
+      .backed_by_column_of_type(:integer)
+      .with_prefix
+  }
 
   describe '.on_day / .this_week' do
     it 'filters by date with travel_to' do

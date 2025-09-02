@@ -1,6 +1,6 @@
 class Cheer < ApplicationRecord
   belongs_to :user
-  belongs_to :log, counter_cache: true
+  belongs_to :log, counter_cache: :cheers_count, optional: false
 
   validates :user_id, uniqueness: { scope: :log_id }
   validate  :cannot_cheer_own_log
