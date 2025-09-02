@@ -1,6 +1,5 @@
 class LogPolicy < ApplicationPolicy
-  # /logs#index 用は authorize を掛けず policy_scope を使う前提なので
-  # index? は不要（verify_policy_scoped を付ければOK）
+  # /logs#index は policy_scope を使う想定（verify_policy_scoped 推奨）
 
   def show?
     record.visible_to?(user)
@@ -20,10 +19,17 @@ class LogPolicy < ApplicationPolicy
 
   class Scope < Scope
     def resolve
-      # モデル側に用意した統一入口を利用（推奨）
-      scope.policy_scope_for(user)
-      # ↑を用意していない場合は ↓でもOK
-      # user.nil? ? scope.visibility_public : scope.visible_to(user)
+      # 未ログイン: 公開のみ
+      return scope.where(visibility: Log.visibilities[:public]) if user.nil?
+
+      # ログイン時: 公開 or 自分 or フォロワー限定(フォロー先)
+      follows_subq = Follow.where(follower_id: user.id).select(:followed_id)
+
+      pub  = scope.where(visibility: Log.visibilities[:public])
+      mine = scope.where(user_id: user.id)
+      foll = scope.where(visibility: Log.visibilities[:followers], user_id: follows_subq)
+
+      pub.or(mine).or(foll)
     end
   end
 end
