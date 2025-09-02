@@ -9,15 +9,20 @@ class LogsController < ApplicationController
     @log = current_user.logs.build
 
     # ✅ 自分のダッシュボード用でも policy_scope を必ず経由
-    #    先に自分のログに絞った Relation を policy_scope に渡すのがポイント
     base_scope = Log.where(user_id: current_user.id)
     @logs = policy_scope(base_scope)
-              .includes(:cheers, :comments) # 表示で参照するならプリロード推奨
+              .includes(:cheers, :comments)
               .order(created_at: :desc)
 
     # ✅ ダッシュボード用メトリクス
     @streak_days    = current_user.streak_days
     @weekly_minutes = current_user.weekly_minutes
+  end
+
+  def show
+    # 閲覧時は認可チェック（public / followers / private を Pundit 側で判定）
+    @log = Log.includes(:cheers, :comments).find(params[:id])
+    authorize @log  # => LogPolicy#show?
   end
 
   def create

@@ -6,7 +6,16 @@
       </span>
       <span class="font-semibold"><%= log.minutes %>分</span>
     </div>
-    <span class="text-xs text-gray-500"><%= l(log.created_at, format: :short) %></span>
+
+    <div class="flex items-center gap-3">
+      <span class="text-xs text-gray-500"><%= l(log.created_at, format: :short) %></span>
+      <%# 認可OKのときだけ表示（/logs/:id） %>
+      <% if policy(log).show? %>
+        <%= link_to "詳細", log_path(log),
+              class: "text-sm text-gray-600 hover:underline focus:underline",
+              data: { turbo_frame: "_top" } %>
+      <% end %>
+    </div>
   </div>
 
   <% if log.memo.present? %>
