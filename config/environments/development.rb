@@ -9,8 +9,17 @@ Rails.application.configure do
   # Do not eager load code on boot.
   config.eager_load = false
 
-  # Show full error reports.
-  config.consider_all_requests_local = true
+  # --- ここを変更：デフォはtrueだが、カスタムエラー確認用に切替可能に ---
+  # SHOW_CUSTOM_ERRORS=true のときに consider_all_requests_local を false にする
+  show_custom_errors = ENV["SHOW_CUSTOM_ERRORS"] == "true"
+  config.consider_all_requests_local = !show_custom_errors
+
+  # カスタムエラー確認時は例外をミドルウェアで処理させ、routes の /404 /500 へ流す
+  if show_custom_errors
+    config.action_dispatch.show_exceptions = :all
+    config.exceptions_app = routes
+  end
+  # ---------------------------------------------------------------------------
 
   # Enable server timing
   config.server_timing = true
