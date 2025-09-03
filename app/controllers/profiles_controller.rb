@@ -16,6 +16,7 @@ class ProfilesController < ApplicationController
   def edit; end
 
   def update
+    # 削除チェックは「更新成功後」に実行して UX を担保
     remove_requested = (params.dig(:profile, :remove_avatar) == '1')
 
     if @profile.update(profile_params)

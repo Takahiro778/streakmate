@@ -5,17 +5,15 @@
     <div class="mb-4 rounded border border-red-300 bg-red-50 p-3 text-sm text-red-700">
       <p class="font-medium mb-1">更新に失敗しました：</p>
       <ul class="list-disc pl-5">
-        <% @profile.errors.full_messages.each do |msg| %><li><%= msg %></li><% end %>
+        <% @profile.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
       </ul>
     </div>
   <% end %>
 
-  <%= form_with model: @profile,
-                url: mypage_path,
-                method: :patch,         <!-- 明示しておくと安全 -->
-                local: true,
-                html: { multipart: true } do |f| %>
-
+  <!-- 単数リソース mypage に合わせて URL/メソッドを明示、ファイル添付に備えて multipart 必須 -->
+  <%= form_with model: @profile, url: mypage_path, method: :patch, multipart: true, local: true do |f| %>
     <div class="mb-4">
       <%= f.label :display_name, "表示名", class: "block font-medium" %>
       <%= f.text_field :display_name, class: "w-full border rounded p-2", maxlength: 50, placeholder: "例）やまだ たろう" %>
@@ -31,8 +29,9 @@
 
       <% if @profile.avatar.attached? %>
         <div class="mb-2">
-          <%= image_tag @profile.avatar.variant(resize_to_fill: [200, 200]),
-                        width: 200, height: 200, class: "rounded-full mx-auto" %>
+          <%= image_tag @profile.avatar.variant(resize_to_fill: [200, 200]).processed,
+                        width: 200, height: 200,
+                        class: "rounded-full mx-auto" %>
         </div>
         <label class="inline-flex items-center gap-2 text-sm text-gray-600 mb-2">
           <%= check_box_tag :remove_avatar, '1', false, name: 'profile[remove_avatar]' %>
