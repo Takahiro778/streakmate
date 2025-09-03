@@ -1,35 +1,45 @@
 class Profile < ApplicationRecord
   belongs_to :user, inverse_of: :profile
-
   has_one_attached :avatar
 
   # 表示名・自己紹介
   validates :display_name, length: { maximum: 50 }, allow_blank: true
-  validates :introduction,  length: { maximum: 300 }, allow_blank: true
+  validates :introduction, length: { maximum: 300 }, allow_blank: true
 
-  # 画像バリデーション
-  validate :validate_avatar_type
-  validate :validate_avatar_size
+  # 画像バリデーション（1メソッドでまとめて実行）
+  validate :validate_avatar
 
-  ALLOWED_CONTENT_TYPES = %w[image/png image/jpg image/jpeg image/webp].freeze
+  ALLOWED_CONTENT_TYPES = %w[image/png image/jpeg image/webp image/jpg].freeze
+  NORMALIZED_TYPES      = { 'image/jpg' => 'image/jpeg' }.freeze
   MAX_AVATAR_SIZE       = 2.megabytes
 
   private
 
-  # 拡張子／MIME タイプ
-  def validate_avatar_type
+  def validate_avatar
     return unless avatar.attached?
 
-    unless ALLOWED_CONTENT_TYPES.include?(avatar.content_type)
+    # blob がまだ解析前でも content_type/byte_size は参照可（nil の可能性に備える）
+    blob = avatar.blob
+    return errors.add(:avatar, 'のアップロードに失敗しました') if blob.nil?
+
+    # --- MIMEタイプを正規化 ---
+    content_type = (blob.content_type.presence || '').downcase
+    content_type = NORMALIZED_TYPES.fetch(content_type, content_type)
+
+    # --- タイプの検証 ---
+    unless ALLOWED_CONTENT_TYPES.include?(content_type)
       errors.add(:avatar, 'は PNG / JPG / JPEG / WEBP のいずれかにしてください')
     end
-  end
 
-  # ファイルサイズ
-  def validate_avatar_size
-    return unless avatar.attached?
+    # --- サイズの検証 ---
+    size = blob.byte_size
+    if size.nil?
+      # 極めて稀に解析未完などで nil のことがあるためフォールバック
+      errors.add(:avatar, 'のサイズ取得に失敗しました。別の画像でお試しください')
+      return
+    end
 
-    if avatar.blob.byte_size > MAX_AVATAR_SIZE
+    if size > MAX_AVATAR_SIZE
       errors.add(:avatar, 'は 2MB 以下にしてください')
     end
   end

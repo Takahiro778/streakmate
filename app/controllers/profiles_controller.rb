@@ -1,4 +1,3 @@
-# app/controllers/profiles_controller.rb
 class ProfilesController < ApplicationController
   before_action :authenticate_user!
   before_action :set_profile
@@ -8,8 +7,8 @@ class ProfilesController < ApplicationController
       Goal.joins(:favorites)
           .where(favorites: { user_id: current_user.id })
           .merge(Goal.visible_to(current_user))
-          .where.not(user_id: current_user.id)      # 不要なら削除
-          .includes(:user)                          # ← :category は外す（ActiveHash）
+          .where.not(user_id: current_user.id) # 不要なら削除
+          .includes(:user)
           .order('favorites.created_at DESC')
           .limit(50)
   end
@@ -17,11 +16,22 @@ class ProfilesController < ApplicationController
   def edit; end
 
   def update
+    # ① 削除チェックがONなら先にアイコンを外す
+    if params.dig(:profile, :remove_avatar) == '1'
+      @profile.avatar.purge_later if @profile.avatar.attached?
+    end
+
+    # ② プロフィール更新
     if @profile.update(profile_params)
       redirect_to mypage_path, notice: 'プロフィールを更新しました'
     else
       render :edit, status: :unprocessable_entity
     end
+
+  rescue ActiveStorage::IntegrityError, ActiveSupport::MessageVerifier::InvalidSignature
+    # 壊れたファイルや不正なアップロード時のハンドリング
+    @profile.errors.add(:avatar, 'が不正なファイル形式か破損しています')
+    render :edit, status: :unprocessable_entity
   end
 
   private
@@ -30,6 +40,7 @@ class ProfilesController < ApplicationController
     @profile = current_user.profile || current_user.build_profile
   end
 
+  # Strong Parameters
   def profile_params
     params.require(:profile).permit(:display_name, :introduction, :avatar)
   end

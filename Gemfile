@@ -36,14 +36,20 @@ gem "tailwindcss-rails"
 gem "jbuilder"
 gem "tzinfo-data", platforms: %i[windows jruby]
 gem "bootsnap", require: false
-gem "image_processing"
+
+# 画像処理（MiniMagick を使う）
+gem "image_processing", "~> 1.2"
+gem "mini_magick"
 
 # LLM（OpenAI）
 gem "ruby-openai", "~> 6.4"
 
-# Auth
+# Auth / その他
 gem "devise"
 gem "active_hash"
 gem "kaminari"
 gem "rack-attack"
 gem "pundit", "~> 2.5"
+
+# AWS
+gem "aws-sdk-s3", require: false
