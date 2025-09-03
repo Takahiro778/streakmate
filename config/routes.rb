@@ -46,6 +46,6 @@ Rails.application.routes.draw do
   match "/404", to: "errors#not_found", via: :all
   match "/500", to: "errors#internal_server_error", via: :all
 
-  # （任意）ヘルスチェック
-  # get "/up", to: proc { [200, {"Content-Type" => "text/plain"}, ["OK"]] }
+  # ヘルスチェック
+  get "/up", to: proc { [200, {"Content-Type" => "text/plain"}, ["OK"]] }
 end
