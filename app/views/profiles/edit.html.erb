@@ -1,6 +1,17 @@
 <div class="container mx-auto max-w-xl p-6">
   <h2 class="text-2xl font-bold mb-4">プロフィール編集</h2>
 
+  <% if @profile.errors.any? %>
+    <div class="mb-4 rounded border border-red-300 bg-red-50 p-3 text-sm text-red-700">
+      <p class="font-medium mb-1">更新に失敗しました：</p>
+      <ul class="list-disc pl-5">
+        <% @profile.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
   <%= form_with model: @profile, url: mypage_path, local: true do |f| %>
     <div class="mb-4">
       <%= f.label :display_name, "表示名", class: "block font-medium" %>
@@ -12,21 +23,30 @@
       <%= f.text_area :introduction, class: "w-full border rounded p-2", rows: 6, maxlength: 300, placeholder: "300文字まで" %>
     </div>
 
-    <div class="mb-4">
+    <div class="mb-6">
       <%= f.label :avatar, "アイコン画像（2MBまで / PNG・JPG・WEBP）", class: "block font-medium" %>
+
       <% if @profile.avatar.attached? %>
-    <div class="mb-2">
-      <%= image_tag @profile.avatar.variant(resize_to_fill: [200, 200]), class: "rounded-full" %>
-    </div>
+        <div class="mb-2">
+          <%= image_tag @profile.avatar.variant(resize_to_fill: [200, 200]).processed,
+                        width: 200, height: 200,
+                        class: "rounded-full mx-auto" %>
+        </div>
+        <label class="inline-flex items-center gap-2 text-sm text-gray-600 mb-2">
+          <%= check_box_tag :remove_avatar, '1', false, name: 'profile[remove_avatar]' %>
+          アイコンを削除する
+        </label>
       <% else %>
-    <div class="mb-2">
-      <%= image_tag "dummy_icon.svg", size: "200x200", class: "rounded-full text-gray-400" %>
-    </div>
+        <div class="mb-2">
+          <%= image_tag "dummy_icon.svg", size: "200x200", class: "rounded-full text-gray-400 mx-auto" %>
+        </div>
       <% end %>
-      <%= f.file_field :avatar, accept: "image/png,image/jpeg,image/jpg,image/webp" %>
+
+      <%= f.file_field :avatar, accept: "image/png,image/jpeg,image/jpg,image/webp",
+                       class: "block w-full text-sm text-gray-700" %>
+      <p class="text-xs text-gray-500 mt-1">※ 2MBを超える画像はアップロードできません</p>
     </div>
 
-
-    <%= f.submit "更新する", class: "px-4 py-2 bg-green-500 text-white rounded" %>
+    <%= f.submit "更新する", class: "px-4 py-2 bg-green-500 text-white rounded w-full" %>
   <% end %>
 </div>
