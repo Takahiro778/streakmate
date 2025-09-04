@@ -8,29 +8,36 @@ class LogsController < ApplicationController
   def index
     @log = current_user.logs.build
 
-    # ✅ 自分のダッシュボード用でも policy_scope を必ず経由
+    # 自分のダッシュボード用でも policy_scope を必ず経由
     base_scope = Log.where(user_id: current_user.id)
     @logs = policy_scope(base_scope)
-              .includes(:cheers, :comments)
+              .includes(:user, :cheers, :comments) # 一覧で使う関連は先読み
               .order(created_at: :desc)
 
-    # ✅ ダッシュボード用メトリクス
+    # ダッシュボード用メトリクス
     @streak_days    = current_user.streak_days
     @weekly_minutes = current_user.weekly_minutes
   end
 
   def show
-    # 閲覧時は認可チェック（public / followers / private を Pundit 側で判定）
-    @log = Log.includes(:cheers, :comments).find(params[:id])
+    # public / followers / private の認可チェック
+    @log = Log
+      .includes(
+        :user,
+        :cheers,
+        # コメント → ユーザー → プロフィール → avatar(ActiveStorage) を先読み
+        comments: { user: { profile: [:avatar_attachment, :avatar_blob] } }
+      )
+      .find(params[:id])
+
     authorize @log  # => LogPolicy#show?
   end
 
   def create
     @log = current_user.logs.build(log_params)
-    authorize @log  # => LogPolicy#create?
+    authorize @log
 
     if @log.save
-      # ✅ 作成後の最新値（将来 turbo_stream 差し替えで使用）
       @streak_days    = current_user.streak_days
       @weekly_minutes = current_user.weekly_minutes
 

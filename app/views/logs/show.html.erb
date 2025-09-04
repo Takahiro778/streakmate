@@ -1,4 +1,7 @@
 <div class="space-y-6">
+  
+  <%= turbo_stream_from [@log, :comments_stream] %>
+
   <div class="text-sm text-gray-600">
     <%= link_to "一覧に戻る", logs_path, class: "underline" %>
   </div>
@@ -38,4 +41,8 @@
     </div>
   <%# end %>
   -->
+
+  <!-- ▼ コメント（一覧＋フォーム） -->
+  <%= render "comments/section", log: @log, comment: Comment.new %>
+  <!-- ▲ コメントここまで -->
 </div>
