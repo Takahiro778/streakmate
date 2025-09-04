@@ -6,7 +6,7 @@
               class: "flex-1 p-2 border rounded-md text-sm" %>
         <div class="flex flex-col gap-2">
           <%= f.submit "保存", class: "px-3 py-2 text-sm rounded-md bg-blue-600 text-white" %>
-          <%= link_to "キャンセル", log_path(@log), data: { turbo_frame: dom_id(@comment) }, class: "text-xs text-gray-500 underline text-center" %>
+          <%= link_to "キャンセル", log_path(@log), data: { turbo: false }, class: "text-xs text-gray-500 underline text-center" %>
         </div>
       </div>
     <% end %>

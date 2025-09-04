@@ -1,10 +1,8 @@
 <% if @comment.errors.any? %>
-  <!-- エラー: フォームだけ差し替え（エラーメッセージ表示も可） -->
   <%= turbo_stream.replace dom_id(@log, :new_comment) do %>
     <%= render "comments/form", log: @log, comment: @comment %>
   <% end %>
 <% else %>
-  <!-- 成功: 先頭に追加 & フォームをクリア -->
   <%= turbo_stream.prepend dom_id(@log, :comments) do %>
     <%= render "comments/comment", comment: @comment %>
   <% end %>

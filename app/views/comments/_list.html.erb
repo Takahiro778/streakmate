@@ -1,5 +1,5 @@
 <div id="<%= dom_id(log, :comments) %>" class="space-y-2">
-  <% log.comments.order(created_at: :asc).each do |comment| %>
+  <% log.comments.order(created_at: :desc).each do |comment| %>
     <%= render "comments/comment", comment: comment %>
   <% end %>
 </div>

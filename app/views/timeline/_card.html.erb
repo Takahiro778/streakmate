@@ -1,4 +1,7 @@
 <article id="log-<%= log.id %>" class="p-3 border rounded-lg bg-white shadow-sm">
+
+  <%= turbo_stream_from [log, :comments_stream] %>
+
   <div class="flex items-center justify-between">
     <div class="flex items-center gap-2">
       <%# ユーザー名（本人はマイページ／他人はプロフィールへリンク） %>
