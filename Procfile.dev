@@ -1,2 +1,6 @@
-web: bin/rails server
+cat > Procfile.dev <<'PROC'
+web: bin/rails server -p ${APP_PORT:-3000}
 css: bin/rails tailwindcss:watch
+# JS を esbuild/webpack で監視している場合は適宜追加
+# js: yarn build --watch
+PROC
