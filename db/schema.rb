@@ -83,13 +83,14 @@ ActiveRecord::Schema[7.1].define(version: 2025_09_04_093021) do
 
   create_table "goal_tasks", force: :cascade do |t|
     t.integer "goal_id", null: false
-    t.string "title", limit: 100
+    t.string "title", limit: 100, null: false
     t.integer "estimated_minutes"
     t.integer "position"
     t.date "due_on"
     t.datetime "completed_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["goal_id", "position"], name: "index_goal_tasks_on_goal_id_and_position"
     t.index ["goal_id"], name: "index_goal_tasks_on_goal_id"
   end
 
@@ -104,8 +105,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_09_04_093021) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "favorites_count", default: 0, null: false
-    t.integer "tasks_count"
-    t.integer "tasks_done_count"
+    t.integer "tasks_count", default: 0, null: false
+    t.integer "tasks_done_count", default: 0, null: false
     t.index ["user_id"], name: "index_goals_on_user_id"
   end
 
