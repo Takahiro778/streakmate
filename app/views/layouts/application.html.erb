@@ -27,10 +27,10 @@
   </head>
 
   <body class="bg-gray-50 text-gray-900">
-    <%= render "layouts/header" %>
+    <%= render "shared/header_nav" %>
 
-    <%# スマホではフッター分の余白を確保、PCでは余白ゼロ %>
-    <main class="pb-16 md:pb-0 safe-bottom">
+    <%# ヘッダー(高さ12)とフッター(高さ16)のかぶり回避 %>
+    <main class="pt-12 pb-16 md:pb-0 safe-bottom">
       <div class="max-w-sm mx-auto px-4 pt-3">
         <%= render "shared/flash" %>
         <%= yield %>
