@@ -10,7 +10,6 @@
     <meta property="og:title" content="StreakMate" />
     <meta property="og:description" content="Build streaks with friends" />
     <meta property="og:type" content="website" />
-    <!-- ページURL / 画像の絶対URLを出力 -->
     <meta property="og:url" content="<%= request.original_url %>" />
     <meta property="og:image" content="<%= "#{request.base_url}/ogp.png" %>" />
 
@@ -29,12 +28,15 @@
 
   <body class="bg-gray-50 text-gray-900">
     <%= render "layouts/header" %>
-    <main class="pb-24 safe-bottom">
+
+    <%# スマホではフッター分の余白を確保、PCでは余白ゼロ %>
+    <main class="pb-16 md:pb-0 safe-bottom">
       <div class="max-w-sm mx-auto px-4 pt-3">
         <%= render "shared/flash" %>
         <%= yield %>
       </div>
     </main>
-    <%= render "layouts/footer" %>
+
+    <%= render "shared/footer_nav" %>
   </body>
 </html>
