@@ -1,9 +1,12 @@
 Rails.application.routes.draw do
   devise_for :users
 
-  # トップページ
-  root "pages#top"
-  get "pages/top"
+  # 🌐 公開トップページ（OGP 用のランディング）
+  root "home#show"
+  get "home", to: "home#show"
+
+  # 旧トップ（ログイン後用）
+  get "pages/top", to: "pages#top"
 
   # 自分専用マイページ
   resource :mypage, only: [:show, :edit, :update], controller: :profiles
@@ -18,9 +21,9 @@ Rails.application.routes.draw do
   end
 
   # Log（クイックログ）+ Cheer（応援）+ Comment（コメント）
-  resources :logs, only: [:index, :show, :create] do  # ← :show を追加
-    resource  :cheer,    only: [:create, :destroy]                 # /logs/:log_id/cheer
-    resources :comments, only: [:create, :edit, :update, :destroy] # /logs/:log_id/comments/:id
+  resources :logs, only: [:index, :show, :create] do
+    resource  :cheer,    only: [:create, :destroy]
+    resources :comments, only: [:create, :edit, :update, :destroy]
   end
 
   # Follow（ユーザーに対するフォロー/解除）+ プロフィール表示
