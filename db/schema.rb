@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_09_02_101835) do
+ActiveRecord::Schema[7.1].define(version: 2025_09_04_093021) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -81,6 +81,18 @@ ActiveRecord::Schema[7.1].define(version: 2025_09_02_101835) do
     t.check_constraint "follower_id <> followed_id", name: "no_self_follow"
   end
 
+  create_table "goal_tasks", force: :cascade do |t|
+    t.integer "goal_id", null: false
+    t.string "title", limit: 100
+    t.integer "estimated_minutes"
+    t.integer "position"
+    t.date "due_on"
+    t.datetime "completed_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["goal_id"], name: "index_goal_tasks_on_goal_id"
+  end
+
   create_table "goals", force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "title"
@@ -92,6 +104,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_09_02_101835) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "favorites_count", default: 0, null: false
+    t.integer "tasks_count"
+    t.integer "tasks_done_count"
     t.index ["user_id"], name: "index_goals_on_user_id"
   end
 
@@ -104,6 +118,10 @@ ActiveRecord::Schema[7.1].define(version: 2025_09_02_101835) do
     t.datetime "updated_at", null: false
     t.integer "visibility", default: 0, null: false
     t.integer "cheers_count", default: 0, null: false
+    t.integer "goal_id"
+    t.integer "goal_task_id"
+    t.index ["goal_id"], name: "index_logs_on_goal_id"
+    t.index ["goal_task_id"], name: "index_logs_on_goal_task_id"
     t.index ["user_id"], name: "index_logs_on_user_id"
     t.index ["visibility"], name: "index_logs_on_visibility"
   end
@@ -168,7 +186,10 @@ ActiveRecord::Schema[7.1].define(version: 2025_09_02_101835) do
   add_foreign_key "favorites", "users"
   add_foreign_key "follows", "users", column: "followed_id"
   add_foreign_key "follows", "users", column: "follower_id"
+  add_foreign_key "goal_tasks", "goals"
   add_foreign_key "goals", "users"
+  add_foreign_key "logs", "goal_tasks"
+  add_foreign_key "logs", "goals"
   add_foreign_key "logs", "users"
   add_foreign_key "notifications", "users"
   add_foreign_key "notifications", "users", column: "actor_id"

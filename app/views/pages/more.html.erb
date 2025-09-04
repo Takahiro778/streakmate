@@ -1,10 +1,36 @@
-<div class="max-w-sm mx-auto p-6 space-y-6">
+<div class="max-w-sm mx-auto p-6 space-y-8">
   <h1 class="text-xl font-bold">More</h1>
 
   <% if current_user %>
+    <!-- メニュー -->
+    <section>
+      <h2 class="mb-2 text-sm font-semibold text-gray-700">メニュー</h2>
+      <ul class="divide-y rounded-lg border bg-white">
+        <li>
+          <%= link_to goals_path, class: "flex items-center justify-between px-4 py-3 hover:bg-gray-50" do %>
+            <span class="text-sm">目標（一覧）</span>
+            <span aria-hidden="true">›</span>
+          <% end %>
+        </li>
+        <li>
+          <%= link_to new_goal_path, class: "flex items-center justify-between px-4 py-3 hover:bg-gray-50" do %>
+            <span class="text-sm">目標を作成</span>
+            <span aria-hidden="true">›</span>
+          <% end %>
+        </li>
+        <li>
+          <%= link_to edit_user_registration_path, class: "flex items-center justify-between px-4 py-3 hover:bg-gray-50" do %>
+            <span class="text-sm">アカウント設定</span>
+            <span aria-hidden="true">›</span>
+          <% end %>
+        </li>
+        <%# 必要なら後で追記：ガイド/規約/プライバシーなど %>
+      </ul>
+    </section>
+
     <% s = current_user.setting %>
 
-    <!-- 現在ステータス -->
+    <!-- 就寝通知（現在ステータス） -->
     <section class="space-y-1">
       <h2 class="text-sm font-semibold text-gray-700">就寝通知</h2>
       <p class="text-sm">
@@ -14,8 +40,8 @@
       <p class="text-xs text-gray-500">タイムゾーン：<%= s&.time_zone || Time.zone.tzinfo.name %></p>
     </section>
 
-    <!-- ON/OFF 切り替えフォーム（最小） -->
-    <section class="mt-4">
+    <!-- ON/OFF 切り替えフォーム -->
+    <section>
       <%= form_with url: setting_path, method: :patch, class: "space-y-3" do |f| %>
         <div class="flex items-center justify-between rounded-lg border bg-white px-3 py-2">
           <div>
@@ -27,13 +53,12 @@
           <label class="inline-flex cursor-pointer items-center">
             <%= hidden_field_tag "setting[bedtime_enabled]", 0 %>
             <%= check_box_tag "setting[bedtime_enabled]", 1, s&.bedtime_enabled, class: "sr-only peer" %>
-            <span class="h-6 w-10 rounded-full bg-gray-300 peer-checked:bg-indigo-600 relative transition-all">
+            <span class="relative h-6 w-10 rounded-full bg-gray-300 transition-all peer-checked:bg-indigo-600">
               <span class="absolute left-1 top-1 h-4 w-4 rounded-full bg-white transition-all peer-checked:left-5"></span>
             </span>
           </label>
         </div>
 
-        <!-- 時刻を一緒に変えたい場合（任意） -->
         <div class="rounded-lg border bg-white px-3 py-2">
           <label class="block text-sm font-medium text-gray-900">就寝時刻</label>
           <%= time_field_tag "setting[bedtime_time]", (s&.bedtime_time&.strftime("%H:%M") || "23:00"),
@@ -48,5 +73,9 @@
     </section>
   <% else %>
     <p class="text-sm text-gray-600">ログインして設定を変更できます。</p>
+    <div class="mt-2 space-x-2 text-sm">
+      <%= link_to "ログイン", new_user_session_path, class: "underline" %>
+      <%= link_to "新規登録", new_user_registration_path, class: "underline" %>
+    </div>
   <% end %>
 </div>
