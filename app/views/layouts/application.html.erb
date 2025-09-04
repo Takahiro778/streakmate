@@ -1,8 +1,25 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Streakmate</title>
+    <title>StreakMate</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="description" content="Build streaks with friends">
+
+    <!-- OGP (site-wide) -->
+    <meta property="og:site_name" content="StreakMate" />
+    <meta property="og:title" content="StreakMate" />
+    <meta property="og:description" content="Build streaks with friends" />
+    <meta property="og:type" content="website" />
+    <!-- ページURL / 画像の絶対URLを出力 -->
+    <meta property="og:url" content="<%= request.original_url %>" />
+    <meta property="og:image" content="<%= "#{request.base_url}/ogp.png" %>" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="StreakMate" />
+    <meta name="twitter:description" content="Build streaks with friends" />
+    <meta name="twitter:image" content="<%= "#{request.base_url}/ogp.png" %>" />
+
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
@@ -11,20 +28,13 @@
   </head>
 
   <body class="bg-gray-50 text-gray-900">
-    <!-- 共通ヘッダー（高さ56px想定 / safe-top対応） -->
     <%= render "layouts/header" %>
-
-    <!-- メイン：固定フッター分の下余白を確保（safe-bottom + pb-24） -->
     <main class="pb-24 safe-bottom">
       <div class="max-w-sm mx-auto px-4 pt-3">
-        <!-- Flash（共通パーシャルに統一） -->
         <%= render "shared/flash" %>
-
         <%= yield %>
       </div>
     </main>
-
-    <!-- 共通フッター（固定表示 / bottom tabbar想定） -->
     <%= render "layouts/footer" %>
   </body>
 </html>
