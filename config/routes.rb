@@ -5,9 +5,6 @@ Rails.application.routes.draw do
   root "home#show"
   get "home", to: "home#show"
 
-  # 旧トップ（ログイン後用）
-  get "pages/top", to: "pages#top"
-
   # 自分専用マイページ
   resource :mypage, only: [:show, :edit, :update], controller: :profiles
 

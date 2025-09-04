@@ -1,0 +1,24 @@
+<%# ステータス表示はログイン有無に関わらず「最低限」は出す %>
+<% user = defined?(current_user) ? current_user : nil %>
+<% s    = user&.respond_to?(:setting) ? user.setting : nil %>
+
+<% bedtime = (s&.bedtime_time ? s.bedtime_time.strftime("%H:%M") : "23:00") %>
+<% tz      = (s&.time_zone || (defined?(Time) ? Time.zone.tzinfo.name : nil) || "UTC") %>
+<% onoff   = (s&.bedtime_enabled ? "ON" : "OFF") %>
+
+<div class="mx-auto max-w-sm px-4">
+  <div class="mt-3 inline-flex items-center gap-2 rounded-full border bg-white px-3 py-1 text-xs text-gray-700">
+    <span>就寝 <%= bedtime %></span>
+    <span class="text-gray-400">・</span>
+    <span>TZ: <%= tz %></span>
+    <% if user %>
+      <span class="text-gray-400">・</span>
+      <span>通知: <%= onoff %></span>
+      <%= link_to "設定", (defined?(edit_user_registration_path) ? edit_user_registration_path : "#"),
+                  class: "ml-2 underline" %>
+    <% else %>
+      <%= link_to "ログイン", (defined?(new_user_session_path) ? new_user_session_path : "#"),
+                  class: "ml-2 underline" %>
+    <% end %>
+  </div>
+</div>

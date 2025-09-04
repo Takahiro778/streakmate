@@ -1,0 +1,11 @@
+<% if current_user %>
+  <% s = current_user.setting %>
+  <section class="mt-4 space-y-1">
+    <h2 class="text-sm font-semibold text-gray-700">就寝通知</h2>
+    <p class="text-sm">
+      <span class="font-medium"><%= (s&.bedtime_time ? s.bedtime_time.strftime("%H:%M") : "23:00") %></span>
+      通知：<%= s&.bedtime_enabled ? "ON" : "OFF" %>
+    </p>
+    <p class="text-xs text-gray-500">タイムゾーン：<%= s&.time_zone || Time.zone.tzinfo.name %></p>
+  </section>
+<% end %>

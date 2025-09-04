@@ -1,0 +1,9 @@
+<!-- app/views/shared/_header_nav.html.erb の左側ブロック内に追加（md以上で表示） -->
+<div class="hidden md:flex items-center gap-4">
+  <%= link_to "タイムライン", (defined?(timeline_index_path) ? timeline_index_path : "#"),
+        class: "text-gray-700 hover:text-black px-2 py-2 rounded-md" %>
+</div>
+
+<!-- モバイルのドロワーにも項目を追加 -->
+<li><%= link_to "タイムライン", (defined?(timeline_index_path) ? timeline_index_path : "#"),
+      class: "block px-2 py-2 hover:bg-gray-50 rounded" %></li>
