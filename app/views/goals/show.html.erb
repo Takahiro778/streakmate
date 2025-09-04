@@ -1,9 +1,13 @@
 <div class="space-y-6">
-  <div class="text-sm text-gray-600"><%= link_to "一覧に戻る", goals_path, class: "underline" %></div>
+  <div class="text-sm text-gray-600">
+    <%= link_to "一覧に戻る", goals_path, class: "underline" %>
+  </div>
 
   <h1 class="text-2xl font-bold"><%= @goal.title %></h1>
   <div class="text-xs text-gray-600">
-    <%= @goal.user.nickname.presence || @goal.user.email %> • <%= l @goal.created_at, format: :long %> • <%= @goal.visibility %>
+    <%= @goal.user.nickname.presence || @goal.user.email %> •
+    <%= l @goal.created_at, format: :long %> •
+    <%= @goal.visibility %>
   </div>
 
   <div class="flex items-center gap-3">
@@ -23,7 +27,51 @@
   <% if @goal.user_id == current_user.id %>
     <div class="space-x-3 text-sm">
       <%= link_to "編集", edit_goal_path(@goal), class: "text-blue-600 underline" %>
-      <%= link_to "削除", goal_path(@goal), data: { turbo_method: :delete, turbo_confirm: "本当に削除しますか？" }, class: "text-red-600 underline" %>
+      <%= link_to "削除", goal_path(@goal),
+                  data: { turbo_method: :delete, turbo_confirm: "本当に削除しますか？" },
+                  class: "text-red-600 underline" %>
     </div>
   <% end %>
+
+  <!-- === ゴール配下タスク（GoalTasks） === -->
+  <div class="mt-8">
+    <h3 class="font-semibold mb-2">タスク</h3>
+
+    <!-- 追加フォーム -->
+    <% if @goal.user_id == current_user.id %>
+      <%= form_with url: goal_goal_tasks_path(@goal), method: :post, class: "flex gap-2 mb-4" do %>
+        <%= text_field_tag "goal_task[title]", "",
+              placeholder: "タスク名を追加",
+              class: "flex-1 rounded border px-3 py-2 text-sm" %>
+        <%= submit_tag "追加", class: "rounded bg-black px-4 py-2 text-sm text-white hover:opacity-90" %>
+      <% end %>
+    <% end %>
+
+    <!-- 一覧 -->
+    <ul class="space-y-2">
+      <% @goal.goal_tasks.each do |task| %>
+        <li class="flex items-center justify-between rounded border bg-white px-3 py-2">
+          <div class="flex items-center gap-2">
+            <% if @goal.user_id == current_user.id %>
+              <%= button_to "",
+                  goal_goal_task_path(@goal, task, toggle: 1),
+                  method: :patch,
+                  form: { class: "inline" },
+                  class: "h-5 w-5 rounded border #{task.completed? ? 'bg-green-500' : 'bg-white'}",
+                  title: (task.completed? ? '再オープン' : '完了') %>
+            <% end %>
+            <span class="<%= 'line-through text-gray-400' if task.completed? %>">
+              <%= task.title %>
+            </span>
+          </div>
+          <% if @goal.user_id == current_user.id %>
+            <%= button_to "削除",
+                goal_goal_task_path(@goal, task),
+                method: :delete,
+                class: "text-xs text-red-600 hover:underline" %>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+  </div>
 </div>

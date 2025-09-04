@@ -15,6 +15,13 @@ Rails.application.routes.draw do
   resources :goals, only: [:index, :new, :create, :show, :edit, :update, :destroy] do
     # Favorite（ブックマーク）: /goals/:goal_id/favorite
     resource :favorite, only: [:create, :destroy]
+
+    # ✅ ゴール配下タスク（Todo）
+    resources :goal_tasks, only: [:create, :update, :destroy]
+    # 例:
+    # POST   /goals/:goal_id/goal_tasks
+    # PATCH  /goals/:goal_id/goal_tasks/:id
+    # DELETE /goals/:goal_id/goal_tasks/:id
   end
 
   # Log（クイックログ）+ Cheer（応援）+ Comment（コメント）
@@ -28,7 +35,7 @@ Rails.application.routes.draw do
     resource :follow, only: [:create, :destroy]
   end
 
-  # Timeline（全体/フォロー）
+  # Timeline（全体/フォロー）— アクティビティタブの遷移先
   resources :timeline, only: [:index], controller: :timeline
 
   # ✅ Notifications（一覧・既読化・一括既読）
@@ -42,7 +49,7 @@ Rails.application.routes.draw do
   # ✅ Guides（/guides/:id → relax / sleep）
   resources :guides, only: :show
 
-  # 汎用メニュー
+  # 汎用メニュー（フッターの「その他」）
   get "more", to: "pages#more"
 
   # 404 と 500 のエラーページ
