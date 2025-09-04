@@ -5,9 +5,6 @@ Rails.application.routes.draw do
   root "home#show"
   get "home", to: "home#show"
 
-  # 旧トップ（ログイン後用）
-  get "pages/top", to: "pages#top"
-
   # 自分専用マイページ
   resource :mypage, only: [:show, :edit, :update], controller: :profiles
 
@@ -44,6 +41,9 @@ Rails.application.routes.draw do
 
   # ✅ Guides（/guides/:id → relax / sleep）
   resources :guides, only: :show
+
+  # 汎用メニュー
+  get "more", to: "pages#more"
 
   # 404 と 500 のエラーページ
   match "/404", to: "errors#not_found", via: :all

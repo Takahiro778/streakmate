@@ -2,11 +2,13 @@
 <nav class="fixed inset-x-0 bottom-0 z-50 border-t bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 md:hidden">
   <ul class="grid grid-cols-4 h-14">
     <% items = [
-      { label: "ホーム",         href: (defined?(root_path) ? root_path : "#"),           active: (current_page?(root_path) rescue false),           icon: :home  },
-      { label: "タスク",         href: (defined?(logs_path) ? logs_path : "#"),           active: (controller_name == "logs"),                      icon: :check },
-      { label: "アクティビティ", href: (defined?(notifications_path) ? notifications_path : "#"), active: (controller_name == "notifications"), icon: :bell  },
-      { label: "その他",         href: (defined?(mypage_path) ? mypage_path : "#"),       active: ((request.path.start_with?("/mypage") rescue false)), icon: :dots }
+      { label: "ホーム",         href: (defined?(root_path) ? root_path : "#"),                 active: (current_page?(root_path) rescue false),           icon: :home  },
+      { label: "タスク",         href: (defined?(logs_path) ? logs_path : "#"),                 active: (controller_name == "logs"),                       icon: :check },
+      { label: "アクティビティ", href: (defined?(timeline_index_path) ? timeline_index_path : "#"),
+                               active: (controller_name == "timeline"),                     icon: :feed  },
+      { label: "その他",         href: (defined?(more_path) ? more_path : "#"),                 active: (request.path.start_with?("/more") rescue false),  icon: :dots  }
     ] %>
+
 
     <% items.each do |it| %>
       <% base     = "relative flex flex-col items-center justify-center gap-1 text-xs" %>
@@ -23,11 +25,12 @@
           <%   when :check %>
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8">
                 <path d="M20 7 9 18l-5-5" />
-              </svg>
-          <%   when :bell %>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8">
-                <path d="M6 8a6 6 0 1 1 12 0c0 7 3 7 3 9H3c0-2 3-2 3-9" />
-                <path d="M9 20a3 3 0 0 0 6 0" />
+              </svg>         
+          <%   when :feed %>
+             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8">
+             <circle cx="6" cy="18" r="2" />
+                <path d="M4 11a7 7 0 0 1 7 7" />
+                <path d="M4 6a12 12 0 0 1 12 12" />
               </svg>
           <%   when :dots %>
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-6 h-6" fill="currentColor">

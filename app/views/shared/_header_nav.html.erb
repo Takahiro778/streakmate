@@ -1,0 +1,46 @@
+<header class="safe-top sticky top-0 z-40 bg-white/95 backdrop-blur border-b"
+        data-controller="menu"><!-- ← header に controller を付与 -->
+
+  <div class="max-w-sm mx-auto px-4 h-14 flex items-center justify-between">
+    <!-- 左：ロゴ -->
+    <%= link_to (defined?(root_path) ? root_path : "#"), class: "font-semibold" do %>
+      StreakMate
+    <% end %>
+
+    <!-- 右：通知 / ハンバーガー -->
+    <div class="flex items-center gap-2">
+      <%= link_to (defined?(notifications_path) ? notifications_path : "#"),
+                  class: "inline-flex", aria: { label: "通知" } do %>
+        <svg viewBox="0 0 24 24" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M6 8a6 6 0 1 1 12 0c0 7 3 7 3 9H3c0-2 3-2 3-9" />
+          <path d="M9 20a3 3 0 0 0 6 0" />
+        </svg>
+      <% end %>
+
+      <!-- ハンバーガーボタン -->
+      <button
+        data-action="click->menu#toggle"
+        aria-label="メニューを開閉"
+        aria-controls="mobile-menu"
+        aria-expanded="false"
+        class="p-1">
+        <svg viewBox="0 0 24 24" class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- モバイルドロワー -->
+  <div id="mobile-menu" data-menu-target="panel" class="md:hidden hidden border-t">
+    <nav class="max-w-sm mx-auto px-4 py-2">
+      <ul class="flex flex-col">
+        <li><%= link_to "My page", (defined?(mypage_path) ? mypage_path : "#"), class: "block px-2 py-2 hover:bg-gray-50 rounded" %></li>
+        <li><%= link_to "Settings", (defined?(edit_user_registration_path) ? edit_user_registration_path : "#"), class: "block px-2 py-2 hover:bg-gray-50 rounded" %></li>
+        <% if defined?(destroy_user_session_path) %>
+          <li><%= link_to "Log out", destroy_user_session_path, data: { turbo_method: :delete }, class: "block px-2 py-2 text-red-600 hover:bg-red-50 rounded" %></li>
+        <% end %>
+      </ul>
+    </nav>
+  </div>
+</header>
