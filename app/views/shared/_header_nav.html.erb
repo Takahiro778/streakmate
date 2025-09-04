@@ -1,4 +1,6 @@
-<header class="safe-top sticky top-0 z-40 bg-white/95 backdrop-blur border-b">
+<header class="safe-top sticky top-0 z-40 bg-white/95 backdrop-blur border-b"
+        data-controller="menu"><!-- ← header に controller を付与 -->
+
   <div class="max-w-sm mx-auto px-4 h-14 flex items-center justify-between">
     <!-- 左：ロゴ -->
     <%= link_to (defined?(root_path) ? root_path : "#"), class: "font-semibold" do %>
@@ -15,8 +17,8 @@
         </svg>
       <% end %>
 
+      <!-- ハンバーガーボタン -->
       <button
-        data-controller="menu"
         data-action="click->menu#toggle"
         aria-label="メニューを開閉"
         aria-controls="mobile-menu"
