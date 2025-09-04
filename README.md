@@ -258,7 +258,9 @@ DB_TEST=streakmate_test
 ---
 
 ## 🗃️ Database Schema
-See [docs/db_design.md](docs/db_design.md) for the full ER diagram and table definitions.
+![ER図](docs/er.png)
+
+For full table definitions, see [docs/db_design.md](docs/db_design.md).
 
 ---
 
