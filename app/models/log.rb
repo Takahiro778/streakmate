@@ -96,31 +96,50 @@ class Log < ApplicationRecord
     else
       where(user_id: ids, visibility: [visibilities[:public], visibilities[:followers]])
     end
-  end  # ← スコープの end が必要
+  end
 
   # === 月次抽出（ダッシュボード用） ===
   scope :for_month, ->(date = Time.zone.today) {
     where(created_at: date.beginning_of_month..date.end_of_month)
   }
 
-  # 表示ラベル（I18nが未整備でも日本語表示できるよう暫定のマップ）
-  CATEGORY_LABELS = {
-    "study"    => "学習",
-    "work"     => "仕事",
-    "exercise" => "運動",
-    "rest"     => "休憩"
-  }.freeze
+# 未分類キー/ラベル（既に定義済みなら再定義不要）
+UNCATEGORIZED_KEY   = "uncategorized".freeze
+UNCATEGORIZED_LABEL = "未分類".freeze
 
-  # 当月カテゴリ別の合計分数（pie_chart に渡せる形）
-  # 例) { "学習" => 120, "仕事" => 90, ... }
-  def self.sum_minutes_by_category_for_month(date = Time.zone.today)
-    raw   = for_month(date).group(:category).sum(:minutes)      # {0=>120, 1=>90, ...}
-    keyed = raw.transform_keys { |v| categories.key(v) }        # {"study"=>120, "work"=>90, ...}
+CATEGORY_LABELS = {
+  "study"           => "学習",
+  "work"            => "仕事",
+  "exercise"        => "運動",
+  "rest"            => "休憩",
+  UNCATEGORIZED_KEY => UNCATEGORIZED_LABEL
+}.freeze
 
-    keyed.transform_keys do |k|
-      CATEGORY_LABELS[k.to_s] ||
-        (defined?(I18n) ? I18n.t("enums.log.category.#{k}", default: nil) : nil) ||
-        k.to_s.humanize
+def self.sum_minutes_by_category_for_month(date = Time.zone.today)
+  raw = for_month(date).group(:category).sum(:minutes)
+  # raw のキーは環境によって以下のいずれか:
+  # - Integer（0/1/2/3）: DBの整数(enum値)
+  # - String/Symbol（"study" 等）: enum名にキャストされた文字列
+  # - nil: 未設定
+
+  normalized = raw.transform_keys do |v|
+    case v
+    when nil
+      UNCATEGORIZED_KEY
+    when Integer
+      # 整数→enum名
+      categories.key(v) || UNCATEGORIZED_KEY
+    else
+      # すでに enum名（"study" 等）の場合を想定
+      v.to_s.presence || UNCATEGORIZED_KEY
+    end
+  end
+
+  # ラベル化（I18n優先→暫定マップ→humanize）
+  normalized.transform_keys do |k|
+    CATEGORY_LABELS[k] ||
+      (defined?(I18n) ? I18n.t("enums.log.category.#{k}", default: nil) : nil) ||
+      k.to_s.humanize
     end
   end
 end

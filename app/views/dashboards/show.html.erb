@@ -9,9 +9,20 @@
       </span>
     </div>
 
-    <% if @pie_data.present? && @pie_data.values.sum > 0 %>
-      <div class="mt-4">
-        <%= pie_chart @pie_data, legend: "bottom", height: "280px" %>
+    <% if @pie_data.present? && @total_minutes.to_i.positive? %>
+      <div class="mt-4 space-y-3">
+        <% @pie_data.each do |label, mins| %>
+          <% pct = ((mins.to_f / @total_minutes) * 100).round %>
+          <div>
+            <div class="flex justify-between text-sm">
+              <span class="font-medium"><%= label %></span>
+              <span class="text-gray-500"><%= pct %>%（<%= mins %> 分）</span>
+            </div>
+            <div class="w-full h-2 bg-gray-200 rounded-full mt-1">
+              <div class="h-2 bg-blue-500 rounded-full" style="width: <%= pct %>%"></div>
+            </div>
+          </div>
+        <% end %>
       </div>
     <% else %>
       <p class="mt-6 text-sm text-gray-500">

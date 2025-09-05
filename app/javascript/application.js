@@ -1,5 +1,7 @@
-// Configure your import map in config/importmap.rb. Read more: https://github.com/rails/importmap-rails
 import "@hotwired/turbo-rails"
 import "controllers"
-import "chartkick"
-import "Chart.bundle"
+
+// ↓ 一時停止（後で再開するときに戻せます）
+// import { Chart, ArcElement, Tooltip, Legend } from "chart.js"
+// Chart.register(ArcElement, Tooltip, Legend)
+// window.Chart = Chart
