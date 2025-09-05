@@ -53,3 +53,7 @@ gem "pundit", "~> 2.5"
 
 # AWS
 gem "aws-sdk-s3", require: false
+
+# Chart / Visualization
+gem "chartkick"    # グラフ描画
+gem "groupdate"    # 日付・月単位での集計に便利
