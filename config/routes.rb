@@ -5,6 +5,9 @@ Rails.application.routes.draw do
   root "home#show"
   get "home", to: "home#show"
 
+  # ✅ ダッシュボード（ログイン後のメイン）
+  resource :dashboard, only: :show, controller: :dashboards   # ← 追加
+
   # 自分専用マイページ
   resource :mypage, only: [:show, :edit, :update], controller: :profiles
 
@@ -13,7 +16,6 @@ Rails.application.routes.draw do
 
   # Goal（目標）
   resources :goals, only: [:index, :new, :create, :show, :edit, :update, :destroy] do
-    # Favorite（ブックマーク）: /goals/:goal_id/favorite
     resource :favorite, only: [:create, :destroy]
   end
 
@@ -23,7 +25,7 @@ Rails.application.routes.draw do
     resources :comments, only: [:create, :edit, :update, :destroy]
   end
 
-  # Follow（ユーザーに対するフォロー/解除）+ プロフィール表示
+  # Follow + プロフィール表示
   resources :users, only: [:show] do
     resource :follow, only: [:create, :destroy]
   end
