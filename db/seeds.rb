@@ -26,13 +26,12 @@ end
 def set_enum_or_activehash!(model_class, attrs, name, fallback: "public")
   name_s = name.to_s
 
-  # 1) ActiveRecord enum（キー名で入れる）
   if model_class.respond_to?(:defined_enums) && model_class.defined_enums.key?(name_s)
+    # enum は先頭キー（例: "public"）を入れる
     attrs[name] = model_class.defined_enums[name_s].keys.first
     return true
   end
 
-  # 2) ActiveHash（*_id があり、関連クラスから実在IDを拾う）
   id_col = "#{name_s}_id"
   if model_class.column_names.include?(id_col)
     assoc_klass = model_class.reflect_on_association(name)&.klass rescue nil
@@ -41,13 +40,11 @@ def set_enum_or_activehash!(model_class, attrs, name, fallback: "public")
     return true
   end
 
-  # 3) string カラムなら既定値
   if (col = model_class.columns_hash[name_s]) && col.type == :string
     attrs[name] = fallback
     return true
   end
 
-  # 4) integer カラムなら 0
   if (col = model_class.columns_hash[name_s]) && [:integer, :bigint].include?(col.type)
     attrs[name] = 0
     return true
@@ -56,17 +53,69 @@ def set_enum_or_activehash!(model_class, attrs, name, fallback: "public")
   false
 end
 
-# Log.minutes の inclusion を読んで許容セットから選ぶ
 def allowed_minutes_choices
-  return [10, 15, 20, 25, 30, 45, 60, 75, 90, 120] unless defined?(Log)
+  return [15, 30, 45, 60] unless defined?(Log)
   inclusion = Log.validators_on(:minutes).find { |v| v.is_a?(ActiveModel::Validations::InclusionValidator) }
   set = inclusion&.options&.dig(:in)
-  set.respond_to?(:to_a) ? set.to_a : [10, 15, 20, 25, 30, 45, 60, 75, 90, 120]
+  set.respond_to?(:to_a) ? set.to_a : [15, 30, 45, 60]
 end
 
 def random_past_datetime
-  rand(0..14).days.ago.change(hour: [6, 12, 20].sample)
+  (rand(0..14)).days.ago.change(hour: [6, 12, 20].sample)
 end
+
+# ---------------- 日本語テンプレ ----------------
+
+CATEGORIES = {
+  "運動" => {
+    goal_titles: ["運動のゴール", "体力づくりのゴール"],
+    descriptions: [
+      "週に3回、無理のないペースで運動を継続する。ランニングや筋トレ、ストレッチを組み合わせて習慣化する。",
+      "朝か夜のどちらかで軽い有酸素運動を取り入れ、日々の疲れをためにくくする。"
+    ],
+    criteria: [
+      "1か月で12回以上の運動を達成する",
+      "2週間連続で週3回の運動を継続する"
+    ],
+    log_samples: ["ランニング 3km", "自重トレーニング 20分", "ストレッチ 15分"]
+  },
+  "学習" => {
+    goal_titles: ["学習のゴール", "プログラミング学習のゴール"],
+    descriptions: [
+      "毎日30分以上の学習を続け、基礎を固める。教材の写経や小さなアプリ作成で手を動かす。",
+      "復習とアウトプットをセットにして、理解を深める。"
+    ],
+    criteria: [
+      "Railsチュートリアルを最後まで完了する",
+      "毎日30分×2週間の学習を継続する"
+    ],
+    log_samples: ["教材1章を進めた", "Rails 環境構築", "RSpecの章を読んだ"]
+  },
+  "健康" => {
+    goal_titles: ["健康のゴール", "生活リズムのゴール"],
+    descriptions: [
+      "就寝・起床の時刻を整え、1日のパフォーマンスを高める。水分補給や軽い運動も意識する。",
+      "だらだらスマホ時間を減らし、眠る前のリラックスタイムをつくる。"
+    ],
+    criteria: [
+      "23:30までに就寝を1週間継続",
+      "1日に水2Lを1週間継続"
+    ],
+    log_samples: ["23:30 就寝", "7:00 起床", "水を2L飲んだ"]
+  },
+  "クリエイティブ" => {
+    goal_titles: ["クリエイティブのゴール", "制作のゴール"],
+    descriptions: [
+      "毎日短時間でも制作に手をつける。ラフでもよいのでアウトプットを残す。",
+      "完成度より継続を重視し、アイデアを形にする。"
+    ],
+    criteria: [
+      "記事を3本下書きする",
+      "サムネを5案作る"
+    ],
+    log_samples: ["記事の構成メモ", "サムネ画像の草案", "下書きを1本追加"]
+  }
+}.freeze
 
 # ---------------- ここから投入 ----------------
 
@@ -87,14 +136,9 @@ ActiveRecord::Base.transaction do
     { nickname: "旅人ケンタ",       email: "kenta@example.com" }
   ]
 
-  # 固定5名 + ランダム5名（合計10人）
   users = []
   fixed_users.each_with_index do |u, i|
-    users << User.create!(
-      nickname: u[:nickname],
-      email:    u[:email],
-      password: "pass1234#{i}"
-    )
+    users << User.create!(nickname: u[:nickname], email: u[:email], password: "pass1234#{i}")
   end
   5.times do |i|
     users << User.create!(
@@ -107,74 +151,54 @@ ActiveRecord::Base.transaction do
   puts "[seeds] create follows..."
   users.each do |u|
     (users - [u]).sample(3).each do |v|
-      if u.respond_to?(:follow)
-        begin
+      begin
+        if u.respond_to?(:follow)
           u.follow(v)
-          next
-        rescue StandardError
-        end
-      end
-
-      if defined?(Follow) && Follow.column_names.include?("follower_id") && Follow.column_names.include?("followed_id")
-        begin
+        elsif defined?(Follow)
           Follow.create!(follower_id: u.id, followed_id: v.id)
-          next
-        rescue StandardError
-        end
-      end
-
-      if defined?(Relationship) && Relationship.column_names.include?("follower_id") && Relationship.column_names.include?("followed_id")
-        begin
+        elsif defined?(Relationship)
           Relationship.create!(follower_id: u.id, followed_id: v.id)
-          next
-        rescue StandardError
         end
+      rescue StandardError
+        # 既存の一意制約に引っかかったらスキップ
       end
     end
   end
 
   puts "[seeds] create goals & logs..."
-  # 見栄え用カテゴリ候補（文字列カラムのときのみ使用）
-  label_categories = %w[運動 学習 健康 クリエイティブ]
-
   users.each do |u|
     2.times do
+      label = CATEGORIES.keys.sample
+      conf  = CATEGORIES[label]
+
       # ------ Goal ------
-      title_word = label_categories.sample
-      goal_attrs = {
-        title:       "#{title_word}のゴール",
-        description: Faker::Lorem.paragraph_by_chars(number: 120)
-      }
-      set_if_column!(Goal, goal_attrs, :success_criteria, "2週間継続できたらOK")
-      # enum / ActiveHash / string それぞれに対応
-      set_enum_or_activehash!(Goal, goal_attrs, :category,   fallback: title_word)
+      title       = conf[:goal_titles].sample
+      description = conf[:descriptions].sample
+      criteria    = conf[:criteria].sample
+
+      goal_attrs = { title: title, description: description }
+      set_if_column!(Goal, goal_attrs, :success_criteria, criteria)
+      set_enum_or_activehash!(Goal, goal_attrs, :category,   fallback: label)
       set_enum_or_activehash!(Goal, goal_attrs, :visibility, fallback: "public")
 
       goal = u.goals.create!(goal_attrs)
 
-      # ------ Logs（直近2週間の見栄え用データ）------
+      # ------ Logs（直近2週間の見栄え用）------
       7.times do
         log_attrs = { created_at: random_past_datetime }
 
-        # minutes / duration / spent_minutes / length のどれかを埋める
         mins_col = first_existing_column(Log, %w[minutes duration spent_minutes length])
         log_attrs[mins_col.to_sym] = allowed_minutes_choices.sample if mins_col
 
-        # テキスト（存在するテキスト列だけに入れる）
-        samples = case title_word
-                  when "運動"       then ["ランニング 3km", "ジムで筋トレ", "ストレッチ20分"]
-                  when "学習"       then ["Rails環境構築", "RSpecの章を読んだ", "教材1章クリア"]
-                  when "健康"       then ["23:30就寝", "7:00起床", "水を2L飲んだ"]
-                  when "クリエイティブ" then ["記事を下書き", "サムネ作成", "構成メモ"]
-                  else                    [Faker::Lorem.sentence]
-                  end
-        set_any_text_field!(Log, log_attrs, %w[note memo content body description message text], samples.sample)
+        set_any_text_field!(
+          Log, log_attrs,
+          %w[note memo content body description message text],
+          conf[:log_samples].sample
+        )
 
-        # Log 側の visibility / category も（あれば）設定
         set_enum_or_activehash!(Log, log_attrs, :visibility, fallback: "public")
-        set_enum_or_activehash!(Log, log_attrs, :category,   fallback: title_word)
+        set_enum_or_activehash!(Log, log_attrs, :category,   fallback: label)
 
-        # 関連（belongs_to）に合わせて外部キー付与
         log_attrs[:goal_id] = goal.id if Log.reflect_on_association(:goal)&.macro == :belongs_to
         log_attrs[:user_id] = u.id    if Log.reflect_on_association(:user)&.macro == :belongs_to
 
