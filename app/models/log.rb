@@ -97,5 +97,32 @@ class Log < ApplicationRecord
     else
       where(user_id: ids, visibility: [visibilities[:public], visibilities[:followers]])
     end
+
+  # === 月次抽出（ダッシュボード用） ===
+  scope :for_month, ->(date = Time.zone.today) {
+    where(created_at: date.beginning_of_month..date.end_of_month)
+  }
+
+  # 表示ラベル（I18nが未整備でも日本語表示できるよう暫定のマップ）
+  CATEGORY_LABELS = {
+    "study"    => "学習",
+    "work"     => "仕事",
+    "exercise" => "運動",
+    "rest"     => "休憩"
+  }.freeze
+
+  # 当月カテゴリ別の合計分数を返す（Chartkickのpie_chartにそのまま渡せる形）
+  # 例) { "学習" => 120, "仕事" => 90, ... }
+  def self.sum_minutes_by_category_for_month(date = Time.zone.today)
+    # enumの整数値でgroupされた結果をenumキーに戻す
+    raw = for_month(date).group(:category).sum(:minutes)  # {0=>120, 1=>90, ...}
+    keyed = raw.transform_keys { |v| categories.key(v) }  # {"study"=>120, "work"=>90, ...}
+
+    # ラベルはI18nがあればそちらを、なければ暫定マップ → humanizeの順に採用
+    keyed.transform_keys do |k|
+      CATEGORY_LABELS[k.to_s] ||
+        (defined?(I18n) ? I18n.t("enums.log.category.#{k}", default: nil) : nil) ||
+        k.to_s.humanize
+    end
   end
 end
