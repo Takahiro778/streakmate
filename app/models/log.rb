@@ -30,7 +30,6 @@ class Log < ApplicationRecord
   end
 
   # （任意）このログに user がコメント可能かの簡易判定
-  # → 可視であればコメント可、に寄せる（必要なら別ポリシーで厳格化）
   def commentable_by?(user)
     return false if user.blank?
     visible_to?(user)
@@ -97,6 +96,7 @@ class Log < ApplicationRecord
     else
       where(user_id: ids, visibility: [visibilities[:public], visibilities[:followers]])
     end
+  end  # ← スコープの end が必要
 
   # === 月次抽出（ダッシュボード用） ===
   scope :for_month, ->(date = Time.zone.today) {
@@ -111,14 +111,12 @@ class Log < ApplicationRecord
     "rest"     => "休憩"
   }.freeze
 
-  # 当月カテゴリ別の合計分数を返す（Chartkickのpie_chartにそのまま渡せる形）
+  # 当月カテゴリ別の合計分数（pie_chart に渡せる形）
   # 例) { "学習" => 120, "仕事" => 90, ... }
   def self.sum_minutes_by_category_for_month(date = Time.zone.today)
-    # enumの整数値でgroupされた結果をenumキーに戻す
-    raw = for_month(date).group(:category).sum(:minutes)  # {0=>120, 1=>90, ...}
-    keyed = raw.transform_keys { |v| categories.key(v) }  # {"study"=>120, "work"=>90, ...}
+    raw   = for_month(date).group(:category).sum(:minutes)      # {0=>120, 1=>90, ...}
+    keyed = raw.transform_keys { |v| categories.key(v) }        # {"study"=>120, "work"=>90, ...}
 
-    # ラベルはI18nがあればそちらを、なければ暫定マップ → humanizeの順に採用
     keyed.transform_keys do |k|
       CATEGORY_LABELS[k.to_s] ||
         (defined?(I18n) ? I18n.t("enums.log.category.#{k}", default: nil) : nil) ||
