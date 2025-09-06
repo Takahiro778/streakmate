@@ -1,6 +1,45 @@
 @import "tailwindcss";
 
-/* Custom utilities */
+/* === Theme tokens (Tailwind v4) === */
+@theme {
+  /* ブランドカラー */
+  --color-brand-50:  #f5f9ff;
+  --color-brand-100: #e9f1ff;
+  --color-brand-200: #cfe0ff;
+  --color-brand-300: #a8c6ff;
+  --color-brand-400: #74a2ff;
+  --color-brand-500: #3b7bff;
+  --color-brand-600: #2f61d6;
+  --color-brand-700: #254cad;
+  --color-brand-800: #1f3f8c;
+  --color-brand-900: #1b356f;
+
+  /* 角丸 */
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
+
+  /* 影 */
+  --shadow-card: 0 1px 6px 0 rgb(0 0 0 / 0.06);
+  --shadow-btn:  0 1px 3px 0 rgb(0 0 0 / 0.08);
+}
+
+/* === Component classes === */
+@layer components {
+  .card { @apply bg-white border rounded-lg shadow-card p-3 md:p-4; }
+
+  .btn  { @apply inline-flex items-center justify-center rounded-lg shadow-btn px-3 py-2 text-sm font-medium transition; }
+  .btn-primary   { @apply btn bg-brand-500 text-white hover:bg-brand-600 focus:ring-2 focus:ring-brand-200; }
+  .btn-secondary { @apply btn bg-white text-brand-700 border hover:bg-brand-50; }
+  .btn-ghost     { @apply btn bg-transparent text-brand-700 hover:bg-brand-50; }
+
+  .badge   { @apply inline-block text-xs px-2 py-0.5 rounded border bg-gray-50; }
+  .input   { @apply w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-200; }
+  .select  { @apply input; }
+  .textarea{ @apply input; }
+}
+
+/* === Custom utilities (既存) === */
 @layer utilities {
   .safe-bottom {
     padding-bottom: calc(env(safe-area-inset-bottom) + 0.75rem);

@@ -1,19 +1,16 @@
-#!/usr/bin/env bash
-set -euo pipefail
+#!/usr/bin/env sh
 
-if [ -f "Procfile.dev" ]; then
-  # foreman / overmind / heroku local のいずれかを優先的に探す
-  if command -v overmind >/dev/null 2>&1; then
-    exec overmind start -f Procfile.dev
-  elif command -v foreman >/dev/null 2>&1; then
-    exec foreman start -f Procfile.dev
-  elif command -v heroku >/dev/null 2>&1; then
-    exec heroku local -f Procfile.dev
-  else
-    echo "Procfile.dev を検出。foreman/overmind が無いので web のみ起動します。"
-    exec bin/rails server -p ${APP_PORT:-3000}
-  fi
-else
-  # フォールバック（Rails 単体）
-  exec bin/rails server -p ${APP_PORT:-3000}
+if ! gem list foreman -i --silent; then
+  echo "Installing foreman..."
+  gem install foreman
 fi
+
+# Default to port 3000 if not specified
+export PORT="${PORT:-3000}"
+
+# Let the debug gem allow remote connections,
+# but avoid loading until `debugger` is called
+export RUBY_DEBUG_OPEN="true"
+export RUBY_DEBUG_LAZY="true"
+
+exec foreman start -f Procfile.dev "$@"

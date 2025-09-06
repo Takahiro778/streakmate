@@ -42,3 +42,6 @@
 
 # Windows の Zone.Identifier ファイルを無視
 *.Zone.Identifier
+
+/app/assets/builds/*
+!/app/assets/builds/.keep
