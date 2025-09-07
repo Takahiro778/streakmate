@@ -19,10 +19,10 @@
   <div class="flex gap-2">
     <% [15,30,45,60].each do |m| %>
       <button type="button"
-              class="px-3 py-3 min-h-[44px] rounded-md border"
+              class="px-3 py-3 min-h-[44px] rounded-md border inline-flex items-center justify-center gap-1.5"
               data-action="click->quick-logger#setMinutes"
               data-minutes="<%= m %>">
-        <%= m %>分
+        <%= icon "clock", size: "w-4 h-4", "aria-hidden": "true" %> <span><%= m %>分</span>
       </button>
     <% end %>
   </div>
@@ -49,9 +49,10 @@
   </div>
 
   <div class="text-right">
-    <%= f.submit "記録",
-          class: "btn-primary w-full min-h-[44px]",
-          disabled: true,
-          data: { quick_logger_target: "submitButton" } %>
+    <%= f.button class: "btn-primary w-full min-h-[44px] inline-flex items-center justify-center gap-1.5",
+                 disabled: true,
+                 data: { quick_logger_target: "submitButton" } do %>
+      <%= icon "check", variant: :solid, size: "w-5 h-5", "aria-hidden": "true" %> <span>記録</span>
+    <% end %>
   </div>
 <% end %>

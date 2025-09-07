@@ -161,6 +161,8 @@ GEM
     ffi (1.17.2-x86_64-linux-gnu)
     globalid (1.2.1)
       activesupport (>= 6.1)
+    heroicon (1.0.0)
+      rails (>= 5.2)
     i18n (1.14.7)
       concurrent-ruby (~> 1.0)
     image_processing (1.14.0)
@@ -371,6 +373,7 @@ DEPENDENCIES
   dotenv-rails (~> 3.1)
   factory_bot_rails
   faker
+  heroicon
   image_processing (~> 1.2)
   importmap-rails
   jbuilder

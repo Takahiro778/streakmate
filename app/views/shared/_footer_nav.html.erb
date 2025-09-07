@@ -1,45 +1,39 @@
 <%# スマホ下部固定のフッターナビ（md以上は非表示） %>
-<nav class="fixed inset-x-0 bottom-0 z-50 border-t bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 md:hidden">
+<nav class="fixed inset-x-0 bottom-0 z-50 border-t bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 md:hidden" role="navigation" aria-label="フッターナビ">
   <ul class="grid grid-cols-4 h-14">
     <% items = [
-      { label: "ホーム",         href: (defined?(root_path) ? root_path : "#"),                 active: (current_page?(root_path) rescue false),           icon: :home  },
-      { label: "タスク",         href: (defined?(logs_path) ? logs_path : "#"),                 active: (controller_name == "logs"),                       icon: :check },
+      { label: "ホーム",         href: (defined?(root_path) ? root_path : "#"),
+        active: (defined?(root_path) ? (current_page?(root_path) rescue false) : false),
+        icon: "home" },
+
+      { label: "タスク",         href: (defined?(logs_path) ? logs_path : "#"),
+        active: (controller_name == "logs"),
+        icon: "clipboard-document-list" },
+
       { label: "アクティビティ", href: (defined?(timeline_index_path) ? timeline_index_path : "#"),
-                               active: (controller_name == "timeline"),                     icon: :feed  },
-      { label: "その他",         href: (defined?(more_path) ? more_path : "#"),                 active: (request.path.start_with?("/more") rescue false),  icon: :dots  }
+        active: (controller_name == "timeline"),
+        icon: "bell" },
+
+      { label: "その他",         href: (defined?(more_path) ? more_path : "#"),
+        active: (request.path.start_with?("/more") rescue false),
+        icon: "ellipsis-horizontal" }
     ] %>
 
-
     <% items.each do |it| %>
-      <% base     = "relative flex flex-col items-center justify-center gap-1 text-xs" %>
+      <% base     = "relative flex flex-col items-center justify-center gap-0.5" %>
       <% link_cls = it[:active] ? "text-slate-900 font-medium" : "text-slate-500 hover:text-slate-900" %>
+
       <li>
-        <%= link_to it[:href], class: "#{base} #{link_cls}", "aria-current": (it[:active] ? "page" : nil) do %>
-          <%# --- Heroicons相当の軽量インラインSVG（色はcurrentColor） --- %>
-          <% case it[:icon]
-             when :home %>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8">
-                <path d="M3 10.5 12 3l9 7.5" />
-                <path d="M5 10v9a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-9" />
-              </svg>
-          <%   when :check %>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8">
-                <path d="M20 7 9 18l-5-5" />
-              </svg>         
-          <%   when :feed %>
-             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8">
-             <circle cx="6" cy="18" r="2" />
-                <path d="M4 11a7 7 0 0 1 7 7" />
-                <path d="M4 6a12 12 0 0 1 12 12" />
-              </svg>
-          <%   when :dots %>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-6 h-6" fill="currentColor">
-                <circle cx="5" cy="12" r="2" /><circle cx="12" cy="12" r="2" /><circle cx="19" cy="12" r="2" />
-              </svg>
-          <% end %>
-          <span><%= it[:label] %></span>
+        <%= link_to it[:href], class: "#{base} #{link_cls} min-h-[56px] pt-0.5", "aria-current": (it[:active] ? "page" : nil) do %>
+          <%= icon it[:icon],
+                   variant: (it[:active] ? :solid : :outline),
+                   size: "w-6 h-6",
+                   "aria-hidden": "true" %>
+          <span class="text-[11px] leading-none"><%= it[:label] %></span>
+
+          <%# アクティブ下線 %>
           <% if it[:active] %>
-            <span class="absolute -bottom-px h-0.5 w-10 bg-slate-900 rounded"></span>
+            <span class="absolute -bottom-px h-0.5 w-8 bg-slate-900 rounded" aria-hidden="true"></span>
           <% end %>
         <% end %>
       </li>
