@@ -2,7 +2,10 @@
   <h2 class="text-2xl font-bold">目標一覧</h2>
 
   <div>
-    <%= link_to "新規作成", new_goal_path, class: "btn-primary w-full min-h-[44px] block text-center" %>
+    <%= link_to new_goal_path, class: "btn-primary w-full min-h-[44px] block text-center inline-flex items-center justify-center gap-1.5" do %>
+      <%= icon "plus", variant: :solid, size: "w-5 h-5", "aria-hidden": "true" %>
+      新規作成
+    <% end %>
   </div>
 
   <% if @goals.blank? %>
@@ -19,9 +22,15 @@
           <p class="mt-2 text-sm text-gray-700">カテゴリ：<%= g.category.name %></p>
 
           <% if g.user_id == current_user.id %>
-            <div class="mt-2 space-x-3 text-sm">
-              <%= link_to "編集", edit_goal_path(g), class: "text-blue-600 underline" %>
-              <%= link_to "削除", goal_path(g), data: { turbo_method: :delete, turbo_confirm: "本当に削除しますか？" }, class: "text-red-600 underline" %>
+            <div class="mt-2 space-x-1 text-sm">
+              <%= link_to edit_goal_path(g), class: "inline-flex items-center gap-1.5 px-2 py-1 rounded hover:bg-gray-50 text-blue-600" do %>
+                <%= icon "pencil-square", size: "w-4 h-4", "aria-hidden": "true" %> <span>編集</span>
+              <% end %>
+              <%= link_to goal_path(g),
+                          data: { turbo_method: :delete, turbo_confirm: "本当に削除しますか？" },
+                          class: "inline-flex items-center gap-1.5 px-2 py-1 rounded hover:bg-red-50 text-red-600" do %>
+                <%= icon "trash", size: "w-4 h-4", "aria-hidden": "true" %> <span>削除</span>
+              <% end %>
             </div>
           <% end %>
         </div>

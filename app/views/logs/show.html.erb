@@ -1,24 +1,22 @@
 <div class="space-y-6">
-  
   <%= turbo_stream_from [@log, :comments_stream] %>
 
   <div class="text-sm text-gray-600">
-    <%= link_to "一覧に戻る", logs_path, class: "underline" %>
+    <%= link_to logs_path, class: "underline inline-flex items-center gap-1.5" do %>
+      <%= icon "arrow-left", size: "w-4 h-4" %> 一覧に戻る
+    <% end %>
   </div>
 
-  <!-- 見出し：カテゴリ・分数 -->
   <h1 class="text-2xl font-bold">
     <%= "#{@log.category.titleize} ・ #{@log.minutes}分" %>
   </h1>
 
-  <!-- サブ情報：ユーザー名・作成日時・公開範囲 -->
   <div class="text-xs text-gray-600">
     <%= @log.user.nickname.presence || @log.user.email %>
     • <%= l @log.created_at, format: :long %>
     • <%= @log.visibility %>
   </div>
 
-  <!-- 応援ボタン + X共有（公開ログのみ表示される想定のヘルパ） -->
   <div class="flex items-center gap-3">
     <%= render "cheers/button", log: @log %>
     <%= x_share_link_to(@log, text: "今日のログを共有", hashtags: %w[StreakMate ログ]) %>
@@ -28,21 +26,9 @@
     <p class="whitespace-pre-wrap text-sm"><%= @log.memo %></p>
   <% end %>
 
-  <!-- メタ情報（任意） -->
   <p class="text-sm text-gray-700">
     カテゴリ：<%= @log.category.titleize %>
   </p>
 
-  <!-- 将来 edit/destroy を追加するなら Pundit で制御して表示
-  <%# if policy(@log).update? || policy(@log).destroy? %>
-    <div class="space-x-3 text-sm">
-      <%#= link_to "編集", edit_log_path(@log), class: "text-blue-600 underline" %>
-      <%#= link_to "削除", log_path(@log), data: { turbo_method: :delete, turbo_confirm: "本当に削除しますか？" }, class: "text-red-600 underline" %>
-    </div>
-  <%# end %>
-  -->
-
-  <!-- ▼ コメント（一覧＋フォーム） -->
   <%= render "comments/section", log: @log, comment: Comment.new %>
-  <!-- ▲ コメントここまで -->
 </div>
