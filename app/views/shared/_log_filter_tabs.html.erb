@@ -1,0 +1,17 @@
+<% f = (local_assigns[:filter] || "all") %>
+<div class="flex gap-3 mb-3">
+  <%= link_to "Today",
+      logs_path(request.query_parameters.merge(f: "today")),
+      class: "px-4 py-2 rounded-md border text-sm " +
+             (f == "today" ? "bg-brand-50 border-brand-200 text-brand-700" : "hover:bg-gray-50") %>
+
+  <%= link_to "This week",
+      logs_path(request.query_parameters.merge(f: "week")),
+      class: "px-4 py-2 rounded-md border text-sm " +
+             (f == "week" ? "bg-brand-50 border-brand-200 text-brand-700" : "hover:bg-gray-50") %>
+
+  <%= link_to "All",
+      logs_path(request.query_parameters.merge(f: "all")),
+      class: "px-4 py-2 rounded-md border text-sm " +
+             (f == "all" ? "bg-brand-50 border-brand-200 text-brand-700" : "hover:bg-gray-50") %>
+</div>
