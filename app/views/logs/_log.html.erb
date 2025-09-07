@@ -1,9 +1,7 @@
-<article id="log-<%= log.id %>" class="p-3 border rounded-lg bg-white shadow-sm">
+<article id="log-<%= log.id %>" class="card">
   <div class="flex items-center justify-between">
     <div class="flex items-center gap-2">
-      <span class="px-2 py-0.5 text-xs rounded-full border bg-gray-50">
-        <%= log.category.titleize %>
-      </span>
+      <span class="badge"><%= log.category.titleize %></span>
       <span class="font-semibold"><%= log.minutes %>分</span>
     </div>
 
@@ -21,14 +19,9 @@
     <p class="mt-2 text-sm whitespace-pre-wrap text-gray-700"><%= log.memo %></p>
   <% end %>
 
-  <!-- Cheer（応援）＋ X共有 ＋ コメント数 -->
   <div class="mt-3 flex items-center gap-4 text-sm text-gray-600">
     <%= render "cheers/button", log: log %>
-    <%= x_share_link_to(log) %> <!-- 公開ログのみ表示 -->
-
-    <!-- コメント数バッジ -->
-    <span class="inline-flex items-center gap-1 text-gray-500">
-      💬 <%= log.comments.size %>
-    </span>
+    <%= x_share_link_to(log) %>
+    <span class="inline-flex items-center gap-1 text-gray-500">💬 <%= log.comments.size %></span>
   </div>
 </article>

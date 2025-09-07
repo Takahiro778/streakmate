@@ -3,32 +3,32 @@
 
   <%= render 'shared/errors', obj: @goal %>
 
-  <%= form_with model: @goal, local: true do |f| %>
-    <div class="mb-4">
+  <%= form_with model: @goal, local: true, class: "space-y-4" do |f| %>
+    <div>
       <%= f.label :title, 'タイトル' %>
-      <%= f.text_field :title, class: "w-full border rounded p-2", maxlength: 60 %>
+      <%= f.text_field :title, class: "input", maxlength: 60 %>
     </div>
 
-    <div class="mb-4">
+    <div>
       <%= f.label :description, '説明' %>
-      <%= f.text_area :description, class: "w-full border rounded p-2", rows: 6, maxlength: 1000 %>
+      <%= f.text_area :description, class: "textarea", rows: 6, maxlength: 1000 %>
     </div>
 
-    <div class="mb-4">
+    <div>
       <%= f.label :success_criteria, '達成基準' %>
-      <%= f.text_area :success_criteria, class: "w-full border rounded p-2", rows: 4, maxlength: 500 %>
+      <%= f.text_area :success_criteria, class: "textarea", rows: 4, maxlength: 500 %>
     </div>
 
-    <div class="mb-4">
+    <div>
       <%= f.label :category_id, 'カテゴリ' %>
-      <%= f.collection_select :category_id, Category.all, :id, :name, {}, class: "w-full border rounded p-2" %>
+      <%= f.collection_select :category_id, Category.all, :id, :name, {}, class: "select" %>
     </div>
 
-    <div class="mb-6">
+    <div>
       <%= f.label :visibility, '公開範囲' %>
-      <%= f.select :visibility, Goal.visibilities.keys.map { |k| [k, k] }, {}, class: "w-full border rounded p-2" %>
+      <%= f.select :visibility, Goal.visibilities.keys.map { |k| [k, k] }, {}, class: "select" %>
     </div>
 
-    <%= f.submit "更新する", class: "px-4 py-2 bg-green-600 text-white rounded" %>
+    <%= f.submit "更新する", class: "btn-primary" %>
   <% end %>
 </div>

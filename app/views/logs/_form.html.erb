@@ -31,7 +31,7 @@
     <%= f.text_area :memo,
           rows: 2,
           placeholder: "メモ（任意・Enterで送信）",
-          class: "w-full p-2 border rounded-md text-sm",
+          class: "textarea",
           data: { quick_logger_target: "memoField", action: "keydown.enter->quick-logger:submitIfReady" } %>
   </div>
 
@@ -50,7 +50,7 @@
 
   <div class="text-right">
     <%= f.submit "記録",
-          class: "w-full min-h-[44px] px-4 py-2 rounded-md bg-black text-white font-medium disabled:opacity-50",
+          class: "btn-primary w-full min-h-[44px]",
           disabled: true,
           data: { quick_logger_target: "submitButton" } %>
   </div>

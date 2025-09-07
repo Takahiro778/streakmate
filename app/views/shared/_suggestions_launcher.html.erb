@@ -1,5 +1,5 @@
 <!-- 共通: ワンタップ提案ランチャー -->
-<div class="rounded-xl border bg-white shadow-sm p-3">
+<div class="card">
   <div class="flex items-center justify-between gap-3">
     <p class="text-sm text-gray-600">
       ひと息いれませんか？ 時間帯に合うミニ提案を3つ表示します。
@@ -8,11 +8,11 @@
     <%= button_to "ワンタップで提案",
                   suggestions_path(
                     category: (local_assigns[:category] || "relax"),
-                    target_id: (local_assigns[:target_id] || "suggestions")  # ★ 追加
+                    target_id: (local_assigns[:target_id] || "suggestions")
                   ),
                   method: :post,
                   form: { data: { turbo_stream: true } },
-                  class: "shrink-0 px-3 py-2 rounded-xl border bg-white text-sm hover:bg-gray-50" %>
+                  class: "btn-secondary shrink-0" %>
   </div>
 
   <!-- Turbo Stream がここを置換します（ページごとに一意のIDを渡せます） -->

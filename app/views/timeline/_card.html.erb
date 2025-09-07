@@ -1,50 +1,36 @@
-<article id="log-<%= log.id %>" class="p-3 border rounded-lg bg-white shadow-sm">
-
+<article id="log-<%= log.id %>" class="card">
   <%= turbo_stream_from [log, :comments_stream] %>
 
   <div class="flex items-center justify-between">
     <div class="flex items-center gap-2">
-      <%# ユーザー名（本人はマイページ／他人はプロフィールへリンク） %>
       <% if user_signed_in? && current_user == log.user %>
         <%= link_to log.user.nickname, mypage_path, class: "text-sm font-semibold hover:underline" %>
       <% else %>
         <%= link_to log.user.nickname, user_path(log.user), class: "text-sm font-semibold hover:underline" %>
       <% end %>
 
-      <span class="px-2 py-0.5 text-xs rounded-full border bg-gray-50">
-        <%= log.category.titleize %>
-      </span>
+      <span class="badge"><%= log.category.titleize %></span>
       <span class="font-semibold"><%= log.minutes %>分</span>
     </div>
-    <span class="text-xs text-gray-500">
-      <%= l(log.created_at, format: :short) %>
-    </span>
+    <span class="text-xs text-gray-500"><%= l(log.created_at, format: :short) %></span>
   </div>
 
   <% if log.memo.present? %>
-    <p class="mt-2 text-sm whitespace-pre-wrap text-gray-700">
-      <%= log.memo %>
-    </p>
+    <p class="mt-2 text-sm whitespace-pre-wrap text-gray-700"><%= log.memo %></p>
   <% end %>
 
-  <!-- 公開範囲（見分けやすく） -->
   <div class="mt-2 text-xs text-gray-400">
-    <% if log.visibility_public? %>
-      🌍 公開
-    <% elsif log.visibility_followers? %>
-      👥 フォロー限定
-    <% else %>
-      🔒 非公開
+    <% if log.visibility_public? %>🌍 公開
+    <% elsif log.visibility_followers? %>👥 フォロー限定
+    <% else %>🔒 非公開
     <% end %>
   </div>
 
-  <!-- 応援 + X共有（公開でない場合はヘルパが非表示にする） -->
   <div class="mt-3 flex items-center gap-3">
     <%= render "cheers/button", log: log %>
     <%= x_share_link_to(log) %>
   </div>
 
-  <!-- コメント（一覧＋フォーム） -->
   <div class="mt-4">
     <%= render "comments/section", log: log %>
   </div>

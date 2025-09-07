@@ -1,29 +1,44 @@
-<div class="space-y-4">
-  <h1 class="text-xl font-bold">就寝リマインダー</h1>
+<div class="max-w-sm mx-auto p-4 space-y-6">
+  <h1 class="text-xl font-bold">Settings</h1>
 
-  <%= form_with model: @setting, url: setting_path, method: :patch,
-                data: { controller: "toggle-submit", action: "change->toggle-submit#submit" } do |f| %>
-    <div class="flex items-center justify-between py-3">
-      <div>
-        <div class="text-base font-medium">23:00 通知</div>
-        <div class="text-xs text-gray-600"><%= @setting.time_zone %></div>
+  <%= form_with url: setting_path, method: :patch, class: "space-y-4" do |f| %>
+    <!-- 就寝通知ブロック -->
+    <section class="card space-y-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="font-medium">就寝通知</p>
+          <p class="text-xs text-gray-500">毎日の就寝時刻にリマインド</p>
+        </div>
+
+        <label class="inline-flex cursor-pointer items-center">
+          <%= hidden_field_tag "setting[bedtime_enabled]", 0 %>
+          <%= check_box_tag "setting[bedtime_enabled]", 1, @setting&.bedtime_enabled, class: "sr-only peer" %>
+          <span class="relative h-6 w-10 rounded-full bg-gray-300 transition-all peer-checked:bg-indigo-600">
+            <span class="absolute left-1 top-1 h-4 w-4 rounded-full bg-white transition-all peer-checked:left-5"></span>
+          </span>
+        </label>
       </div>
 
-      <input type="hidden" name="setting[bedtime_enabled]" value="0" />
+      <div>
+        <label class="block text-sm font-medium text-gray-900">就寝時刻</label>
+        <%= time_field_tag "setting[bedtime_time]",
+              (@setting&.bedtime_time&.strftime("%H:%M") || "23:00"),
+              class: "input mt-1" %>
+        <p class="mt-1 text-xs text-gray-500">24時間表記（例: 23:00）</p>
+      </div>
 
-      <label for="setting_bedtime_enabled" class="inline-flex items-center cursor-pointer select-none">
-        <%= f.check_box :bedtime_enabled,
-                        { id: "setting_bedtime_enabled", class: "peer sr-only", include_hidden: false },
-                        "1", "0" %>
-        <span aria-hidden="true"
-              class="w-12 h-7 rounded-full flex items-center px-1 transition-all
-                     bg-gray-300 peer-checked:bg-blue-600 peer-checked:justify-end">
-          <span class="w-5 h-5 bg-white rounded-full"></span>
-        </span>
-      </label>
+      <p class="text-xs text-gray-500">
+        タイムゾーン：
+        <%= @setting&.time_zone.presence || Time.zone.tzinfo.name %>
+      </p>
+    </section>
+
+    <!-- 画面下に張り付く保存ボタン -->
+    <div class="sticky bottom-[72px] md:bottom-4 inset-x-0 z-40
+                bg-white/95 backdrop-blur border-t supports-[backdrop-filter]:bg-white/60 py-3">
+      <div class="max-w-sm mx-auto px-4">
+        <%= f.submit "保存", class: "btn-primary w-full min-h-[44px]" %>
+      </div>
     </div>
-
-    <%= f.hidden_field :bedtime_time, value: "23:00" %>
-    <%= f.hidden_field :time_zone, value: Time.zone.tzinfo.name %>
   <% end %>
 </div>

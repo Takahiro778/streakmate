@@ -2,8 +2,7 @@
   <h2 class="text-2xl font-bold">目標一覧</h2>
 
   <div>
-    <%= link_to "新規作成", new_goal_path,
-                class: "w-full block min-h-[44px] px-4 py-2 bg-blue-600 text-white text-center rounded-md" %>
+    <%= link_to "新規作成", new_goal_path, class: "btn-primary w-full min-h-[44px] block text-center" %>
   </div>
 
   <% if @goals.blank? %>
@@ -11,7 +10,7 @@
   <% else %>
     <div class="space-y-4">
       <% @goals.each do |g| %>
-        <div class="border rounded-md p-4">
+        <div class="card">
           <div class="text-xs text-gray-600 mb-1">
             <%= g.user.nickname.presence || g.user.email %> • <%= l g.created_at, format: :short %> • <%= g.visibility %>
           </div>
