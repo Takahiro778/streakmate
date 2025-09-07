@@ -5,8 +5,20 @@
     <div class="flex items-center gap-3">
       <%# 通知はログイン時のみ %>
       <% if user_signed_in? %>
-        <%= link_to notifications_path, class: "relative" do %>
-          <span class="sr-only">Notifications</span> 🔔
+        <% unread = unread_notifications_count(current_user) %>
+        <%= link_to notifications_path, class: "relative p-2 rounded hover:bg-gray-50" do %>
+          <span class="sr-only">Notifications</span>
+          <%= icon "bell",
+                   variant: (unread > 0 ? :solid : :outline),
+                   size: "w-6 h-6",
+                   "aria-hidden": "true" %>
+
+          <% if unread > 0 %>
+            <span class="absolute -top-0.5 -right-0.5 inline-flex items-center justify-center
+                         w-4 h-4 text-[10px] font-bold text-white bg-red-500 rounded-full">
+              <%= unread %>
+            </span>
+          <% end %>
         <% end %>
       <% end %>
 
