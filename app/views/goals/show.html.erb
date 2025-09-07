@@ -52,11 +52,18 @@
       <% end %>
     <% end %>
 
-    <ul class="space-y-2">
+    <%# ▼▼ 並び替え対応版リスト（D&D + 矢印fallback） ▼▼ %>
+    <ul class="space-y-2"
+        <%# 自分のゴールの時だけソート有効化 %>
+        <% if @goal.user_id == current_user.id %>
+          data-controller="sortable"
+          data-sortable-url-value="<%= reorder_goal_goal_tasks_path(@goal) %>"
+        <% end %>>
       <% @goal.goal_tasks.each do |task| %>
-        <li class="flex items-center justify-between card">
+        <li class="flex items-center justify-between card" data-id="<%= task.id %>">
           <div class="flex items-center gap-2">
             <% if @goal.user_id == current_user.id %>
+              <span class="drag-handle cursor-grab select-none text-gray-400" title="並び替え">⋮⋮</span>
               <%= button_to goal_goal_task_path(@goal, task, toggle: 1),
                             method: :patch,
                             form: { class: "inline" },
@@ -73,15 +80,35 @@
             <% end %>
             <span class="<%= 'line-through text-gray-400' if task.completed? %>"><%= task.title %></span>
           </div>
-          <% if @goal.user_id == current_user.id %>
-            <%= button_to goal_goal_task_path(@goal, task),
-                          method: :delete,
-                          class: "inline-flex items-center gap-1.5 px-2 py-1 rounded text-xs text-red-600 hover:bg-red-50" do %>
-              <%= icon "trash", size: "w-4 h-4", "aria-hidden": "true" %> <span>削除</span>
+
+          <div class="flex items-center gap-1">
+            <% if @goal.user_id == current_user.id %>
+              <%# 矢印ボタン（フォールバック／微調整用） %>
+              <%= button_to move_goal_goal_task_path(@goal, task, move: :up),
+                            method: :patch,
+                            class: "px-2 py-1 text-xs rounded border hover:bg-gray-50",
+                            form: { "data-turbo-confirm": nil } do %>
+                ↑
+              <% end %>
+              <%= button_to move_goal_goal_task_path(@goal, task, move: :down),
+                            method: :patch,
+                            class: "px-2 py-1 text-xs rounded border hover:bg-gray-50",
+                            form: { "data-turbo-confirm": nil } do %>
+                ↓
+              <% end %>
             <% end %>
-          <% end %>
+
+            <% if @goal.user_id == current_user.id %>
+              <%= button_to goal_goal_task_path(@goal, task),
+                            method: :delete,
+                            class: "inline-flex items-center gap-1.5 px-2 py-1 rounded text-xs text-red-600 hover:bg-red-50" do %>
+                <%= icon "trash", size: "w-4 h-4", "aria-hidden": "true" %> <span>削除</span>
+              <% end %>
+            <% end %>
+          </div>
         </li>
       <% end %>
     </ul>
+    <%# ▲▲ 並び替え対応版リスト ▲▲ %>
   </div>
 </div>
