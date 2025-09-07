@@ -1,4 +1,4 @@
-<div class="max-w-sm mx-auto p-6 space-y-8">
+<div class="max-w-sm mx-auto p-6 space-y-8 pb-24"> <!-- ← 末尾に余白を追加 -->
   <h1 class="text-xl font-bold">More</h1>
 
   <% if current_user %>
@@ -24,7 +24,6 @@
             <span aria-hidden="true">›</span>
           <% end %>
         </li>
-        <%# 必要なら後で追記：ガイド/規約/プライバシーなど %>
       </ul>
     </section>
 
@@ -43,7 +42,7 @@
     <!-- ON/OFF 切り替えフォーム -->
     <section>
       <%= form_with url: setting_path, method: :patch, class: "space-y-3" do |f| %>
-        <div class="flex items-center justify-between rounded-lg border bg-white px-3 py-2">
+        <div class="rounded-lg border bg-white px-3 py-2 flex items-center justify-between">
           <div>
             <p class="text-sm font-medium text-gray-900">就寝通知を有効にする</p>
             <p class="text-xs text-gray-500">毎日の就寝時刻にリマインドを受け取ります</p>
@@ -59,15 +58,16 @@
           </label>
         </div>
 
-        <div class="rounded-lg border bg-white px-3 py-2">
+        <div class="card">
           <label class="block text-sm font-medium text-gray-900">就寝時刻</label>
-          <%= time_field_tag "setting[bedtime_time]", (s&.bedtime_time&.strftime("%H:%M") || "23:00"),
-                             class: "mt-1 w-full rounded-md border px-3 py-2 text-sm" %>
+          <%= time_field_tag "setting[bedtime_time]",
+                (s&.bedtime_time&.strftime("%H:%M") || "23:00"),
+                class: "input mt-1" %>
           <p class="mt-1 text-xs text-gray-500">24時間表記（例: 23:00）</p>
         </div>
 
         <div class="flex justify-end">
-          <%= f.submit "保存", class: "rounded-md bg-black px-4 py-2 text-sm font-medium text-white hover:opacity-90" %>
+          <%= f.submit "保存", class: "btn-primary" %>
         </div>
       <% end %>
     </section>

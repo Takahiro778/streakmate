@@ -1,4 +1,4 @@
-<div class="space-y-6 pb-28"><!-- ← 末尾に余白を確保（保険） -->
+<div class="space-y-6 pb-28">
   <h2 class="text-2xl font-bold">目標の作成</h2>
 
   <%= render 'shared/errors', obj: @goal %>
@@ -6,27 +6,27 @@
   <%= form_with model: @goal, local: true, class: "space-y-4" do |f| %>
     <div>
       <%= f.label :title, 'タイトル' %>
-      <%= f.text_field :title, class: "w-full border rounded-md p-2 text-sm", maxlength: 60 %>
+      <%= f.text_field :title, class: "input", maxlength: 60 %>
     </div>
 
     <div>
       <%= f.label :description, '説明' %>
-      <%= f.text_area :description, class: "w-full border rounded-md p-2 text-sm", rows: 6, maxlength: 1000 %>
+      <%= f.text_area :description, class: "textarea", rows: 6, maxlength: 1000 %>
     </div>
 
     <div>
       <%= f.label :success_criteria, '達成基準' %>
-      <%= f.text_area :success_criteria, class: "w-full border rounded-md p-2 text-sm", rows: 4, maxlength: 500 %>
+      <%= f.text_area :success_criteria, class: "textarea", rows: 4, maxlength: 500 %>
     </div>
 
     <div>
       <%= f.label :category_id, 'カテゴリ' %>
-      <%= f.collection_select :category_id, Category.all, :id, :name, {}, class: "w-full border rounded-md p-2 text-sm" %>
+      <%= f.collection_select :category_id, Category.all, :id, :name, {}, class: "select" %>
     </div>
 
     <div>
       <%= f.label :visibility, '公開範囲' %>
-      <%= f.select :visibility, Goal.visibilities.keys.map { |k| [k, k] }, {}, class: "w-full border rounded-md p-2 text-sm" %>
+      <%= f.select :visibility, Goal.visibilities.keys.map { |k| [k, k] }, {}, class: "select" %>
       <p class="text-xs text-gray-600 mt-1">
         public：全員 / followers：フォロワーのみ / private：自分のみ
       </p>
@@ -34,15 +34,12 @@
 
     <div>
       <%= f.label :share_summary, 'シェア用短縮説明（任意・140文字）' %>
-      <%= f.text_field :share_summary, class: "w-full border rounded-md p-2 text-sm", maxlength: 140, placeholder: "Xに載せる短文（任意）" %>
+      <%= f.text_field :share_summary, class: "input", maxlength: 140, placeholder: "Xに載せる短文（任意）" %>
     </div>
 
-    <!-- ▼ 送信バーをフッターの“上”に固定 -->
-    <div
-      class="sticky bottom-[72px] md:bottom-4 left-0 right-0 z-40
-             border-t bg-white/90 backdrop-blur supports-[backdrop-filter]:bg-white/60 py-3">
-      <%= f.submit "作成する",
-            class: "w-full min-h-[44px] px-4 py-3 bg-blue-600 text-white rounded-md font-medium hover:opacity-90" %>
+    <!-- 送信バー -->
+    <div class="sticky bottom-[72px] md:bottom-4 left-0 right-0 z-40 border-t bg-white/90 backdrop-blur supports-[backdrop-filter]:bg-white/60 py-3">
+      <%= f.submit "作成する", class: "btn-primary w-full min-h-[44px]" %>
     </div>
   <% end %>
 </div>

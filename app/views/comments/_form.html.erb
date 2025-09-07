@@ -3,8 +3,8 @@
     <div class="flex gap-2">
       <%= f.text_area :body, rows: 2, maxlength: Comment::MAX_LEN,
             placeholder: "コメント（1〜#{Comment::MAX_LEN}文字）",
-            class: "flex-1 p-2 border rounded-md text-sm" %>
-      <%= f.submit "送信", class: "px-3 py-2 text-sm rounded-md bg-blue-600 text-white hover:opacity-90" %>
+            class: "textarea flex-1" %>
+      <%= f.submit "送信", class: "btn-primary" %>
     </div>
   <% end %>
 <% end %>

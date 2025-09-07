@@ -2,11 +2,11 @@
 <% text, path =
    case notification.action.to_sym
    when :commented
-     comment = notification.notifiable  # Comment
+     comment = notification.notifiable
      ["#{notification.actor.nickname} さんがあなたのログにコメントしました",
       timeline_index_path(anchor: dom_id(comment.log))]
    when :cheered
-     cheer = notification.notifiable     # Cheer
+     cheer = notification.notifiable
      ["#{notification.actor.nickname} さんがあなたのログを応援しました",
       timeline_index_path(anchor: dom_id(cheer.log))]
    when :followed
@@ -15,13 +15,16 @@
    end %>
 
 <div id="<%= dom_id(notification) %>"
-     class="p-3 border rounded flex justify-between items-center <%= 'opacity-60' if notification.read_at %>">
+     class="card flex justify-between items-center <%= 'opacity-60' if notification.read_at %>">
   <div class="text-sm">
     <%= link_to text, path, class: "hover:underline" %>
     <span class="text-xs text-gray-500 ml-2"><%= l notification.created_at, format: :short %></span>
   </div>
+
   <% unless notification.read_at %>
-    <%= button_to "既読", notification_path(notification), method: :patch,
-          class: "text-xs px-2 py-1 border rounded" %>
+    <%= button_to "既読",
+          notification_path(notification),
+          method: :patch,
+          class: "btn-secondary text-xs py-1 px-2" %>
   <% end %>
 </div>
