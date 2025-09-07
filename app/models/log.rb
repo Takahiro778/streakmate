@@ -81,11 +81,13 @@ class Log < ApplicationRecord
   }
 
   scope :on_day, ->(date) {
+    # Time.zone に基づく 1 日（アプリ既定のタイムゾーン）
     where(created_at: date.in_time_zone.all_day)
   }
 
   scope :this_week, -> {
-    where(created_at: Time.zone.now.all_week)
+    # 週の開始は app 側の想定に合わせて（必要なら :sunday に変更）
+    where(created_at: Time.zone.now.all_week(:monday))
   }
 
   scope :in_month, ->(date) {
@@ -96,6 +98,18 @@ class Log < ApplicationRecord
   scope :this_month, -> {
     now = Time.zone.now
     where(created_at: now.beginning_of_month..now.end_of_month)
+  }
+
+  # === フィルター用（今回追加） ===
+  scope :today, -> { on_day(Date.current) }
+
+  # f パラメータ（"today" / "week" / "all"）を受けて一元的に適用
+  scope :filtered_by, ->(f) {
+    case f
+    when "today" then today
+    when "week"  then this_week
+    else              all
+    end
   }
 
   # viewer に応じた可視ログ（全体タブ）
