@@ -37,6 +37,7 @@ gem "heroicon"                         # UI用アイコン
 gem "jbuilder"
 gem "tzinfo-data", platforms: %i[windows jruby]
 gem "bootsnap", require: false
+gem 'bullet'
 
 # 画像処理（MiniMagick を使う）
 gem "image_processing", "~> 1.2"
