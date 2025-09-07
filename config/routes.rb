@@ -17,12 +17,12 @@ Rails.application.routes.draw do
     resource :favorite, only: [:create, :destroy]
 
     # ✅ ゴール配下タスク（Todo）
-    resources :goal_tasks, only: [:create, :update, :destroy]
-    # 例:
-    # POST   /goals/:goal_id/goal_tasks
-    # PATCH  /goals/:goal_id/goal_tasks/:id
-    # DELETE /goals/:goal_id/goal_tasks/:id
+    resources :goal_tasks, only: [:create, :update, :destroy] do
+    # 追加：D&D一括並び替え と 矢印ボタン移動
+    collection { patch :reorder }      # /goals/:goal_id/goal_tasks/reorder
+    member     { patch :move }         # /goals/:goal_id/goal_tasks/:id/move?move=up|down
   end
+
 
   # Log（クイックログ）+ Cheer（応援）+ Comment（コメント）
   resources :logs, only: [:index, :show, :create] do
