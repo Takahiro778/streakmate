@@ -8,11 +8,17 @@ class LogsController < ApplicationController
   def index
     @log = current_user.logs.build
 
+    # --- filter param (today|week|all) ---
+    @filter = params[:f].presence_in(%w[today week all]) || "all"
+
     # 自分のダッシュボード用でも policy_scope を必ず経由
     base_scope = Log.where(user_id: current_user.id)
+
     @logs = policy_scope(base_scope)
-              .includes(:user, :cheers, :comments) # 一覧で使う関連は先読み
+              .filtered_by(@filter)                 # ← ここで日付フィルタ適用
+              .includes(:user, :cheers, :comments)  # 一覧で使う関連を先読み
               .order(created_at: :desc)
+              .page(params[:page]).per(20)          # ページング
 
     # ダッシュボード用メトリクス
     @streak_days    = current_user.streak_days
@@ -20,17 +26,15 @@ class LogsController < ApplicationController
   end
 
   def show
-    # public / followers / private の認可チェック
     @log = Log
       .includes(
         :user,
         :cheers,
-        # コメント → ユーザー → プロフィール → avatar(ActiveStorage) を先読み
         comments: { user: { profile: [:avatar_attachment, :avatar_blob] } }
       )
       .find(params[:id])
 
-    authorize @log  # => LogPolicy#show?
+    authorize @log
   end
 
   def create
@@ -42,7 +46,7 @@ class LogsController < ApplicationController
       @weekly_minutes = current_user.weekly_minutes
 
       respond_to do |format|
-        format.turbo_stream  # タイムライン先頭に反映（prepend）
+        format.turbo_stream
         format.html { redirect_to logs_path, notice: "ログを追加しました" }
       end
     else
