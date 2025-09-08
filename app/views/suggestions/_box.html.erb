@@ -1,8 +1,18 @@
-<div class="space-y-2">
+<div class="space-y-3">
   <% suggestions.each do |s| %>
-    <div class="card flex items-center justify-between">
-      <span class="text-sm"><%= s.respond_to?(:label) ? s.label : s[:label] %></span>
-      <%# TODO: ここに「15分で記録」などCTAを置くなら追加 %>
+    <%# s は Struct でも Hash でも動くように safe access %>
+    <% title = (s.respond_to?(:title) ? s.title : s[:title]) %>
+    <% body  = (s.respond_to?(:body)  ? s.body  : s[:body])  %>
+    <% icon  = (s.respond_to?(:icon)  ? s.icon  : s[:icon])  %>
+    <% tone  = (s.respond_to?(:tone)  ? s.tone  : s[:tone])  %>
+
+    <div class="card card--tight flex gap-3 items-start">
+      <div class="text-xl leading-none select-none"><%= icon %></div>
+      <div class="flex-1">
+        <p class="font-medium"><%= title %></p>
+        <p class="text-sm text-gray-600 mt-0.5"><%= body %></p>
+        <p class="text-[11px] text-gray-500 mt-1">Tone: <%= tone %></p>
+      </div>
     </div>
   <% end %>
 </div>
