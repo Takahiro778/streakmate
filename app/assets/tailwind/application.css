@@ -22,7 +22,7 @@
 
   /* モバイルで少しだけタイトにしたい時に付け足すクラス */
   .card--tight { @apply p-2 md:p-3; }
-  
+
   .btn-primary {
     @apply inline-flex items-center justify-center rounded-lg
            px-3 py-2 text-sm font-medium transition
@@ -85,5 +85,5 @@
   .active-underline { @apply absolute -bottom-px h-0.5 w-8 bg-slate-900 rounded; }
 
   /* ▼ 追加：固定フッター(h-14=56px)＋セーフエリアぶんの下余白を常に確保 */
-  .pb-footer { padding-bottom: calc(56px + env(safe-area-inset-bottom) + 8px); }
+  .pb-footer { padding-bottom: calc(60px + env(safe-area-inset-bottom)); }
 }
