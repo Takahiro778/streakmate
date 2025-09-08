@@ -1,10 +1,4 @@
-<%= turbo_frame_tag dom_id(log, :new_comment) do %>
-  <%= form_with model: [log, comment], data: { turbo_submits_with: "投稿中..." } do |f| %>
-    <div class="flex gap-2">
-      <%= f.text_area :body, rows: 2, maxlength: Comment::MAX_LEN,
-            placeholder: "コメント（1〜#{Comment::MAX_LEN}文字）",
-            class: "textarea flex-1" %>
-      <%= f.submit "送信", class: "btn-primary" %>
-    </div>
-  <% end %>
+<%= form_with model: [log, comment], data: { turbo_frame: "new_comment" }, class: "flex gap-2" do |f| %>
+  <%= f.text_field :body, placeholder: "コメント（1〜200文字）", class: "input flex-1", maxlength: 200 %>
+  <%= f.submit (comment.persisted? ? "更新" : "送信"), class: "btn-primary" %>
 <% end %>

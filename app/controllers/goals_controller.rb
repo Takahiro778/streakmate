@@ -5,16 +5,18 @@ class GoalsController < ApplicationController
 
   def index
     @goals = Goal.visible_to(current_user)
-                 .includes(:user) # ActiveHashのCategoryはincludes不要
+                 .includes(:user)
                  .order(created_at: :desc)
   end
 
   def show
-    # set_goal で見つからなければ既にリダイレクト済み
     return unless @goal
     unless allowed_to_view?(@goal, current_user)
-      redirect_to goals_path, alert: 'この目標を閲覧する権限がありません'
+      redirect_to goals_path, alert: 'この目標を閲覧する権限がありません' and return
     end
+
+    # ✅ リロード時も「未完のみ」表示
+    @tasks = @goal.goal_tasks.incomplete
   end
 
   def new
@@ -31,8 +33,7 @@ class GoalsController < ApplicationController
     end
   end
 
-  def edit
-  end
+  def edit; end
 
   def update
     if @goal.update(goal_params)
@@ -50,14 +51,12 @@ class GoalsController < ApplicationController
 
   private
 
-  # ✅ 削除済みや存在しないIDなら一覧へ戻す
   def set_goal
     @goal = Goal.find_by(id: params[:id])
     return if @goal.present?
-    redirect_to goals_path, alert: '指定の目標は見つかりませんでした' and return
+    redirect_to goals_path, alert: '指定の目標は見つかりませんでした'
   end
 
-  # 投稿者のみ編集/削除可
   def set_own_goal
     @goal = current_user.goals.find_by(id: params[:id])
     return if @goal.present?
@@ -68,13 +67,10 @@ class GoalsController < ApplicationController
     params.require(:goal).permit(:title, :description, :category_id, :visibility, :success_criteria, :share_summary)
   end
 
-  # 詳細ページの可視性判定（followersは現状「自分のみ」想定）
   def allowed_to_view?(goal, viewer)
     return false if viewer.nil?
     return true  if goal.visibility_public?
     return goal.user_id == viewer.id if goal.visibility_private?
-
-    # followers: フォロー未実装の間は自分のみ
     goal.user_id == viewer.id || viewer.following_ids.include?(goal.user_id)
   end
 end

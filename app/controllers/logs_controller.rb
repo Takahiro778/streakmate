@@ -1,40 +1,35 @@
 class LogsController < ApplicationController
   before_action :authenticate_user!
 
-  # Pundit の検証フック
   after_action :verify_authorized,    except: [:index]
   after_action :verify_policy_scoped, only:   [:index]
 
   def index
     @log = current_user.logs.build
-
-    # --- filter param (today|week|all) ---
     @filter = params[:f].presence_in(%w[today week all]) || "all"
 
-    # 自分のダッシュボード用でも policy_scope を必ず経由
     base_scope = Log.where(user_id: current_user.id)
-
     @logs = policy_scope(base_scope)
-              .filtered_by(@filter)                 # ← ここで日付フィルタ適用
-              .includes(:user, :cheers, :comments)  # 一覧で使う関連を先読み
+              .filtered_by(@filter)
+              .includes(:user, :cheers, :comments)
               .order(created_at: :desc)
-              .page(params[:page]).per(20)          # ページング
+              .page(params[:page]).per(20)
 
-    # ダッシュボード用メトリクス
     @streak_days    = current_user.streak_days
     @weekly_minutes = current_user.weekly_minutes
   end
 
   def show
-    @log = Log
-      .includes(
-        :user,
-        :cheers,
-        comments: { user: { profile: [:avatar_attachment, :avatar_blob] } }
-      )
-      .find(params[:id])
+    @log = Log.includes(
+      :user,
+      :cheers,
+      comments: { user: { profile: [:avatar_attachment, :avatar_blob] } }
+    ).find(params[:id])
 
     authorize @log
+
+    # 一覧側でソートが必要なら controller で明示
+    @comments = @log.comments.order(:created_at)
   end
 
   def create
@@ -44,7 +39,6 @@ class LogsController < ApplicationController
     if @log.save
       @streak_days    = current_user.streak_days
       @weekly_minutes = current_user.weekly_minutes
-
       respond_to do |format|
         format.turbo_stream
         format.html { redirect_to logs_path, notice: "ログを追加しました" }
@@ -60,6 +54,18 @@ class LogsController < ApplicationController
         end
         format.html { render :index, status: :unprocessable_entity }
       end
+    end
+  end
+
+  # ✅ 追加：ログ削除（フラッシュ付で一覧へ）
+  def destroy
+    @log = Log.find(params[:id])
+    authorize @log
+    if @log.user_id == current_user.id
+      @log.destroy!
+      redirect_to logs_path, notice: "ログを削除しました"
+    else
+      redirect_to @log, alert: "削除できるのは自分のログだけです"
     end
   end
 

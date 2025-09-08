@@ -1,17 +1,1 @@
-<% if @comment.errors.any? %>
-  <%= turbo_stream.replace dom_id(@comment) do %>
-    <%= form_with model: [@log, @comment], data: { turbo_submits_with: "更新中..." } do |f| %>
-      <div class="flex gap-2 p-2 border rounded-md bg-white">
-        <%= f.text_area :body, rows: 2, maxlength: Comment::MAX_LEN, class: "textarea flex-1" %>
-        <div class="flex flex-col gap-2">
-          <%= f.submit "保存", class: "btn-primary" %>
-          <%= link_to "キャンセル", log_path(@log), data: { turbo: false }, class: "text-xs text-gray-500 underline text-center" %>
-        </div>
-      </div>
-    <% end %>
-  <% end %>
-<% else %>
-  <%= turbo_stream.replace dom_id(@comment) do %>
-    <%= render "comments/comment", comment: @comment %>
-  <% end %>
-<% end %>
+<%= turbo_stream.replace dom_id(@comment), render(@comment) %>

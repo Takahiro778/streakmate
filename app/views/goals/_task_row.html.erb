@@ -1,0 +1,39 @@
+<%= turbo_frame_tag dom_id(task) do %>
+  <li class="flex items-center justify-between card" data-id="<%= task.id %>">
+    <div class="flex items-center gap-2">
+      <% if mine %>
+        <span class="drag-handle cursor-grab select-none text-gray-400" title="並び替え">⋮⋮</span>
+
+        <%= button_to goal_goal_task_path(goal, task, toggle: 1),
+                      method: :patch,
+                      form: { class: "inline", data: { turbo_frame: dom_id(task) } },
+                      class: "inline-flex items-center justify-center h-7 w-7 rounded border hover:bg-gray-50",
+                      title: (task.completed? ? '再オープン' : '完了') do %>
+          <% if task.completed? %>
+            <%= icon "check-circle", variant: :solid, size: "w-5 h-5", classes: "text-green-600", "aria-hidden": "true" %>
+          <% else %>
+            <%= icon "circle", size: "w-5 h-5", "aria-hidden": "true" %>
+          <% end %>
+        <% end %>
+      <% end %>
+
+      <span class="<%= 'line-through text-gray-400' if task.completed? %>">
+        <%= h task.title %>
+      </span>
+    </div>
+
+    <% if mine %>
+      <div class="flex items-center gap-1">
+        <%= button_to move_goal_goal_task_path(goal, task, move: :up),
+                      method: :patch,
+                      class: "px-2 py-1 text-xs rounded border hover:bg-gray-50",
+                      form: { "data-turbo-confirm": nil } do %>↑<% end %>
+
+        <%= button_to move_goal_goal_task_path(goal, task, move: :down),
+                      method: :patch,
+                      class: "px-2 py-1 text-xs rounded border hover:bg-gray-50",
+                      form: { "data-turbo-confirm": nil } do %>↓<% end %>
+      </div>
+    <% end %>
+  </li>
+<% end %>

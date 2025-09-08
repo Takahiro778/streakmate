@@ -1,0 +1,12 @@
+<%= turbo_frame_tag "new_task_form" do %>
+  <%= form_with url: goal_goal_tasks_path(goal), method: :post,
+                data: { turbo_stream: true }, class: "flex gap-2 mb-4" do %>
+    <%= text_field_tag "goal_task[title]", "", placeholder: "タスク名を追加",
+          class: "input flex-1", autocomplete: "off" %>
+    <%= button_tag type: "submit",
+          class: "btn-primary inline-flex items-center justify-center gap-1.5 min-h-[44px]" do %>
+      <%= icon "plus", variant: :solid, size: "w-5 h-5", "aria-hidden": "true" %>
+      <span>追加</span>
+    <% end %>
+  <% end %>
+<% end %>

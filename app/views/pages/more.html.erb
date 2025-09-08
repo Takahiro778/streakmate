@@ -1,5 +1,4 @@
-<%# 余白と幅は layouts/application の内側ラッパーに任せる %>
-<div class="space-y-8 pb-24">
+<div class="space-y-8 pb-footer">
   <h1 class="text-xl font-bold">More</h1>
 
   <% if current_user %>
@@ -40,7 +39,7 @@
       <p class="text-xs text-gray-500">タイムゾーン：<%= s&.time_zone || Time.zone.tzinfo.name %></p>
     </section>
 
-    <!-- ON/OFF 切り替えフォーム（元のトグル） -->
+    <!-- ON/OFF 切り替えフォーム -->
     <section>
       <%= form_with url: setting_path, method: :patch, class: "space-y-3" do |f| %>
         <div class="rounded-lg border bg-white px-3 py-2 flex items-center justify-between">
