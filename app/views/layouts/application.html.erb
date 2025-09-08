@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-    <head>
+  <head>
     <title>StreakMate</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="description" content="Build streaks with friends">
@@ -22,17 +22,19 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
-    <!-- Tailwind v4: ビルド済みCSSを1行だけ読む -->
+    <!-- Tailwind v4: built CSS only -->
     <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
 
+    <!-- Importmap / Turbo / Stimulus -->
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="bg-gray-50 text-gray-900">
+  <!-- フッター（h-14 ≒ 56px）とかぶらないよう、bodyに「pb-16 + safe-bottom」を付与 -->
+  <body class="bg-gray-50 text-gray-900 pb-16 md:pb-0 safe-bottom">
     <%= render "shared/header_nav" %>
 
-    <%# ヘッダー(高さ12)とフッター(高さ16)のかぶり回避 %>
-    <main class="pt-12 pb-16 md:pb-0 safe-bottom">
+    <!-- ヘッダー（h-12 ≒ 48px）ぶんの上余白のみ確保 -->
+    <main class="pt-12">
       <div class="max-w-sm mx-auto px-4 pt-3">
         <%= render "shared/flash" %>
         <%= yield %>

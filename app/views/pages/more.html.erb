@@ -1,4 +1,5 @@
-<div class="max-w-sm mx-auto p-6 space-y-8 pb-24"> <!-- ← 末尾に余白を追加 -->
+<%# 余白と幅は layouts/application の内側ラッパーに任せる %>
+<div class="space-y-8 pb-24">
   <h1 class="text-xl font-bold">More</h1>
 
   <% if current_user %>
@@ -39,7 +40,7 @@
       <p class="text-xs text-gray-500">タイムゾーン：<%= s&.time_zone || Time.zone.tzinfo.name %></p>
     </section>
 
-    <!-- ON/OFF 切り替えフォーム -->
+    <!-- ON/OFF 切り替えフォーム（元のトグル） -->
     <section>
       <%= form_with url: setting_path, method: :patch, class: "space-y-3" do |f| %>
         <div class="rounded-lg border bg-white px-3 py-2 flex items-center justify-between">
@@ -48,7 +49,6 @@
             <p class="text-xs text-gray-500">毎日の就寝時刻にリマインドを受け取ります</p>
           </div>
 
-          <!-- トグル（checkbox） -->
           <label class="inline-flex cursor-pointer items-center">
             <%= hidden_field_tag "setting[bedtime_enabled]", 0 %>
             <%= check_box_tag "setting[bedtime_enabled]", 1, s&.bedtime_enabled, class: "sr-only peer" %>
