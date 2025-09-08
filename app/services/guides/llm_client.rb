@@ -50,9 +50,9 @@ module Guides
       raise "invalid_json_from_llm" unless parsed.is_a?(Array) && parsed.any?
 
       # ---- 正規化（出来るだけ切らない／自然な整形） ----
-      # 目安：title 6-20字, body 40-100字（長すぎる時だけ … で省略）
-      title_max = 20
-      body_max  = 100
+      # 目安：title 6-18字, body 50-90字（長すぎる時だけ … で省略）
+      title_max = 18
+      body_max  = 90
 
       items = parsed.first(3).map do |h|
         raw_title = tidy(h["title"])
@@ -91,8 +91,9 @@ module Guides
 
       厳守事項:
       - 5分以内 / 道具不要 / その場でできる行動
-      - title は 6〜20文字程度、body は 40〜100文字程度
+      - title は 6〜18文字程度、body は 50〜90文字程度（読みやすい一文）
       - 改行は入れない（1行に収める）、助詞を省略しない自然な日本語
+      - 命令形を避け、提案としてやわらかく（〜してみましょう）
       - 医療行為の示唆や断定は不可（一般的で安全）
       - 形式は必ず JSON 配列（3要素）。各要素は { "title": "", "body": "", "icon": "🎯", "tone": "#{tone}" }
 

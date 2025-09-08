@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
-    <head>
+  <head>
     <title>StreakMate</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="description" content="Build streaks with friends">
 
-    <!-- OGP (site-wide) -->
+    <!-- OGP -->
     <meta property="og:site_name" content="StreakMate" />
     <meta property="og:title" content="StreakMate" />
     <meta property="og:description" content="Build streaks with friends" />
@@ -22,18 +22,16 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
-    <!-- Tailwind v4: ビルド済みCSSを1行だけ読む -->
     <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
-
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="bg-gray-50 text-gray-900">
+  <body class="bg-gray-50 text-gray-900"><!-- body から pb/safe-bottom を外す -->
     <%= render "shared/header_nav" %>
 
-    <%# ヘッダー(高さ12)とフッター(高さ16)のかぶり回避 %>
-    <main class="pt-12 pb-16 md:pb-0 safe-bottom">
-      <div class="max-w-sm mx-auto px-4 pt-3">
+    <main class="pt-12">
+      <!-- 実際のコンテンツ列にだけ十分な下パディングを付与 -->
+      <div class="max-w-sm mx-auto px-4 pt-3 pb-footer">
         <%= render "shared/flash" %>
         <%= yield %>
       </div>

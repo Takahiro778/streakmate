@@ -1,8 +1,11 @@
 class SuggestionsController < ApplicationController
+  before_action :authenticate_user!
+
   def create
-    category   = params[:category].presence || "relax"
-    @target_id = params[:target_id].presence || "suggestions"   # ★追加
-    service    = Guides::SuggestionService.new
+    category   = params[:category].presence  || "relax"
+    @target_id = params[:target_id].presence || "suggestions"
+
+    service = Guides::SuggestionService.new
     @suggestions = service.suggest(category: category)
 
     respond_to do |format|

@@ -8,7 +8,7 @@
 
   --radius-lg: 0.5rem; --radius-xl: 0.75rem; --radius-2xl: 1rem;
 
-  /* 任意の影は変数で管理し、@applyではなく box-shadow で使う */
+  /* use variables for shadows (don’t @apply box-shadow) */
   --shadow-card: 0 1px 6px 0 rgb(0 0 0 / 0.06);
   --shadow-btn:  0 1px 3px 0 rgb(0 0 0 / 0.08);
 }
@@ -19,6 +19,9 @@
     @apply bg-white border border-gray-200 rounded-lg p-3 md:p-4;
     box-shadow: var(--shadow-card);
   }
+
+  /* モバイルで少しだけタイトにしたい時に付け足すクラス */
+  .card--tight { @apply p-2 md:p-3; }
 
   .btn-primary {
     @apply inline-flex items-center justify-center rounded-lg
@@ -45,7 +48,7 @@
 
   .badge { @apply inline-block text-xs px-2 py-0.5 rounded border bg-gray-50; }
 
-  /* 自作クラスへの @apply はしない（同名クラスを入れ子にしないという意味） */
+  /* 自作クラスに対して入れ子の@applyはしない方針 */
   .input {
     @apply w-full rounded-lg border px-3 py-2 text-sm
            focus:outline-none focus:ring-2 focus:ring-brand-200;
@@ -59,21 +62,17 @@
            focus:outline-none focus:ring-2 focus:ring-brand-200;
   }
 
-  /* --- 追加: アイコン+ラベルの整列・タップ領域共通 --- */
+  /* --- extras: shared icon/label layout & touch target --- */
   .icon-label { @apply inline-flex items-center justify-center gap-1.5; }
   .tap-target { @apply min-h-[44px] px-2 py-1; }
 
-  /* --- 追加: フッターナビ用の小コンポーネント --- */
+  /* --- footer nav helpers --- */
   .footer-link {
-    /* アイコン+ラベルの縦詰めとタップ領域を統一 */
     @apply relative flex flex-col items-center justify-center gap-0.5
            min-h-[56px] pt-0.5;
   }
-  .footer-label {
-    /* 小さめでも読みやすい文字サイズに */
-    @apply text-[11px] leading-none;
-  }
-  .footer-link--active { @apply text-slate-900 font-medium; }
+  .footer-label { @apply text-[11px] leading-none; }
+  .footer-link--active   { @apply text-slate-900 font-medium; }
   .footer-link--inactive { @apply text-slate-500 hover:text-slate-900; }
 }
 
@@ -82,8 +81,9 @@
   .safe-bottom { padding-bottom: calc(env(safe-area-inset-bottom) + 0.75rem); }
   .safe-top    { padding-top:    calc(env(safe-area-inset-top)    + 0.5rem); }
 
-  /* --- 追加: 下線インジケータ（フッター用） --- */
-  .active-underline {
-    @apply absolute -bottom-px h-0.5 w-8 bg-slate-900 rounded;
-  }
+  /* underline indicator for active footer tab */
+  .active-underline { @apply absolute -bottom-px h-0.5 w-8 bg-slate-900 rounded; }
+
+  /* ▼ 追加：固定フッター(h-14=56px)＋セーフエリアぶんの下余白を常に確保 */
+  .pb-footer { padding-bottom: calc(60px + env(safe-area-inset-bottom)); }
 }
