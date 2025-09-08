@@ -1,0 +1,24 @@
+<%= turbo_frame_tag dom_id(task) do %>
+  <div class="card flex items-center justify-between gap-3">
+    <div class="flex items-center gap-2">
+      <!-- 完了トグル：PATCH /goals/:goal_id/goal_tasks/:id?toggle=1 -->
+      <%= button_to goal_goal_task_path(goal, task, toggle: 1),
+                    method: :patch,
+                    form: { data: { turbo_frame: dom_id(task) } },
+                    class: "inline-flex items-center justify-center w-6 h-6 rounded border" do %>
+        <span aria-hidden="true"><%= task.completed? ? "✔︎" : "" %></span>
+        <span class="sr-only"><%= task.completed? ? "未完了に戻す" : "完了にする" %></span>
+      <% end %>
+
+      <div class="<%= task.completed? ? 'line-through text-gray-400' : '' %>">
+        <%= h task.title %>
+      </div>
+    </div>
+
+    <% if task.estimated_minutes.to_i > 0 %>
+      <div class="text-xs text-gray-500">
+        <%= task.estimated_minutes.to_i %>分
+      </div>
+    <% end %>
+  </div>
+<% end %>

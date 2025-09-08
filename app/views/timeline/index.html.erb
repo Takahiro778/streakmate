@@ -1,4 +1,4 @@
-<div class="space-y-4">
+<div class="space-y-4 pb-footer-lg">
   <!-- タブ切替 -->
   <div class="flex gap-2 pt-4">
     <%= link_to "全体", timeline_index_path(tab: :all),
@@ -10,7 +10,6 @@
         aria: { current: ('page' if @tab == 'following') } %>
   </div>
 
-  <!-- ログが無い場合 -->
   <% if @logs.blank? %>
     <p class="text-center text-sm text-gray-600 py-10">表示できるログがありません。</p>
   <% else %>

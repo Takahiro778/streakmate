@@ -1,14 +1,16 @@
 <div class="space-y-6">
   <div class="text-sm text-gray-600">
     <%= link_to goals_path, class: "underline inline-flex items-center gap-1.5" do %>
-      <%= icon "arrow-left", size: "w-4 h-4", "aria-hidden": "true" %> <span>一覧に戻る</span>
+      <%= icon "arrow-left", size: "w-4 h-4", "aria-hidden": "true" %>
+      <span>一覧に戻る</span>
     <% end %>
   </div>
 
   <h1 class="text-2xl font-bold"><%= @goal.title %></h1>
+
   <div class="text-xs text-gray-600">
-    <%= @goal.user.nickname.presence || @goal.user.email %> •
-    <%= l @goal.created_at, format: :long %> •
+    <%= @goal.user.nickname.presence || @goal.user.email %> ・
+    <%= l @goal.created_at, format: :long %> ・
     <%= @goal.visibility %>
   </div>
 
@@ -29,86 +31,38 @@
   <% if @goal.user_id == current_user.id %>
     <div class="space-x-1 text-sm">
       <%= link_to edit_goal_path(@goal), class: "inline-flex items-center gap-1.5 px-2 py-1 rounded hover:bg-gray-50 text-blue-600" do %>
-        <%= icon "pencil-square", size: "w-4 h-4", "aria-hidden": "true" %> <span>編集</span>
+        <%= icon "pencil-square", size: "w-4 h-4", "aria-hidden": "true" %>
+        <span>編集</span>
       <% end %>
       <%= link_to goal_path(@goal),
                   data: { turbo_method: :delete, turbo_confirm: "本当に削除しますか？" },
                   class: "inline-flex items-center gap-1.5 px-2 py-1 rounded hover:bg-red-50 text-red-600" do %>
-        <%= icon "trash", size: "w-4 h-4", "aria-hidden": "true" %> <span>削除</span>
+        <%= icon "trash", size: "w-4 h-4", "aria-hidden": "true" %>
+        <span>削除</span>
       <% end %>
     </div>
   <% end %>
 
   <!-- === ゴール配下タスク === -->
-  <div class="mt-8">
-    <h3 class="font-semibold mb-2">タスク</h3>
+<div class="mt-8 pb-footer-lg">   <!-- ← ここを pb-footer → pb-footer-lg に -->
+  <h3 class="font-semibold mb-2">タスク</h3>
 
-    <% if @goal.user_id == current_user.id %>
-      <%= form_with url: goal_goal_tasks_path(@goal), method: :post, class: "flex gap-2 mb-4" do %>
-        <%= text_field_tag "goal_task[title]", "", placeholder: "タスク名を追加", class: "input flex-1" %>
-        <%= button_tag type: "submit", class: "btn-primary inline-flex items-center justify-center gap-1.5 min-h-[44px]" do %>
-          <%= icon "plus", variant: :solid, size: "w-5 h-5", "aria-hidden": "true" %> <span>追加</span>
-        <% end %>
-      <% end %>
-    <% end %>
+  <% if @goal.user_id == current_user.id %>
+    <%= render "goals/new_task_form", goal: @goal %>
+  <% end %>
 
-    <%# ▼▼ 並び替え対応版リスト（D&D + 矢印fallback） ▼▼ %>
-    <ul class="space-y-2"
-        <%# 自分のゴールの時だけソート有効化 %>
+  <%= turbo_frame_tag "goal_tasks" do %>
+    <ul id="goal_tasks_list"
+        class="space-y-2"
         <% if @goal.user_id == current_user.id %>
           data-controller="sortable"
           data-sortable-url-value="<%= reorder_goal_goal_tasks_path(@goal) %>"
         <% end %>>
-      <% @goal.goal_tasks.each do |task| %>
-        <li class="flex items-center justify-between card" data-id="<%= task.id %>">
-          <div class="flex items-center gap-2">
-            <% if @goal.user_id == current_user.id %>
-              <span class="drag-handle cursor-grab select-none text-gray-400" title="並び替え">⋮⋮</span>
-              <%= button_to goal_goal_task_path(@goal, task, toggle: 1),
-                            method: :patch,
-                            form: { class: "inline" },
-                            class: "inline-flex items-center justify-center h-7 w-7 rounded border hover:bg-gray-50",
-                            title: (task.completed? ? '再オープン' : '完了') do %>
-                <% if task.completed? %>
-                  <%= icon "check-circle", variant: :solid, size: "w-5 h-5", classes: "text-green-600", "aria-hidden": "true" %>
-                  <span class="sr-only">完了を取り消す</span>
-                <% else %>
-                  <%= icon "circle", size: "w-5 h-5", "aria-hidden": "true" %>
-                  <span class="sr-only">完了にする</span>
-                <% end %>
-              <% end %>
-            <% end %>
-            <span class="<%= 'line-through text-gray-400' if task.completed? %>"><%= task.title %></span>
-          </div>
-
-          <div class="flex items-center gap-1">
-            <% if @goal.user_id == current_user.id %>
-              <%# 矢印ボタン（フォールバック／微調整用） %>
-              <%= button_to move_goal_goal_task_path(@goal, task, move: :up),
-                            method: :patch,
-                            class: "px-2 py-1 text-xs rounded border hover:bg-gray-50",
-                            form: { "data-turbo-confirm": nil } do %>
-                ↑
-              <% end %>
-              <%= button_to move_goal_goal_task_path(@goal, task, move: :down),
-                            method: :patch,
-                            class: "px-2 py-1 text-xs rounded border hover:bg-gray-50",
-                            form: { "data-turbo-confirm": nil } do %>
-                ↓
-              <% end %>
-            <% end %>
-
-            <% if @goal.user_id == current_user.id %>
-              <%= button_to goal_goal_task_path(@goal, task),
-                            method: :delete,
-                            class: "inline-flex items-center gap-1.5 px-2 py-1 rounded text-xs text-red-600 hover:bg-red-50" do %>
-                <%= icon "trash", size: "w-4 h-4", "aria-hidden": "true" %> <span>削除</span>
-              <% end %>
-            <% end %>
-          </div>
-        </li>
+      <% (@tasks || @goal.goal_tasks.incomplete).each do |task| %>
+        <%= render "goals/task_row",
+                   goal: @goal, task: task,
+                   mine: (@goal.user_id == current_user.id) %>
       <% end %>
     </ul>
-    <%# ▲▲ 並び替え対応版リスト ▲▲ %>
-  </div>
+  <% end %>
 </div>

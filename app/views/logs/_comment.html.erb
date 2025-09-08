@@ -12,17 +12,17 @@
     <div class="shrink-0 flex items-center gap-2 text-xs">
       <% if current_user&.id == comment.user_id %>
         <%= link_to "編集",
-            edit_log_comment_path(comment.log, comment),
-            data: { turbo_frame: dom_id(comment) },
-            class: "underline text-gray-500" %>
+                    edit_log_comment_path(comment.log, comment),
+                    data: { turbo_frame: dom_id(comment) },
+                    class: "underline text-gray-500" %>
       <% end %>
 
       <% if current_user && (current_user.id == comment.user_id || current_user.id == comment.log.user_id) %>
         <%= button_to "削除",
-            log_comment_path(comment.log, comment),
-            method: :delete,
-            form: { data: { turbo_confirm: "削除しますか？" } },
-            class: "text-red-600" %>
+                      log_comment_path(comment.log, comment),
+                      method: :delete,
+                      form: { data: { turbo_confirm: "削除しますか？" } },
+                      class: "text-red-600" %>
       <% end %>
     </div>
   </div>

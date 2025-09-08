@@ -1,0 +1,13 @@
+<%= turbo_frame_tag dom_id(@comment) do %>
+  <%= form_with model: [@log, @comment] do |f| %>
+    <%= f.text_area :body, rows: 4, class: "textarea" %>
+    <div class="mt-2 flex gap-2">
+      <%= f.submit "更新", class: "btn-primary" %>
+      <!-- キャンセルは表示に戻すため同じフレームへ表示用パーシャルを返す -->
+      <%= link_to "キャンセル",
+            log_comment_path(@log, @comment, format: :turbo_stream),
+            data: { turbo_frame: dom_id(@comment) },
+            class: "btn-ghost" %>
+    </div>
+  <% end %>
+<% end %>

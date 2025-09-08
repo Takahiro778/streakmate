@@ -25,10 +25,10 @@ Rails.application.routes.draw do
   end
 
   # Log（クイックログ）+ Cheer（応援）+ Comment（コメント）
-  resources :logs, only: [:index, :show, :create] do
-    resource  :cheer,    only: [:create, :destroy]
-    resources :comments, only: [:create, :edit, :update, :destroy]
-  end
+  resources :logs, only: [:index, :show, :create, :destroy] do
+  resource  :cheer,    only: [:create, :destroy]
+  resources :comments, only: [:create, :edit, :update, :destroy]
+end
 
   # Follow（ユーザーに対するフォロー/解除）+ プロフィール表示
   resources :users, only: [:show] do

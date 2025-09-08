@@ -7,9 +7,7 @@
     <% end %>
   </div>
 
-  <h1 class="text-2xl font-bold">
-    <%= "#{@log.category.titleize} ・ #{@log.minutes}分" %>
-  </h1>
+  <h1 class="text-2xl font-bold"><%= "#{@log.category.titleize} ・ #{@log.minutes}分" %></h1>
 
   <div class="text-xs text-gray-600">
     <%= @log.user.nickname.presence || @log.user.email %>
@@ -26,9 +24,18 @@
     <p class="whitespace-pre-wrap text-sm"><%= @log.memo %></p>
   <% end %>
 
-  <p class="text-sm text-gray-700">
-    カテゴリ：<%= @log.category.titleize %>
-  </p>
+  <p class="text-sm text-gray-700">カテゴリ：<%= @log.category.titleize %></p>
 
-  <%= render "comments/section", log: @log, comment: Comment.new %>
+  <%# 自分のログだけ削除可 %>
+  <% if current_user&.id == @log.user_id %>
+    <div>
+      <%= link_to "ログを削除",
+          log_path(@log),
+          data: { turbo_method: :delete, turbo_confirm: "本当に削除しますか？" },
+          class: "text-sm text-red-600 underline" %>
+    </div>
+  <% end %>
+
+  <%# コメントセクション（一覧 + 入力） %>
+   <%= render "comments/section", log: @log, comment: Comment.new %>
 </div>

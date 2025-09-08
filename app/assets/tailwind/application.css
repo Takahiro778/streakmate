@@ -19,8 +19,6 @@
     @apply bg-white border border-gray-200 rounded-lg p-3 md:p-4;
     box-shadow: var(--shadow-card);
   }
-
-  /* モバイルで少しだけタイトにしたい時に付け足すクラス */
   .card--tight { @apply p-2 md:p-3; }
 
   .btn-primary {
@@ -30,7 +28,6 @@
            focus:ring-2 focus:ring-brand-200;
     box-shadow: var(--shadow-btn);
   }
-
   .btn-secondary {
     @apply inline-flex items-center justify-center rounded-lg
            px-3 py-2 text-sm font-medium transition
@@ -38,7 +35,6 @@
            focus:ring-2 focus:ring-brand-200;
     box-shadow: var(--shadow-btn);
   }
-
   .btn-ghost {
     @apply inline-flex items-center justify-center rounded-lg
            px-3 py-2 text-sm font-medium transition
@@ -49,20 +45,10 @@
   .badge { @apply inline-block text-xs px-2 py-0.5 rounded border bg-gray-50; }
 
   /* 自作クラスに対して入れ子の@applyはしない方針 */
-  .input {
-    @apply w-full rounded-lg border px-3 py-2 text-sm
-           focus:outline-none focus:ring-2 focus:ring-brand-200;
-  }
-  .select {
-    @apply w-full rounded-lg border px-3 py-2 text-sm
-           focus:outline-none focus:ring-2 focus:ring-brand-200;
-  }
-  .textarea {
-    @apply w-full rounded-lg border px-3 py-2 text-sm
-           focus:outline-none focus:ring-2 focus:ring-brand-200;
-  }
+  .input   { @apply w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-200; }
+  .select  { @apply w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-200; }
+  .textarea{ @apply w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-200; }
 
-  /* --- extras: shared icon/label layout & touch target --- */
   .icon-label { @apply inline-flex items-center justify-center gap-1.5; }
   .tap-target { @apply min-h-[44px] px-2 py-1; }
 
@@ -81,9 +67,9 @@
   .safe-bottom { padding-bottom: calc(env(safe-area-inset-bottom) + 0.75rem); }
   .safe-top    { padding-top:    calc(env(safe-area-inset-top)    + 0.5rem); }
 
-  /* underline indicator for active footer tab */
   .active-underline { @apply absolute -bottom-px h-0.5 w-8 bg-slate-900 rounded; }
 
-  /* ▼ 追加：固定フッター(h-14=56px)＋セーフエリアぶんの下余白を常に確保 */
-  .pb-footer { padding-bottom: calc(60px + env(safe-area-inset-bottom)); }
+  /* 固定フッター(h-14=56px)。見切れ防止のため多めに確保 */
+  .pb-footer    { padding-bottom: calc(76px + env(safe-area-inset-bottom)); }   /* 56px + 20px */
+  .pb-footer-lg { padding-bottom: calc(112px + env(safe-area-inset-bottom)); }  /* 長いリスト用 */
 }

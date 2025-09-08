@@ -1,12 +1,3 @@
-<% if @comment.errors.any? %>
-  <%= turbo_stream.replace dom_id(@log, :new_comment) do %>
-    <%= render "comments/form", log: @log, comment: @comment %>
-  <% end %>
-<% else %>
-  <%= turbo_stream.prepend dom_id(@log, :comments) do %>
-    <%= render "comments/comment", comment: @comment %>
-  <% end %>
-  <%= turbo_stream.replace dom_id(@log, :new_comment) do %>
-    <%= render "comments/form", log: @log, comment: Comment.new %>
-  <% end %>
-<% end %>
+<%= turbo_stream.append "comments_list", render(@comment) %>
+<%= turbo_stream.replace dom_id(@comment, :form),
+      render("comments/form", log: @log, comment: Comment.new) %>

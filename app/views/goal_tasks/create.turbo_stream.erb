@@ -1,0 +1,20 @@
+<%= turbo_stream.append "goal_tasks_list" do %>
+  <%= render "goals/task_row",
+             goal:  @goal,
+             task:  @task,
+             mine:  (@goal.user_id == current_user.id) %>
+<% end %>
+
+<%= turbo_stream.update "new_task_form" do %>
+  <%= form_with url: goal_goal_tasks_path(@goal),
+                method: :post,
+                data: { turbo_stream: true },
+                id:   "new_task_form",
+                class:"flex gap-2 mb-4" do %>
+    <%= text_field_tag "goal_task[title]", "", placeholder: "タスク名を追加", class: "input flex-1" %>
+    <%= button_tag type: "submit",
+                   class: "btn-primary inline-flex items-center justify-center gap-1.5 min-h-[44px]" do %>
+      <%= icon "plus", variant: :solid, size: "w-5 h-5" %> <span>追加</span>
+    <% end %>
+  <% end %>
+<% end %>
