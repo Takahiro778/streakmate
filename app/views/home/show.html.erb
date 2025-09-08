@@ -41,6 +41,14 @@
     </div>
   <% end %>
 
+  <%# ▼ ここを“追記”：ホーム用ワンタップ提案ランチャー %>
+  <div class="mt-4">
+    <%= render "shared/suggestions_launcher",
+               category: "relax",
+               target_id: "suggestions_home" %>
+  </div>
+  <%# ▲ 追記ここまで %>
+
 <% else %>
   <div class="max-w-sm mx-auto p-6">
     <h1 class="text-2xl font-bold">StreakMate</h1>

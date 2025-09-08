@@ -22,19 +22,16 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
-    <!-- Tailwind v4: built CSS only -->
     <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
-
-    <!-- Importmap / Turbo / Stimulus -->
     <%= javascript_importmap_tags %>
   </head>
 
-  <!-- フッター（h-14 ≒ 56px）とかぶらないよう、bodyに「pb-16 + safe-bottom」を付与 -->
-  <body class="bg-gray-50 text-gray-900 pb-16 md:pb-0 safe-bottom">
+  <!-- ← body から pb-20 / safe-bottom を外す -->
+  <body class="bg-gray-50 text-gray-900">
     <%= render "shared/header_nav" %>
 
-    <!-- ヘッダー（h-12 ≒ 48px）ぶんの上余白のみ確保 -->
-    <main class="pt-12">
+    <!-- ヘッダー分の上余白 + フッター分の下余白を main 側で担保 -->
+    <main class="pt-12 pb-footer md:pb-0">
       <div class="max-w-sm mx-auto px-4 pt-3">
         <%= render "shared/flash" %>
         <%= yield %>

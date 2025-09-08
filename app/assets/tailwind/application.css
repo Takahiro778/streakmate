@@ -80,4 +80,7 @@
 
   /* underline indicator for active footer tab */
   .active-underline { @apply absolute -bottom-px h-0.5 w-8 bg-slate-900 rounded; }
+
+  /* ▼ 追加：固定フッター(h-14=56px)＋セーフエリアぶんの下余白を常に確保 */
+  .pb-footer { padding-bottom: calc(56px + env(safe-area-inset-bottom)); }
 }

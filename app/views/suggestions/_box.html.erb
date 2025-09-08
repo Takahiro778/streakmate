@@ -1,0 +1,8 @@
+<div class="space-y-2">
+  <% suggestions.each do |s| %>
+    <div class="card flex items-center justify-between">
+      <span class="text-sm"><%= s.respond_to?(:label) ? s.label : s[:label] %></span>
+      <%# TODO: ここに「15分で記録」などCTAを置くなら追加 %>
+    </div>
+  <% end %>
+</div>

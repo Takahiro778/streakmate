@@ -10,17 +10,12 @@
         aria: { current: ('page' if @tab == 'following') } %>
   </div>
 
-  <!-- ▼ ワンタップ提案 -->
-  <%= render "shared/suggestions_launcher", category: "relax", target_id: "suggestions_timeline" %>
-
   <!-- ログが無い場合 -->
   <% if @logs.blank? %>
     <p class="text-center text-sm text-gray-600 py-10">表示できるログがありません。</p>
   <% else %>
     <div class="space-y-3">
-      <!-- タイムライン専用カード -->
       <%= render partial: "log", collection: @logs, as: :log %>
-      <!-- ※ 同ディレクトリの app/views/timeline/_log.html.erb を呼びます -->
     </div>
   <% end %>
 

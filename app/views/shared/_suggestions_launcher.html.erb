@@ -15,6 +15,7 @@
                   class: "btn-secondary shrink-0" %>
   </div>
 
-  <!-- Turbo Stream がここを置換します（ページごとに一意のIDを渡せます） -->
-  <div class="mt-3" id="<%= local_assigns[:target_id] || 'suggestions' %>"></div>
+  <!-- Turbo Stream がここを置換します（ページごとに一意のIDを渡せます）
+       モバイルのみ下余白を大きめに確保し、フッター被りを防止 -->
+  <div class="mt-3 pb-24 md:pb-0" id="<%= local_assigns[:target_id] || 'suggestions' %>"></div>
 </div>
