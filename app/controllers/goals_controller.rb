@@ -10,13 +10,13 @@ class GoalsController < ApplicationController
   end
 
   def show
-    return unless @goal
-    unless allowed_to_view?(@goal, current_user)
-      redirect_to goals_path, alert: 'この目標を閲覧する権限がありません' and return
-    end
+  return unless @goal
+  unless allowed_to_view?(@goal, current_user)
+    redirect_to goals_path, alert: 'この目標を閲覧する権限がありません' and return
+  end
 
-    # ✅ リロード時も「未完のみ」表示
-    @tasks = @goal.goal_tasks.incomplete
+  # ✅ リロード時も「未完のみ」表示
+  @tasks = @goal.goal_tasks.incomplete.ordered
   end
 
   def new
