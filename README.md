@@ -96,11 +96,6 @@ StreakMate では、**「公開 × 最小入力 × 相互応援」** を組み�
 
 ## データベース設計
 
-![ER図](er.png)
-※最新版に差し替え予定
-
-## データベース設計（ER図）
-
 ```mermaid
 erDiagram
 
@@ -139,15 +134,6 @@ erDiagram
   notifications }o--|| users : user
   notifications }o--|| users : actor
   notifications }o--|| notifiable : polymorphic
-
-
-## 画面遷移図
-
-![画面遷移図](transition.png)
-※最新版に差し替え予定
-
-
----
 
 ## 📌 画面遷移図 (Mermaid)
 
