@@ -8,6 +8,51 @@ namespace :demo do
 
     puts "[demo:seed] Seeding demo users and minimal data..."
 
+    # --------- 小ヘルパ ---------
+    set_goal_category = lambda do |goal|
+      # enum(category) があれば最初のキー
+      if goal.class.respond_to?(:defined_enums) && goal.class.defined_enums.key?("category")
+        goal.category ||= goal.class.defined_enums["category"].keys.first
+      # 外部参照なら id=1 を保険で
+      elsif goal.respond_to?(:category_id) && goal.class.column_names.include?("category_id")
+        goal.category_id ||= 1
+      # カラムが string/int なら "other" or 0 を保険で
+      elsif goal.class.column_names.include?("category")
+        col = goal.class.columns_hash["category"]
+        if col.type == :string
+          goal.category ||= "other"
+        elsif [:integer, :bigint].include?(col.type)
+          goal.category ||= 0
+        end
+      end
+    end
+
+    set_log_category = lambda do |log|
+      if log.class.respond_to?(:defined_enums) && log.class.defined_enums.key?("category")
+        log.category ||= log.class.defined_enums["category"].keys.first
+      elsif log.class.column_names.include?("category_id")
+        log.category_id ||= 1
+      elsif log.class.column_names.include?("category")
+        col = log.class.columns_hash["category"]
+        if col.type == :string
+          log.category ||= "other"
+        elsif [:integer, :bigint].include?(col.type)
+          log.category ||= 0
+        end
+      end
+    end
+
+    set_visibility_public = lambda do |record|
+      if record.class.respond_to?(:defined_enums) && record.class.defined_enums.key?("visibility")
+        record.visibility ||= :public
+      elsif record.class.column_names.include?("visibility")
+        # 整数 enum などの保険
+        col = record.class.columns_hash["visibility"]
+        record.visibility ||= (col.type == :integer ? 0 : "public")
+      end
+    end
+    # --------- /小ヘルパ ---------
+
     demo_users = [
       {
         nickname: "筋トレ好き太郎",
@@ -64,14 +109,14 @@ namespace :demo do
       user.password = du[:password]
       user.save!
 
-      # Profile があれば最低限作成/更新
+      # Profile 最低限
       if defined?(Profile)
         profile = user.profile || user.build_profile
         profile.display_name ||= du[:nickname]
         profile.save!
       end
 
-      # Settings があればデフォルトセット
+      # Setting デフォルト
       if defined?(Setting) && user.respond_to?(:build_setting) && user.setting.nil?
         user.build_setting.save!
       end
@@ -80,10 +125,8 @@ namespace :demo do
         goal = user.goals.where(title: g[:title]).first_or_initialize
         goal.description      = g[:description]
         goal.success_criteria ||= "2週間継続"
-        # visibility が enum の場合に :public があれば使う
-        if goal.class.respond_to?(:defined_enums) && goal.class.defined_enums["visibility"]
-          goal.visibility ||= :public
-        end
+        set_goal_category.call(goal)
+        set_visibility_public.call(goal)
         goal.save!
 
         g[:logs].each_with_index do |lg, i|
@@ -91,20 +134,18 @@ namespace :demo do
           log.minutes    = lg[:minutes]
           log.memo       = lg[:memo]
           log.goal_id    = goal.id
-          # 直近表示用に日付を少しずらす
           log.created_at ||= (Time.current - (i + 1).days).change(hour: [6, 12, 20].sample)
-          # visibility が enum の場合に :public があれば使う
-          if log.class.respond_to?(:defined_enums) && log.class.defined_enums["visibility"]
-            log.visibility ||= :public
-          end
-          log.save!(validate: false) # minutes nil/enum未設定でも投入しやすく
+          set_log_category.call(log)
+          set_visibility_public.call(log)
+          # バリデーションに引っかからないよう保険（minutes/enum 未設定でも通す）
+          log.save!(validate: false)
         end
       end
 
       created_users << user
     end
 
-    # ちょい体験向け：相互フォロー（存在すれば）
+    # 相互フォロー（存在すれば）
     if defined?(Follow)
       u1, u2, u3 = created_users
       [[u1,u2],[u2,u3],[u3,u1]].each do |a,b|
