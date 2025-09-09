@@ -95,87 +95,10 @@ StreakMate では、**「公開 × 最小入力 × 相互応援」** を組み�
 * 通知：基本的なフォロー/コメント通知のみ（細かな通知設定は未対応）
 
 ## データベース設計
-
-erDiagram
-
-  users ||--o{ goals : has_many
-  users ||--o{ logs : has_many
-  users ||--o{ comments : has_many
-  users ||--o{ cheers : has_many
-  users ||--o{ favorites : has_many
-  users ||--o{ follows : follower
-  users ||--o{ follows : followed
-  users ||--o{ notifications : has_many
-  users ||--|| profiles : has_one
-  users ||--|| settings : has_one
-
-  goals ||--o{ goal_tasks : has_many
-  goals ||--o{ logs : has_many
-  goals ||--o{ favorites : has_many
-
-  goal_tasks ||--o{ logs : has_many
-
-  logs ||--o{ comments : has_many
-  logs ||--o{ cheers : has_many
-
-  comments }o--|| users : belongs_to
-  comments }o--|| logs : belongs_to
-
-  cheers }o--|| users : belongs_to
-  cheers }o--|| logs : belongs_to
-
-  favorites }o--|| users : belongs_to
-  favorites }o--|| goals : belongs_to
-
-  follows }o--|| users : follower
-  follows }o--|| users : followed
-
-  notifications }o--|| users : user
-  notifications }o--|| users : actor
+![ER図](docs/er_diagram.png)
 
 ## 画面遷移図
-
-flowchart TD
-
-  subgraph Auth[認証]
-    signup[新規登録] --> login[ログイン]
-  end
-
-  home[ホーム] --> mypage[マイページ]
-  home --> timeline[タイムライン]
-  home --> goals[目標一覧]
-  home --> logs[ログ一覧]
-  home --> notifications[通知一覧]
-  home --> more[その他メニュー]
-
-  subgraph Goals[目標機能]
-    goals --> goal_new[目標作成]
-    goals --> goal_show[目標詳細]
-    goal_show --> goal_edit[目標編集]
-    goal_show --> goal_tasks[タスク管理]
-    goal_show --> favorite[お気に入り登録]
-  end
-
-  subgraph Logs[ログ機能]
-    logs --> log_new[ログ投稿]
-    logs --> log_show[ログ詳細]
-    log_show --> comments[コメントCRUD]
-    log_show --> cheer[応援]
-  end
-
-  subgraph User[ユーザー]
-    user_show[ユーザープロフィール] --> follow[フォロー/解除]
-    mypage --> profile_edit[プロフィール編集]
-  end
-
-  subgraph Notifications[通知]
-    notifications --> notification_read[既読化]
-    notifications --> read_all[一括既読]
-  end
-
-  more --> guides[ガイド(relax/sleep)]
-  more --> setting[設定]
-
+![画面遷移図](docs/screen_transition.png)
 
 ## 開発環境
 
