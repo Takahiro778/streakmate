@@ -1,15 +1,21 @@
 <header class="safe-top sticky top-0 z-40 bg-white/95 backdrop-blur border-b" data-controller="menu">
-  <nav class="max-w-sm mx-auto px-4 py-2 flex items-center justify-between">
-    <%= link_to "StreakMate", root_path, class: "font-semibold" %>
+  <nav class="mx-auto w-full max-w-screen-lg px-4 py-2 flex items-center justify-between">
+    <!-- ロゴ -->
+    <%= link_to "StreakMate", root_path, class: "font-semibold shrink-0" %>
 
-    <!-- PC( md: ) では水平ナビ、モバイルでは非表示 -->
-    <ul class="hidden md:flex items-center gap-5 text-sm text-gray-700">
-      <li><%= link_to "タイムライン", timeline_index_path, class: "hover:opacity-70" %></li>
-      <li><%= link_to "目標", goals_path, class: "hover:opacity-70" %></li>
-      <% if user_signed_in? %>
-        <li><%= link_to "マイページ", mypage_path, class: "hover:opacity-70" %></li>
-      <% end %>
-    </ul>
+    <!-- PC( md: ) の水平ナビ：ログイン時のみ表示 -->
+    <% if user_signed_in? %>
+      <ul class="hidden md:flex items-center gap-6 text-sm text-gray-700">
+        <li><%= link_to "タイムライン", timeline_index_path, class: "hover:opacity-70 whitespace-nowrap" %></li>
+        <li><%= link_to "目標", goals_path, class: "hover:opacity-70 whitespace-nowrap" %></li>
+        <li><%= link_to "マイページ", mypage_path, class: "hover:opacity-70 whitespace-nowrap" %></li>
+        <li>
+          <%= link_to "ログアウト", destroy_user_session_path,
+                       data: { turbo_method: :delete },
+                       class: "hover:opacity-70 text-red-600 whitespace-nowrap" %>
+        </li>
+      </ul>
+    <% end %>
 
     <div class="flex items-center gap-3">
       <% if user_signed_in? %>
@@ -30,27 +36,32 @@
       <% end %>
 
       <!-- ハンバーガーはモバイル専用（md:hidden） -->
-      <button type="button"
-              class="p-2 rounded hover:bg-gray-50 md:hidden"
-              data-action="click->menu#toggle"
-              data-menu-target="button"
-              aria-label="Menu"
-              aria-controls="mobile-menu"
-              aria-expanded="false">
+      <button
+        type="button"
+        class="p-2 rounded hover:bg-gray-50 md:hidden"
+        data-action="click->menu#toggle"
+        data-menu-target="button"
+        aria-label="Menu"
+        aria-controls="mobile-menu"
+        aria-expanded="false">
         ☰
       </button>
     </div>
   </nav>
 
-  <!-- モバイルメニュー：PCでは常に非表示（md:hidden） -->
-  <div id="mobile-menu"
-       data-menu-target="panel"
-       class="md:hidden hidden border-t">
-    <ul class="max-w-sm mx-auto py-2">
+  <!-- モバイルメニュー（未ログイン時はログイン/新規登録のみ） -->
+  <div
+    id="mobile-menu"
+    data-menu-target="panel"
+    class="md:hidden hidden border-t">
+    <ul class="mx-auto max-w-sm py-2">
       <% if user_signed_in? %>
+        <!-- PCと重複を避けるため「タイムライン」「目標」は出さない -->
         <li><%= link_to "マイページ", mypage_path, class: "block px-2 py-2 hover:bg-gray-50 rounded" %></li>
         <li><%= link_to "設定", edit_user_registration_path, class: "block px-2 py-2 hover:bg-gray-50 rounded" %></li>
-        <li><%= link_to "ログアウト", destroy_user_session_path, data: { turbo_method: :delete }, class: "block px-2 py-2 text-red-600 hover:bg-red-50 rounded" %></li>
+        <li><%= link_to "ログアウト", destroy_user_session_path,
+                        data: { turbo_method: :delete },
+                        class: "block px-2 py-2 text-red-600 hover:bg-red-50 rounded" %></li>
       <% else %>
         <li><%= link_to "ログイン", new_user_session_path, class: "block px-2 py-2 hover:bg-gray-50 rounded" %></li>
         <li><%= link_to "新規登録", new_user_registration_path, class: "block px-2 py-2 hover:bg-gray-50 rounded" %></li>
