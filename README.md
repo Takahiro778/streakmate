@@ -81,6 +81,24 @@ StreakMate では、**「公開 × 最小入力 × 相互応援」** を組み�
 * プロフィール編集（アイコン・自己紹介）
 * SNSシェア（OGP対応：Twitter/XやLINEでリンク共有時にタイトル・キャッチコピー・サムネイルが表示）
 
+## アプリ画面イメージ
+
+### 新規登録
+![signup](docs/images/signup_flow.gif)
+
+### 目標作成
+![create_goal](docs/images/goal_creation.gif)
+
+### クイックログ
+![quicklog](docs/images/quicklog_screen.png)
+
+### 通知
+![notifications](docs/images/notifications_screen.png)
+
+### ホーム
+![home](docs/images/home_screen.png)
+
+
 ## 実装予定の機能
 
 * リマインダー通知
