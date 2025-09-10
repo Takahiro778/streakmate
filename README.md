@@ -84,10 +84,10 @@ StreakMate では、**「公開 × 最小入力 × 相互応援」** を組み�
 ## アプリ画面イメージ
 
 ### 新規登録
-![signup](docs/images/signup_flow.gif)
+![signup](docs/images/goal_creation.gif)
 
 ### 目標作成
-![create_goal](docs/images/goal_creation.gif)
+![create_goal](docs/images/signup_flow.gif)
 
 ### クイックログ
 ![quicklog](docs/images/quicklog_screen.png)
