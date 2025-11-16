@@ -40,7 +40,7 @@ Rails.application.configure do
 
   # ===== Active Storage (S3) =====
   # 必要: AWS_ACCESS_KEY_ID / AWS_SECRET_ACCESS_KEY / AWS_REGION / S3_BUCKET_NAME
-  config.active_storage.service = :amazon
+  config.active_storage.service = :local
   config.active_storage.variant_processor = :vips
 
   # ===== Security =====
